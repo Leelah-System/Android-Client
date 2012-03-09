@@ -171,41 +171,21 @@ public class SimpleWrappedGridView<BusinessObjectClass, ViewClass extends View>
   {
     if (onTop == true)
     {
-      if (fixed == true)
+      if (headerAdded == false)
       {
-        if (headerAdded == false)
-        {
-          initializeHeader();
-        }
-        headerLayout.addView(view, new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
-        headerAdded = true;
+        initializeHeader();
       }
-      else
-      {
-        // if (listView instanceof ListView)
-        // {
-        // listView.addHeaderView(view);
-        // }
-      }
+      headerLayout.addView(view, new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+      headerAdded = true;
     }
     else
     {
-      if (fixed == true)
+      if (footerAdded == false)
       {
-        if (footerAdded == false)
-        {
-          initializeFooter();
-        }
-        footerLayout.addView(view, new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
-        footerAdded = true;
+        initializeFooter();
       }
-      else
-      {
-        // if (listView instanceof ListView)
-        // {
-        // ((ListView) listView).addFooterView(view);
-        // }
-      }
+      footerLayout.addView(view, new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+      footerAdded = true;
     }
   }
 
