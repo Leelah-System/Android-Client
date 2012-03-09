@@ -18,7 +18,7 @@ import com.smartnsoft.droid4me.app.SmartSplashScreenActivity;
  * @since 2012.02.10
  */
 public final class LeelahSystemSplashScreenActivity
-    extends SmartSplashScreenActivity<TitleBar.TitleBarAggregate>
+    extends SmartSplashScreenActivity<TitleBar.TitleBarAggregate, Void>
     implements LifeCycle.BusinessObjectsRetrievalAsynchronousPolicy, TitleBar.TitleBarDiscarded
 {
 
@@ -68,7 +68,7 @@ public final class LeelahSystemSplashScreenActivity
   }
 
   @Override
-  protected void onRetrieveBusinessObjectsCustom()
+  protected Void onRetrieveBusinessObjectsCustom()
       throws BusinessObjectUnavailableException
   {
     try
@@ -82,7 +82,8 @@ public final class LeelahSystemSplashScreenActivity
         log.error("An interruption occurred while displaying the splash screen", exception);
       }
     }
-    markAsInitialized();
+    // markAsInitialized();
+    return null;
   }
 
 }
