@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.ListView;
 
 import com.leelah.android.R;
@@ -16,6 +19,7 @@ import com.smartnsoft.droid4me.support.v4.app.SmartListViewFragment;
 
 public class CartListFragment
     extends SmartListViewFragment<TitleBar.TitleBarAggregate, ListView>
+    implements OnClickListener
 {
 
   private static final class CartViewHolder
@@ -55,6 +59,19 @@ public class CartListFragment
 
   }
 
+  private View submitLayout;
+
+  private Button submitButton;
+
+  @Override
+  public void onRetrieveDisplayObjects()
+  {
+    super.onRetrieveDisplayObjects();
+
+    submitLayout = LayoutInflater.from(getCheckedActivity()).inflate(R.layout.cart_submit_command, null);
+    submitButton = (Button) submitLayout.findViewById(R.id.submitButton);
+  }
+
   public List<? extends BusinessViewWrapper<?>> retrieveBusinessObjectsList()
       throws BusinessObjectUnavailableException
   {
@@ -65,6 +82,22 @@ public class CartListFragment
     wrappers.add(new CartWrapper(new Product()));
 
     return wrappers;
+  }
+
+  @Override
+  public void onFulfillDisplayObjects()
+  {
+    super.onFulfillDisplayObjects();
+
+    getWrappedListView().addHeaderFooterView(false, true, submitLayout);
+  }
+
+  public void onClick(View view)
+  {
+    if (view == submitButton)
+    {
+
+    }
   }
 
 }

@@ -10,12 +10,13 @@ import android.widget.GridView;
 import com.leelah.android.R;
 import com.leelah.android.TitleBar;
 import com.leelah.android.bo.Product;
+import com.smartnsoft.droid4me.LifeCycle.BusinessObjectsRetrievalAsynchronousPolicy;
 import com.smartnsoft.droid4me.framework.SmartAdapters.BusinessViewWrapper;
 import com.smartnsoft.droid4me.framework.SmartAdapters.SimpleBusinessViewWrapper;
-import com.smartnsoft.droid4me.support.v4.app.SmartListViewFragment;
 
 public class ProductsListFragment
-    extends SmartListViewFragment<TitleBar.TitleBarAggregate, GridView>
+    extends SmartGridViewFragment<TitleBar.TitleBarAggregate, GridView>
+    implements BusinessObjectsRetrievalAsynchronousPolicy
 {
 
   private static final class ProductViewHolder
@@ -55,6 +56,12 @@ public class ProductsListFragment
 
   }
 
+  @Override
+  public void onRetrieveDisplayObjects()
+  {
+    super.onRetrieveDisplayObjects();
+  }
+
   public List<? extends BusinessViewWrapper<?>> retrieveBusinessObjectsList()
       throws BusinessObjectUnavailableException
   {
@@ -67,6 +74,17 @@ public class ProductsListFragment
     wrappers.add(new ProductWrapper(new Product()));
 
     return wrappers;
+  }
+
+  @Override
+  public void onFulfillDisplayObjects()
+  {
+    super.onFulfillDisplayObjects();
+    getWrappedListView().getListView().setNumColumns(GridView.AUTO_FIT);
+    getWrappedListView().getListView().setColumnWidth(getResources().getDimensionPixelSize(R.dimen.gridColumnWidth));
+    getWrappedListView().getListView().setVerticalSpacing(getResources().getDimensionPixelSize(R.dimen.defaultPadding));
+    getWrappedListView().getListView().setHorizontalSpacing(getResources().getDimensionPixelSize(R.dimen.defaultPadding));
+    getWrappedListView().getListView().setStretchMode(GridView.STRETCH_COLUMN_WIDTH);
   }
 
 }

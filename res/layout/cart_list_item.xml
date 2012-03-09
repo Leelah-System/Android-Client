@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
-        android:padding="10dp"
+        android:padding="@dimen/defaultPadding"
         android:src="@drawable/icon" />
 
     <TextView
