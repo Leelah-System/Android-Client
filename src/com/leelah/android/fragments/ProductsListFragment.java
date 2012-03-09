@@ -87,4 +87,9 @@ public class ProductsListFragment
     getWrappedListView().getListView().setStretchMode(GridView.STRETCH_COLUMN_WIDTH);
   }
 
+  public void onTitleBarRefresh()
+  {
+    refreshBusinessObjectsAndDisplay(true);
+  }
+
 }

@@ -8,6 +8,7 @@
   <color name="grey">#666666</color>
   <color name="dark_grey">#333333</color>
   
-  <color name="leelah_primary_color">#333333</color>
+  <color name="leelah_primary_color">#561f37</color>
+  <color name="leelah_light_color">#55561f37</color>
 
 </resources>

@@ -63,6 +63,7 @@ containing a value of this type.
     public static final class color {
         public static final int dark_grey=0x7f060003;
         public static final int grey=0x7f060002;
+        public static final int leelah_light_color=0x7f060005;
         public static final int leelah_primary_color=0x7f060004;
         /**  The "Android 2.0" title bar 
          */
@@ -157,6 +158,8 @@ containing a value of this type.
         public static final int LeelahSystemSplashScreen_smartnsoftMoto=0x7f09000b;
         public static final int Main_menu_about=0x7f09000e;
         public static final int Main_menu_settings=0x7f09000d;
+        public static final int Menu_admin_mode=0x7f090010;
+        public static final int Menu_settings=0x7f090011;
         public static final int Settings_version=0x7f09000c;
         public static final int applicationDescription=0x7f090001;
         public static final int applicationName=0x7f090000;
