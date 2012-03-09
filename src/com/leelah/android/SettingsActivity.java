@@ -12,8 +12,8 @@ import com.smartnsoft.droid4me.app.SmartPreferenceActivity;
  * @since 2012.02.10
  */
 public final class SettingsActivity
-    extends SmartPreferenceActivity<TitleBar.TitleBarAggregate>
-    implements TitleBar.TitleBarShowHomeFeature
+    extends SmartPreferenceActivity<Bar.BarAggregate>
+    implements Bar.BarShowHomeFeature
 {
 
   public void onRetrieveDisplayObjects()

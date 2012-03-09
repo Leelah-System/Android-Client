@@ -18,8 +18,8 @@ import com.smartnsoft.droid4me.ws.WebServiceCaller;
  * @since 2012.02.10
  */
 public final class AboutActivity
-    extends SmartActivity<TitleBar.TitleBarAggregate>
-    implements LifeCycle.BusinessObjectsRetrievalAsynchronousPolicy, TitleBar.TitleBarShowHomeFeature
+    extends SmartActivity<Bar.BarAggregate>
+    implements LifeCycle.BusinessObjectsRetrievalAsynchronousPolicy, Bar.BarShowHomeFeature
 {
 
   private String content;

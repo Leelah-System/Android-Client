@@ -6,6 +6,12 @@
   <dimen name="titleBarText">18dip</dimen>
   <dimen name="titleBarMargin">12dip</dimen>
 
+  <dimen name="actionBarHeight">56dip</dimen>
+  <dimen name="actionBarText">24dip</dimen>
+  <dimen name="actionBarMargin">20dip</dimen>
+  <dimen name="actionBarMenuWidth">105dip</dimen>
+  <dimen name="actionBarDateWidth">200dip</dimen>
+  
   <dimen name="bodyText">14dip</dimen>
   <dimen name="titleText">18dip</dimen>
 

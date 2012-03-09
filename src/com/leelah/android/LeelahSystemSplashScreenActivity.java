@@ -18,8 +18,8 @@ import com.smartnsoft.droid4me.app.SmartSplashScreenActivity;
  * @since 2012.02.10
  */
 public final class LeelahSystemSplashScreenActivity
-    extends SmartSplashScreenActivity<TitleBar.TitleBarAggregate, Void>
-    implements LifeCycle.BusinessObjectsRetrievalAsynchronousPolicy, TitleBar.TitleBarDiscarded
+    extends SmartSplashScreenActivity<Bar.BarAggregate, Void>
+    implements LifeCycle.BusinessObjectsRetrievalAsynchronousPolicy, Bar.BarDiscardedFeature
 {
 
   private final static int MISSING_SD_CARD_DIALOG_ID = 0;

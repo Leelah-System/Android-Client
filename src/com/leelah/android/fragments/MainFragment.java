@@ -10,15 +10,15 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.leelah.android.AboutActivity;
+import com.leelah.android.Bar;
 import com.leelah.android.R;
 import com.leelah.android.SettingsActivity;
-import com.leelah.android.TitleBar;
 import com.smartnsoft.droid4me.framework.Commands;
 import com.smartnsoft.droid4me.menu.StaticMenuCommand;
 import com.smartnsoft.droid4me.support.v4.app.SmartFragment;
 
 public class MainFragment
-    extends SmartFragment<TitleBar.TitleBarAggregate>
+    extends SmartFragment<Bar.BarAggregate>
 {
 
   @Override

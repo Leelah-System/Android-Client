@@ -7,15 +7,15 @@ import android.app.Activity;
 import android.view.View;
 import android.widget.ListView;
 
+import com.leelah.android.Bar;
 import com.leelah.android.R;
-import com.leelah.android.TitleBar;
 import com.leelah.android.bo.Category;
 import com.smartnsoft.droid4me.framework.SmartAdapters.BusinessViewWrapper;
 import com.smartnsoft.droid4me.framework.SmartAdapters.SimpleBusinessViewWrapper;
 import com.smartnsoft.droid4me.support.v4.app.SmartListViewFragment;
 
 public class CategoriesListFragment
-    extends SmartListViewFragment<TitleBar.TitleBarAggregate, ListView>
+    extends SmartListViewFragment<Bar.BarAggregate, ListView>
 {
 
   private static final class CategoryViewHolder

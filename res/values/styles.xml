@@ -54,8 +54,8 @@
   >
     <item name="android:displayOptions">showHome|useLogo</item>
     <item name="android:background">@color/leelah_primary_color</item>
-    <!--item name="android:customNavigationLayout">@layout/action_bar</item>
-    <item name="android:selectableItemBackground">@drawable/title_bar_button_background</item-->
+    <item name="android:customNavigationLayout">@layout/action_bar</item>
+    <!--<item name="android:selectableItemBackground">@drawable/title_bar_button_background</item-->
     <!--item name="android:windowActionBarOverlay">true</item-->
   </style>
   
@@ -67,5 +67,12 @@
   >
     <item name="android:background">@drawable/btn_default_small</item>
   </style-->
+  
+    
+  <style name="actionBarButton">
+    <item name="android:background">@drawable/title_bar_button_background</item>
+    <item name="android:layout_height">@dimen/actionBarHeight</item>
+    <item name="android:layout_width">@dimen/actionBarHeight</item>
+  </style>
 
 </resources>

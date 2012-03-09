@@ -6,7 +6,6 @@ import java.util.Map.Entry;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Handler;
 import android.util.AndroidRuntimeException;
 import android.view.View;
@@ -18,22 +17,20 @@ import android.widget.TextView;
 
 import com.smartnsoft.droid4me.app.ActivityController;
 import com.smartnsoft.droid4me.app.AppPublics;
-import com.smartnsoft.droid4me.app.ProgressHandler;
 import com.smartnsoft.droid4me.app.Smarted;
-import com.smartnsoft.droid4me.log.Logger;
-import com.smartnsoft.droid4me.log.LoggerFactory;
 
 /**
  * Gathers in one place the handling of the "Android 2.0" title bar
  * 
- * @author �douard Mercier
+ * @author Édouard Mercier
  * @since 2011.06.22
  */
-public class TitleBar
+public final class TitleBar
+    extends Bar
 {
 
   static class TitleBarAttributes
-      extends ProgressHandler
+      extends BarAttributes
   {
 
     protected static class ActionDetail
@@ -127,6 +124,7 @@ public class TitleBar
       setShowAction1(-1, null);
       setShowAction2(-1, null);
       setShowAction3(-1, null);
+      setShowAction4(-1, null);
     }
 
     protected TitleBarAttributes(Activity activity, TitleBarAttributes titleBar)
@@ -151,6 +149,7 @@ public class TitleBar
       titleString = activity.getTitle();
     }
 
+    @Override
     public final void setEnabled(boolean enabled)
     {
       this.enabled = enabled;
@@ -160,6 +159,7 @@ public class TitleBar
       }
     }
 
+    @Override
     public void setTitle(CharSequence title)
     {
       if (enabled == true)
@@ -190,6 +190,7 @@ public class TitleBar
       titleImageResourceId = imageResourceId;
     }
 
+    @Override
     public void setShowHome(int iconResourceId, View.OnClickListener onClickListener)
     {
       if (iconResourceId != -1)
@@ -209,24 +210,64 @@ public class TitleBar
       homeDetail = new TitleBarAttributes.ActionDetail(null, iconResourceId, onClickListener);
     }
 
+    @Override
     public void setShowAction1(int iconResourceId, View.OnClickListener onClickListener)
     {
       setShowAction(action1Block, action1, iconResourceId, onClickListener);
     }
 
+    @Override
     public void setShowAction2(int iconResourceId, View.OnClickListener onClickListener)
     {
       setShowAction(action2Block, action2, iconResourceId, onClickListener);
     }
 
+    @Override
     public void setShowAction3(int iconResourceId, View.OnClickListener onClickListener)
     {
       setShowAction(action3Block, action3, iconResourceId, onClickListener);
     }
 
+    @Override
     public void setShowAction4(int iconResourceId, View.OnClickListener onClickListener)
     {
       setShowAction(action4Block, action4, iconResourceId, onClickListener);
+    }
+
+    @Override
+    public boolean isHome(View view)
+    {
+      return view == home;
+    }
+
+    @Override
+    public boolean isRefresh(View view)
+    {
+      return view == refresh;
+    }
+
+    @Override
+    public boolean isAction1(View view)
+    {
+      return view == action1;
+    }
+
+    @Override
+    public boolean isAction2(View view)
+    {
+      return view == action2;
+    }
+
+    @Override
+    public boolean isAction3(View view)
+    {
+      return view == action3;
+    }
+
+    @Override
+    public boolean isAction4(View view)
+    {
+      return view == action4;
     }
 
     protected void setShowAction(View actionBlockView, ImageButton actionButton, int iconResourceId, View.OnClickListener onClickListener)
@@ -256,6 +297,7 @@ public class TitleBar
       }
     }
 
+    @Override
     public void setShowRefresh(View.OnClickListener onClickListener)
     {
       if (enabled == true)
@@ -286,12 +328,8 @@ public class TitleBar
       }
     }
 
-    public void onProgress(boolean isLoading)
-    {
-      toggleRefresh(isLoading);
-    }
-
-    public void toggleRefresh(boolean isLoading)
+    @Override
+    public void toggleRefresh(Activity activity, boolean isLoading)
     {
       if (enabled == true)
       {
@@ -306,15 +344,16 @@ public class TitleBar
     @Override
     protected void dismiss(Activity activity, Object progressExtra)
     {
-      toggleRefresh(false);
+      toggleRefresh(activity, false);
     }
 
     @Override
     protected void show(Activity activity, Object progressExtra)
     {
-      toggleRefresh(true);
+      toggleRefresh(activity, true);
     }
 
+    @Override
     protected void apply()
     {
       if (log.isDebugEnabled())
@@ -341,167 +380,21 @@ public class TitleBar
       setShowAction4(-1, null);
       return previousActions;
     }
-  }
-
-  public static interface TitleBarDiscarded
-  {
-  }
-
-  public static interface TitleBarSetupFeature
-  {
-    void onTitleBarSetup(TitleBarAttributes titleBarAttributes);
-  }
-
-  public static interface TitleBarTheme
-  {
-    int getThemeResourceId();
-  }
-
-  public static interface TitleBarRefreshFeature
-  {
-    void onTitleBarRefresh();
-  }
-
-  public static interface TitleBarShowLogoffFeature
-  {
-  }
-
-  public static interface TitleBarShowHomeFeature
-      extends TitleBarShowLogoffFeature
-  {
-  }
-
-  public static class TitleBarAggregate
-      extends AppPublics.LoadingBroadcastListener
-      implements View.OnClickListener
-  {
-
-    private final boolean customTitleSupported;
-
-    private final Intent homeActivityIntent;
-
-    private TitleBarAttributes attributes;
-
-    private TitleBarRefreshFeature onRefresh;
-
-    protected boolean titleBarFeaturesSet;
-
-    public TitleBarAggregate(Activity activity, boolean customTitleSupported, Intent homeActivityIntent)
-    {
-      super(activity, true);
-      this.customTitleSupported = customTitleSupported;
-      this.homeActivityIntent = homeActivityIntent;
-    }
-
-    TitleBarAttributes getAttributes()
-    {
-      return attributes;
-    }
-
-    void setAttributes(TitleBarAttributes titleBarAttributes)
-    {
-      attributes = titleBarAttributes;
-    }
-
-    public void setTitleBar(Activity activity, int defaultHomeResourceId)
-    {
-      final TitleBarAttributes titleBarAttributes = getAttributes();
-
-      titleBarAttributes.apply();
-
-      if (titleBarFeaturesSet == false)
-      {
-        if (activity instanceof TitleBar.TitleBarSetupFeature)
-        {
-          final TitleBar.TitleBarSetupFeature titleBarSetupFeature = (TitleBar.TitleBarSetupFeature) activity;
-          titleBarSetupFeature.onTitleBarSetup(titleBarAttributes);
-        }
-        if (activity instanceof TitleBar.TitleBarShowHomeFeature)
-        {
-          titleBarAttributes.setShowHome(defaultHomeResourceId, this);
-        }
-        if (activity instanceof TitleBar.TitleBarRefreshFeature)
-        {
-          setOnRefresh((TitleBar.TitleBarRefreshFeature) activity);
-        }
-        titleBarFeaturesSet = true;
-      }
-    }
-
-    public void setOnRefresh(TitleBarRefreshFeature titleBarRefreshFeature)
-    {
-      this.onRefresh = titleBarRefreshFeature;
-      attributes.setShowRefresh(titleBarRefreshFeature != null ? this : null);
-    }
-
-    @Override
-    protected void onLoading(boolean isLoading)
-    {
-      attributes.toggleRefresh(isLoading);
-    }
-
-    public void onClick(View view)
-    {
-      if (view == attributes.home && homeActivityIntent != null)
-      {
-        goToHomeActivity();
-      }
-      else if (view == attributes.refresh && onRefresh != null)
-      {
-        onRefresh.onTitleBarRefresh();
-      }
-    }
-
-    public void goToHomeActivity()
-    {
-      getActivity().startActivity(homeActivityIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-      getActivity().finish();
-    }
 
   }
-
-  protected static final Logger log = LoggerFactory.getInstance(TitleBar.class);
-
-  public final static String DO_NOT_APPLY_TITLE_BAR = "doNotApplyTitleBar";
-
-  protected final Intent homeActivityIntent;
-
-  protected final int defaultHomeResourceId;
-
-  protected final int defaultThemeResourceId;
 
   public TitleBar(Intent homeActivityIntent, int defaultHomeResourceId, int defaultThemeResourceId)
   {
-    this.homeActivityIntent = homeActivityIntent;
-    this.defaultHomeResourceId = defaultHomeResourceId;
-    this.defaultThemeResourceId = defaultThemeResourceId;
+    super(homeActivityIntent, defaultHomeResourceId, defaultThemeResourceId);
   }
 
-  @SuppressWarnings("unchecked")
-  public final boolean onLifeCycleEvent(Activity activity, ActivityController.Interceptor.InterceptorEvent event)
+  @Override
+  public boolean onLifeCycleEvent(Activity activity, Object component, ActivityController.Interceptor.InterceptorEvent event)
   {
-    if (event == ActivityController.Interceptor.InterceptorEvent.onSuperCreateBefore && !(activity instanceof TitleBar.TitleBarDiscarded))
+    onLifeCycleEventApplyTheme(activity, component, event);
+
+    if (event == ActivityController.Interceptor.InterceptorEvent.onSuperCreateBefore && activity instanceof TitleBar.BarDiscardedFeature == false)
     {
-      if (activity instanceof TitleBarTheme)
-      {
-        activity.setTheme(((TitleBarTheme) activity).getThemeResourceId());
-      }
-      else
-      {
-        int activityTheme = 0;
-        try
-        {
-          activityTheme = activity.getPackageManager().getActivityInfo(activity.getComponentName(), 0).theme;
-        }
-        catch (NameNotFoundException exception)
-        {
-          if (log.isErrorEnabled())
-          {
-            log.error("Cannot determine the activity '" + activity.getClass().getName() + "' theme", exception);
-          }
-        }
-        activity.setTheme(activityTheme > 0 ? activityTheme : defaultThemeResourceId);
-      }
       if (activity instanceof Smarted<?>)
       {
         boolean requestWindowFeature;
@@ -522,25 +415,28 @@ public class TitleBar
           requestWindowFeature = true;
         }
         // We test whether we can customize the title bar
-        final TitleBarAggregate titleBarAggregate = newTitleBarAggregate(activity, homeActivityIntent, requestWindowFeature);
-        final Smarted<TitleBarAggregate> smartedActivity = (Smarted<TitleBarAggregate>) activity;
+        final BarAggregate titleBarAggregate = newTitleBarAggregate(activity, homeActivityIntent, requestWindowFeature);
+        @SuppressWarnings("unchecked")
+        final Smarted<BarAggregate> smartedActivity = (Smarted<BarAggregate>) activity;
         smartedActivity.setAggregate(titleBarAggregate);
         return true;
       }
     }
-    else if (event == ActivityController.Interceptor.InterceptorEvent.onContentChanged && !(activity instanceof TitleBarDiscarded))
+    else if (event == ActivityController.Interceptor.InterceptorEvent.onContentChanged && activity instanceof BarDiscardedFeature == false)
     {
       if (activity instanceof Smarted<?>)
       {
-        final Smarted<TitleBarAggregate> smartedActivity = (Smarted<TitleBarAggregate>) activity;
-        final TitleBarAggregate titleBarAggregate = smartedActivity.getAggregate();
+        @SuppressWarnings("unchecked")
+        final Smarted<BarAggregate> smartedActivity = (Smarted<BarAggregate>) activity;
+        final BarAggregate titleBarAggregate = smartedActivity.getAggregate();
         if (titleBarAggregate != null && titleBarAggregate.customTitleSupported == true && titleBarAggregate.getAttributes() == null)
         {
           final TitleBarAttributes parentTitleBarAttributes;
           if (activity.getParent() != null && activity.getParent() instanceof Smarted<?>)
           {
-            final Smarted<TitleBarAggregate> parentSmartedActivity = (Smarted<TitleBarAggregate>) activity.getParent();
-            parentTitleBarAttributes = parentSmartedActivity.getAggregate().getAttributes();
+            @SuppressWarnings("unchecked")
+            final Smarted<BarAggregate> parentSmartedActivity = (Smarted<BarAggregate>) activity.getParent();
+            parentTitleBarAttributes = (TitleBarAttributes) parentSmartedActivity.getAggregate().getAttributes();
           }
           else
           {
@@ -560,34 +456,30 @@ public class TitleBar
           {
             titleBarAggregate.getAttributes().setEnabled(false);
           }
-          titleBarAggregate.setTitleBar(activity, defaultHomeResourceId);
+          titleBarAggregate.updateBarAttributes(activity, defaultHomeResourceId);
           smartedActivity.registerBroadcastListeners(new AppPublics.BroadcastListener[] { titleBarAggregate });
         }
       }
       return true;
     }
-    else if (event == ActivityController.Interceptor.InterceptorEvent.onResume && !(activity instanceof TitleBar.TitleBarDiscarded))
+    else if (event == ActivityController.Interceptor.InterceptorEvent.onResume && !(activity instanceof TitleBar.BarDiscardedFeature))
     {
       if (activity.getIntent().hasExtra(TitleBar.DO_NOT_APPLY_TITLE_BAR) == false)
       {
         if (activity.getParent() != null && activity instanceof Smarted<?> && activity.getParent() instanceof Smarted<?>)
         {
-          final Smarted<TitleBarAggregate> smartedActivity = (Smarted<TitleBarAggregate>) activity;
-          final TitleBarAggregate titleBarAggregate = smartedActivity.getAggregate();
+          @SuppressWarnings("unchecked")
+          final Smarted<BarAggregate> smartedActivity = (Smarted<BarAggregate>) activity;
+          final BarAggregate titleBarAggregate = smartedActivity.getAggregate();
           if (titleBarAggregate != null && titleBarAggregate.customTitleSupported == true)
           {
-            titleBarAggregate.setTitleBar(activity, defaultHomeResourceId);
+            titleBarAggregate.updateBarAttributes(activity, defaultHomeResourceId);
           }
           return true;
         }
       }
     }
     return false;
-  }
-
-  protected TitleBarAggregate newTitleBarAggregate(Activity activity, Intent homeActivityIntent, boolean requestWindowFeature)
-  {
-    return new TitleBarAggregate(activity, requestWindowFeature, homeActivityIntent);
   }
 
 }

@@ -8,10 +8,22 @@
 >
 
   <uses-sdk 
-    android:minSdkVersion="4"
+    android:minSdkVersion="11"
     android:targetSdkVersion="11"
   />
 
+  <uses-feature
+    android:name="android.hardware.touchscreen"
+    android:required="false"
+  />
+  
+  <supports-screens
+    android:smallScreens="false"
+    android:normalScreens="false"
+    android:largeScreens="true"
+    android:xlargeScreens="true"
+  />
+  
   <!-- We need this permission, in order to access to Internet -->
   <uses-permission android:name="android.permission.INTERNET"/>
   <!-- We need this permission, because we write on the SD card -->

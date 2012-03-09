@@ -10,15 +10,15 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ListView;
 
+import com.leelah.android.Bar;
 import com.leelah.android.R;
-import com.leelah.android.TitleBar;
 import com.leelah.android.bo.Product;
 import com.smartnsoft.droid4me.framework.SmartAdapters.BusinessViewWrapper;
 import com.smartnsoft.droid4me.framework.SmartAdapters.SimpleBusinessViewWrapper;
 import com.smartnsoft.droid4me.support.v4.app.SmartListViewFragment;
 
 public class CartListFragment
-    extends SmartListViewFragment<TitleBar.TitleBarAggregate, ListView>
+    extends SmartListViewFragment<Bar.BarAggregate, ListView>
     implements OnClickListener
 {
 

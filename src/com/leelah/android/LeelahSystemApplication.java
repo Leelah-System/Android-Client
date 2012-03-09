@@ -117,12 +117,22 @@ public final class LeelahSystemApplication
   protected ActivityController.Interceptor getActivityInterceptor()
   {
     final Intent homeActivityIntent = new Intent(getApplicationContext(), MainActivity.class);
-    // final TitleBar titleBar = new TitleBar(homeActivityIntent, R.drawable.title_bar_home, R.style.Theme_LeelahSystem);
+
+    final Bar titleBar;
+    if (AndroidUtils.isHoneycomb() == true)
+    {
+      titleBar = new ActionBar(homeActivityIntent, R.style.Theme_LeelahSystem);
+    }
+    else
+    {
+      titleBar = new TitleBar(homeActivityIntent, R.drawable.title_bar_home, R.style.Theme_LeelahSystem);
+    }
+
     return new ActivityController.Interceptor()
     {
       public void onLifeCycleEvent(Activity activity, Object component, ActivityController.Interceptor.InterceptorEvent event)
       {
-        // titleBar.onLifeCycleEvent(activity, event);
+        titleBar.onLifeCycleEvent(activity, component, event);
       }
     };
   }
