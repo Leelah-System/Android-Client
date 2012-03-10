@@ -5,15 +5,15 @@
 >
   <item
     android:state_enabled="false"
-    android:drawable="@color/leelah_light_color"
+    android:drawable="@color/leelah_second_color"
   />
   <item
     android:state_pressed="true"
-    android:drawable="@color/leelah_light_color"
+    android:drawable="@color/leelah_second_color"
   />
   <item
     android:state_focused="true"
-    android:drawable="@color/leelah_light_color"
+    android:drawable="@color/leelah_second_color"
   />
   <item android:drawable="@android:color/transparent"/>
 </selector>

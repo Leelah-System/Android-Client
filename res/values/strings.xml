@@ -23,5 +23,6 @@
   <string name="Cart_command_button">Commander</string>
   <string name="Menu_admin_mode">Mode administrateur</string>
   <string name="Menu_settings">Paramètres</string>
+  <string name="Product_add_to_cart">Ajouter au panier</string>
 
 </resources>

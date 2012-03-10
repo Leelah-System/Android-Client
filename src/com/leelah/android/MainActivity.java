@@ -41,7 +41,7 @@ public final class MainActivity
 
   public void onFulfillDisplayObjects()
   {
-
+    getAggregate().getAttributes().setTitle(getString(R.string.applicationName));
   }
 
   public void onSynchronizeDisplayObjects()
