@@ -76,6 +76,11 @@
       android:configChanges="keyboardHidden|orientation"
     />
 
+    <activity
+      android:name=".LoginActivity"
+      android:configChanges="keyboardHidden|orientation"
+    />
+    
   </application>
 
 </manifest>

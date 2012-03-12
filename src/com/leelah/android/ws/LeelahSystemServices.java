@@ -20,13 +20,13 @@ import org.json.JSONException;
 import android.content.SharedPreferences;
 
 import com.leelah.android.Constants;
+import com.leelah.android.LoginActivity;
 import com.leelah.android.bo.Product;
 import com.leelah.android.bo.ProductResult;
 import com.leelah.android.bo.User;
 import com.leelah.android.bo.UserResult;
 import com.leelah.android.bo.UsersResult;
 import com.leelah.android.bo.WebServiceResult;
-import com.leelah.android.fragments.LoginFragment;
 import com.smartnsoft.droid4me.cache.Persistence;
 import com.smartnsoft.droid4me.cache.Persistence.PersistenceException;
 import com.smartnsoft.droid4me.cache.Values.CacheException;
@@ -152,7 +152,7 @@ public final class LeelahSystemServices
 
   public boolean hasParameters(SharedPreferences preferences)
   {
-    return preferences.contains(LoginFragment.SERVER_ADDRESS) && preferences.contains(LoginFragment.USER_LOGIN) && preferences.contains(LoginFragment.USER_PASSWORD);
+    return preferences.contains(LoginActivity.SERVER_ADDRESS) && preferences.contains(LoginActivity.USER_LOGIN) && preferences.contains(LoginActivity.USER_PASSWORD);
   }
 
   private final WSUriStreamParser<List<Product>, String, JSONException> getProductsStreamParser = new WSUriStreamParser<List<Product>, String, JSONException>(this)
