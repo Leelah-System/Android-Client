@@ -11,7 +11,7 @@
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         android:padding="@dimen/defaultPadding"
-        android:src="@drawable/icon"
+        android:src="@drawable/pack"
         android:scaleType="centerCrop" />
     <TextView
         android:id="@+id/productName"

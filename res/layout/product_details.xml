@@ -67,18 +67,9 @@
         android:textColor="@android:color/white"
         android:background="#96CA2D"
       />
-      <TextView
-        android:id="@+id/productPrice"
-        android:layout_width="fill_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:text="29,99 $"
-        android:textStyle="bold"
-        android:textSize="36dip"
-        android:textColor="@android:color/black"
+      <include 
+          layout="@layout/quantity_picker"
       />
-      
       <Button
         android:id="@+id/buttonCart"
         android:layout_width="fill_parent"

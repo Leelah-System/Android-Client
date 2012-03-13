@@ -10,6 +10,7 @@ import android.widget.GridView;
 import com.leelah.android.Bar;
 import com.leelah.android.R;
 import com.leelah.android.bo.Product;
+import com.leelah.android.fragments.ProductDetailsDialogFragment.ActionType;
 import com.smartnsoft.droid4me.LifeCycle.BusinessObjectsRetrievalAsynchronousPolicy;
 import com.smartnsoft.droid4me.framework.SmartAdapters.BusinessViewWrapper;
 import com.smartnsoft.droid4me.framework.SmartAdapters.ObjectEvent;
@@ -25,6 +26,7 @@ public class ProductsListFragment
 
     public ProductAttributes(View view)
     {
+
     }
 
     public void update(Product businessObject)
@@ -107,12 +109,7 @@ public class ProductsListFragment
 
   private void showProductDialog(Product businessObject)
   {
-    // final View view = LayoutInflater.from(getCheckedActivity()).inflate(R.layout.product_details, null);
-    // final AlertDialog.Builder builder = new AlertDialog.Builder(getCheckedActivity());
-    // builder.setView(view);
-    // final AlertDialog dialog = builder.create();
-    // dialog.show();
-    ProductDetailsDialogFragment newFragment = ProductDetailsDialogFragment.newInstance(businessObject);
-    newFragment.show(getFragmentManager(), "dialog");
+    final ProductDetailsDialogFragment productDetailsDialogFragment = ProductDetailsDialogFragment.newInstance(ActionType.ViewProduct, businessObject);
+    productDetailsDialogFragment.show(getFragmentManager(), "dialog");
   }
 }
