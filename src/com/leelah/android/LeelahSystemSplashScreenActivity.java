@@ -8,8 +8,11 @@ import android.content.DialogInterface.OnClickListener;
 import android.view.LayoutInflater;
 import android.view.Window;
 
+import com.leelah.android.bo.User;
+import com.leelah.android.ws.LeelahSystemServices;
 import com.smartnsoft.droid4me.LifeCycle;
 import com.smartnsoft.droid4me.app.SmartSplashScreenActivity;
+import com.smartnsoft.droid4me.cache.Values.CacheException;
 
 /**
  * The first activity displayed while the application is loading.
@@ -71,18 +74,39 @@ public final class LeelahSystemSplashScreenActivity
   protected Void onRetrieveBusinessObjectsCustom()
       throws BusinessObjectUnavailableException
   {
-    try
+    if (LeelahSystemApplication.hasCredentialsInformations(this) == true)
     {
-      Thread.sleep(2500);
-    }
-    catch (InterruptedException exception)
-    {
-      if (log.isErrorEnabled())
+      // On récup les données des EditText de l'interface
+      final String login = getPreferences().getString(LoginActivity.USER_LOGIN, "");
+      final String password = getPreferences().getString(LoginActivity.USER_PASSWORD, "");
+      final String address = getPreferences().getString(LoginActivity.SERVER_ADDRESS, "");
+
+      // Création de l'objet parametre pour le webservice
+      final User user = new User(login, password, address);
+
+      try
       {
-        log.error("An interruption occurred while displaying the splash screen", exception);
+        LeelahSystemServices.getInstance().authenticate(user);
+      }
+      catch (CacheException exception)
+      {
+        throw new BusinessObjectUnavailableException(exception);
       }
     }
-    // markAsInitialized();
+    else
+    {
+      try
+      {
+        Thread.sleep(2500);
+      }
+      catch (InterruptedException exception)
+      {
+        if (log.isErrorEnabled())
+        {
+          log.error("An interruption occurred while displaying the splash screen", exception);
+        }
+      }
+    }
     return null;
   }
 

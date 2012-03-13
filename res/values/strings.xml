@@ -24,5 +24,9 @@
   <string name="Menu_admin_mode">Mode administrateur</string>
   <string name="Menu_settings">Paramètres</string>
   <string name="Product_add_to_cart">Ajouter au panier</string>
+  <string name="Login_default_server_address">leelah-system.com:3000</string>
+  <string name="Login_user_hint">Utilisateur</string>
+  <string name="Login_password_hint">Mot de passe</string>
+  <string name="Login_connect_button">Valider</string>
 
 </resources>

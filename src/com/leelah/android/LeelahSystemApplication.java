@@ -7,6 +7,8 @@ import java.util.Date;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 import com.smartnsoft.droid4me.app.ActivityController;
 import com.smartnsoft.droid4me.app.SmartApplication;
@@ -131,8 +133,8 @@ public final class LeelahSystemApplication
 
   protected static boolean hasCredentialsInformations(Activity activity)
   {
-    return false;
-
+    final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(activity);
+    return preferences.contains(LoginActivity.SERVER_ADDRESS) && preferences.contains(LoginActivity.USER_LOGIN) && preferences.contains(LoginActivity.USER_PASSWORD);
   }
 
   @Override
