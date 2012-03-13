@@ -22,14 +22,26 @@ public class ProductDetailsDialogFragment
 
     private final TextView productName;
 
+    private final TextView productDescription;
+
+    private final TextView productReference;
+
+    private final TextView productPrice;
+
     public ProductDetailsAttributes(View view)
     {
       productName = (TextView) view.findViewById(R.id.productName);
+      productDescription = (TextView) view.findViewById(R.id.productDescription);
+      productReference = (TextView) view.findViewById(R.id.productReference);
+      productPrice = (TextView) view.findViewById(R.id.productQuantity);
     }
 
     public void update(Product businessObject)
     {
-      productName.setText("LOOOOOOL");
+      productName.setText(businessObject.product.name);
+      productDescription.setText(businessObject.product.description);
+      productReference.setText(businessObject.product.reference);
+      productPrice.setText(businessObject.product.price);
     }
   }
 

@@ -6,11 +6,14 @@ import java.util.List;
 import android.app.Activity;
 import android.view.View;
 import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.leelah.android.Bar;
 import com.leelah.android.R;
 import com.leelah.android.bo.Product;
 import com.leelah.android.fragments.ProductDetailsDialogFragment.ActionType;
+import com.leelah.android.ws.LeelahSystemServices;
 import com.smartnsoft.droid4me.LifeCycle.BusinessObjectsRetrievalAsynchronousPolicy;
 import com.smartnsoft.droid4me.framework.SmartAdapters.BusinessViewWrapper;
 import com.smartnsoft.droid4me.framework.SmartAdapters.ObjectEvent;
@@ -24,14 +27,23 @@ public class ProductsListFragment
   private static final class ProductAttributes
   {
 
+    private final ImageView image;
+
+    private final TextView productName;
+
+    private final TextView productDescription;
+
     public ProductAttributes(View view)
     {
-
+      image = (ImageView) view.findViewById(R.id.image);
+      productName = (TextView) view.findViewById(R.id.productName);
+      productDescription = (TextView) view.findViewById(R.id.description);
     }
 
     public void update(Product businessObject)
     {
-
+      productName.setText(businessObject.product.name);
+      productDescription.setText(businessObject.product.description);
     }
 
   }
@@ -80,11 +92,26 @@ public class ProductsListFragment
   {
     final List<BusinessViewWrapper<?>> wrappers = new ArrayList<BusinessViewWrapper<?>>();
 
-    wrappers.add(new ProductWrapper(new Product()));
-    wrappers.add(new ProductWrapper(new Product()));
-    wrappers.add(new ProductWrapper(new Product()));
-    wrappers.add(new ProductWrapper(new Product()));
-    wrappers.add(new ProductWrapper(new Product()));
+    final List<Product> products;
+    try
+    {
+      products = LeelahSystemServices.getInstance().getProducts("test");
+    }
+    catch (Exception exception)
+    {
+      throw new BusinessObjectUnavailableException(exception);
+    }
+
+    for (Product product : products)
+    {
+      wrappers.add(new ProductWrapper(product));
+    }
+
+    // wrappers.add(new ProductWrapper(new Product()));
+    // wrappers.add(new ProductWrapper(new Product()));
+    // wrappers.add(new ProductWrapper(new Product()));
+    // wrappers.add(new ProductWrapper(new Product()));
+    // wrappers.add(new ProductWrapper(new Product()));
 
     return wrappers;
   }
