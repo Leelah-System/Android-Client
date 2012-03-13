@@ -7,7 +7,6 @@ import java.util.Date;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Environment;
 
 import com.smartnsoft.droid4me.app.ActivityController;
 import com.smartnsoft.droid4me.app.SmartApplication;
@@ -27,6 +26,11 @@ import com.smartnsoft.droid4me.download.DownloadInstructions;
 public final class LeelahSystemApplication
     extends SmartApplication
 {
+
+  public interface BelongsToUserRegistration
+  {
+
+  }
 
   public static class CacheInstructions
       extends DownloadInstructions.AbstractInstructions
@@ -76,7 +80,7 @@ public final class LeelahSystemApplication
 
     // We initialize the persistence
     final String directoryName = getPackageManager().getApplicationLabel(getApplicationInfo()).toString();
-    final File contentsDirectory = new File(Environment.getExternalStorageDirectory(), directoryName);
+    final File contentsDirectory = new File(getFilesDir(), directoryName);
     Persistence.CACHE_DIRECTORY_PATHS = new String[] { contentsDirectory.getAbsolutePath(), contentsDirectory.getAbsolutePath() };
     DbPersistence.FILE_NAMES = new String[] { DbPersistence.DEFAULT_FILE_NAME, DbPersistence.DEFAULT_FILE_NAME };
     DbPersistence.TABLE_NAMES = new String[] { "data", "images" };
@@ -108,9 +112,27 @@ public final class LeelahSystemApplication
             return new Intent(activity, LeelahSystemSplashScreenActivity.class);
           }
         }
+        if (LeelahSystemApplication.hasCredentialsInformations(activity) == false)
+        {
+          if (activity instanceof BelongsToUserRegistration == false)
+          {
+            return new Intent(activity, LoginActivity.class);
+          }
+          else
+          {
+            return null;
+          }
+        }
         return null;
       }
+
     };
+  }
+
+  protected static boolean hasCredentialsInformations(Activity activity)
+  {
+    return false;
+
   }
 
   @Override
