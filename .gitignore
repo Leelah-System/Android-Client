@@ -1,6 +1,7 @@
 # Android specific #
 ###################
 bin/
+gen/
 
 # Compiled source #
 ###################
