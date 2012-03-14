@@ -13,11 +13,12 @@
         android:src="@drawable/icon" />
 
     <TextView
-        android:id="@+id/textView1"
+        android:id="@+id/name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/imageView1"
         android:layout_centerVertical="true"
+        android:textColor="@android:color/black"
         android:text="TextView" />
 
 </RelativeLayout>

@@ -6,6 +6,7 @@ import java.util.List;
 import android.app.Activity;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.leelah.android.Bar;
 import com.leelah.android.R;
@@ -24,13 +25,16 @@ public class CategoriesListFragment
   private static final class CategoryViewHolder
   {
 
+    private final TextView name;
+
     public CategoryViewHolder(View view)
     {
+      name = (TextView) view.findViewById(R.id.name);
     }
 
     public void update(Category businessObject)
     {
-
+      name.setText(businessObject.category.name);
     }
 
   }
@@ -73,12 +77,10 @@ public class CategoriesListFragment
       throw new BusinessObjectUnavailableException(exception);
     }
 
-    wrappers.add(new CategoryWrapper(new Category()));
-    wrappers.add(new CategoryWrapper(new Category()));
-    wrappers.add(new CategoryWrapper(new Category()));
-    wrappers.add(new CategoryWrapper(new Category()));
-    wrappers.add(new CategoryWrapper(new Category()));
-    wrappers.add(new CategoryWrapper(new Category()));
+    for (Category category : categories)
+    {
+      wrappers.add(new CategoryWrapper(category));
+    }
 
     return wrappers;
   }
