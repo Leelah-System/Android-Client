@@ -10,12 +10,15 @@ import android.widget.ListView;
 import com.leelah.android.Bar;
 import com.leelah.android.R;
 import com.leelah.android.bo.Category;
+import com.leelah.android.ws.LeelahSystemServices;
+import com.smartnsoft.droid4me.LifeCycle.BusinessObjectsRetrievalAsynchronousPolicy;
 import com.smartnsoft.droid4me.framework.SmartAdapters.BusinessViewWrapper;
 import com.smartnsoft.droid4me.framework.SmartAdapters.SimpleBusinessViewWrapper;
 import com.smartnsoft.droid4me.support.v4.app.SmartListViewFragment;
 
 public class CategoriesListFragment
     extends SmartListViewFragment<Bar.BarAggregate, ListView>
+    implements BusinessObjectsRetrievalAsynchronousPolicy
 {
 
   private static final class CategoryViewHolder
@@ -60,6 +63,16 @@ public class CategoriesListFragment
   {
     final List<BusinessViewWrapper<?>> wrappers = new ArrayList<BusinessViewWrapper<?>>();
 
+    final List<Category> categories;
+    try
+    {
+      categories = LeelahSystemServices.getInstance().getCategories("fdfdsa");
+    }
+    catch (Exception exception)
+    {
+      throw new BusinessObjectUnavailableException(exception);
+    }
+
     wrappers.add(new CategoryWrapper(new Category()));
     wrappers.add(new CategoryWrapper(new Category()));
     wrappers.add(new CategoryWrapper(new Category()));
@@ -69,5 +82,4 @@ public class CategoriesListFragment
 
     return wrappers;
   }
-
 }

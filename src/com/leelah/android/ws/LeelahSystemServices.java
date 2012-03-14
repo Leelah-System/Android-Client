@@ -21,6 +21,8 @@ import android.content.SharedPreferences;
 
 import com.leelah.android.Constants;
 import com.leelah.android.LoginActivity;
+import com.leelah.android.bo.CategoriesResult;
+import com.leelah.android.bo.Category;
 import com.leelah.android.bo.Product;
 import com.leelah.android.bo.ProductResult;
 import com.leelah.android.bo.User;
@@ -155,6 +157,30 @@ public final class LeelahSystemServices
     return preferences.contains(LoginActivity.SERVER_ADDRESS) && preferences.contains(LoginActivity.USER_LOGIN) && preferences.contains(LoginActivity.USER_PASSWORD);
   }
 
+  private final WSUriStreamParser<List<Category>, String, JSONException> getCategoriesStreamParser = new WSUriStreamParser<List<Category>, String, JSONException>(this)
+  {
+
+    public KeysAggregator<String> computeUri(String parameter)
+    {
+      return SimpleIOStreamerSourceKey.fromUriStreamerSourceKey(
+          new HttpCallTypeAndBody(computeUri("http://" + user.result.user.address, "api/" + user.result.user.token + "/category", null)), parameter);
+    }
+
+    public List<Category> parse(String parameter, InputStream inputStream)
+        throws JSONException
+    {
+      final CategoriesResult categoriesResult = (CategoriesResult) deserializeJson(inputStream, CategoriesResult.class);
+      return categoriesResult.result.categories;
+    }
+
+  };
+
+  public List<Category> getCategories(String address)
+      throws CacheException, CallException
+  {
+    return getCategoriesStreamParser.getValue(address);
+  }
+
   private final WSUriStreamParser<List<Product>, String, JSONException> getProductsStreamParser = new WSUriStreamParser<List<Product>, String, JSONException>(this)
   {
 
@@ -285,6 +311,10 @@ public final class LeelahSystemServices
         throws JSONException
     {
       final UserResult userResult = (UserResult) deserializeJson(inputStream, UserResult.class);
+      if (userResult.success == false)
+      {
+        throw new JSONException(userResult.msg);
+      }
       return userResult;
     }
 
