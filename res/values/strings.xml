@@ -31,5 +31,7 @@
   <string name="Cart_total_price">Total:</string>
   <string name="Menu_call_server">Appeler un serveur</string>
   <string name="Menu_empty_cart">Vider le caddie</string>
+  <string name="Cart_empty_cart_dialog_title">Vider le panier ?</string>
+  <string name="Cart_empty_cart_dialog_message">Voulez vous effacer le contenus de votre panier ?</string>
 
 </resources>

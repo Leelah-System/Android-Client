@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -14,10 +16,12 @@ import android.widget.TextView;
 import com.leelah.android.Bar;
 import com.leelah.android.R;
 import com.leelah.android.bo.Product;
+import com.leelah.android.bo.Product.ProductDetails;
 import com.smartnsoft.droid4me.LifeCycle.BusinessObjectsRetrievalAsynchronousPolicy;
 import com.smartnsoft.droid4me.app.AppPublics.BroadcastListener;
 import com.smartnsoft.droid4me.app.AppPublics.BroadcastListenerProvider;
 import com.smartnsoft.droid4me.framework.SmartAdapters.BusinessViewWrapper;
+import com.smartnsoft.droid4me.framework.SmartAdapters.ObjectEvent;
 import com.smartnsoft.droid4me.framework.SmartAdapters.SimpleBusinessViewWrapper;
 import com.smartnsoft.droid4me.support.v4.app.SmartListViewFragment;
 
@@ -46,7 +50,7 @@ public class CartListFragment
 
   }
 
-  private final static class CartWrapper
+  private final class CartWrapper
       extends SimpleBusinessViewWrapper<CartProduct>
   {
 
@@ -67,7 +71,21 @@ public class CartListFragment
       ((CartViewHolder) businessViewHolder).update(businessObject);
     }
 
+    @Override
+    public boolean onObjectEvent(Activity activity, Object viewAttributes, View view, CartProduct businessObject, ObjectEvent objectEvent, int position)
+    {
+      if (objectEvent == ObjectEvent.Clicked)
+      {
+        ProductsListFragment.showProductDialog(getFragmentManager(), businessObject);
+      }
+      return super.onObjectEvent(activity, viewAttributes, view, businessObject, objectEvent, position);
+    }
+
   }
+
+  protected static final String ADD_TO_CART = "addToCart";
+
+  protected static final String PRODUCT = CartListFragment.ADD_TO_CART + ".product";
 
   private final List<CartProduct> cartProducts = new ArrayList<CartListFragment.CartProduct>();
 
@@ -78,6 +96,33 @@ public class CartListFragment
   private float price;
 
   private Button submitButton;
+
+  public BroadcastListener getBroadcastListener()
+  {
+    return new BroadcastListener()
+    {
+      public IntentFilter getIntentFilter()
+      {
+        final IntentFilter intentFilter = new IntentFilter();
+
+        intentFilter.addAction(CartListFragment.ADD_TO_CART);
+
+        return intentFilter;
+      }
+
+      public void onReceive(Intent intent)
+      {
+        if (CartListFragment.ADD_TO_CART.equals(intent.getAction()))
+        {
+          final CartProduct product = new CartProduct();
+          product.quantityOrder = 1;
+          product.product = (ProductDetails) intent.getSerializableExtra(CartListFragment.PRODUCT);
+          cartProducts.add(product);
+          refreshBusinessObjectsAndDisplay();
+        }
+      }
+    };
+  }
 
   @Override
   public void onRetrieveDisplayObjects()
@@ -129,10 +174,10 @@ public class CartListFragment
     }
   }
 
-  public BroadcastListener getBroadcastListener()
+  public void emptyCart()
   {
-    // TODO Auto-generated method stub
-    return null;
+    cartProducts.clear();
+    refreshBusinessObjectsAndDisplay();
   }
 
 }

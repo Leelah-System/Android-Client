@@ -95,6 +95,17 @@ public class CategoriesListFragment
     return wrappers;
   }
 
+  @Override
+  public void onFulfillDisplayObjects()
+  {
+    super.onFulfillDisplayObjects();
+
+    if (getWrappedListView().getListView().getCount() > 0)
+    {
+      getWrappedListView().getListView().setSelection(0);
+    }
+  }
+
   public void onTitleBarRefresh()
   {
     refreshBusinessObjectsAndDisplay(true);

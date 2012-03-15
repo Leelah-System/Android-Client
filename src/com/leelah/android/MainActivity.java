@@ -3,11 +3,14 @@ package com.leelah.android;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.MenuItem;
 
+import com.leelah.android.fragments.CartListFragment;
 import com.leelah.android.fragments.CategoriesListFragment;
 import com.leelah.android.fragments.MainFragment;
 import com.leelah.android.fragments.ProductsListFragment;
@@ -34,6 +37,8 @@ public final class MainActivity
 
   private ProductsListFragment productsFragment;
 
+  private CartListFragment cartFragment;
+
   public void onRetrieveDisplayObjects()
   {
     final FragmentManager fragmentManager = getSupportFragmentManager();
@@ -48,6 +53,7 @@ public final class MainActivity
     LeelahSystemServices.getInstance().setLeelahCredentialsInformations(this);
     categoriesFragment = (CategoriesListFragment) getSupportFragmentManager().findFragmentById(R.id.categoriesFragment);
     productsFragment = (ProductsListFragment) getSupportFragmentManager().findFragmentById(R.id.productsFragment);
+    cartFragment = (CartListFragment) getSupportFragmentManager().findFragmentById(R.id.cartFragment);
   }
 
   public void onFulfillDisplayObjects()
@@ -76,6 +82,25 @@ public final class MainActivity
       @Override
       public void run()
       {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setTitle(R.string.Cart_empty_cart_dialog_title);
+        builder.setMessage(R.string.Cart_empty_cart_dialog_message);
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener()
+        {
+          public void onClick(DialogInterface dialog, int which)
+          {
+            cartFragment.emptyCart();
+            dialog.dismiss();
+          }
+        });
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener()
+        {
+          public void onClick(DialogInterface dialog, int which)
+          {
+            dialog.dismiss();
+          }
+        });
+        builder.show();
       }
     }));
     commands.add(new ActionMenuCommand(R.string.Menu_admin_mode, '1', 'm', android.R.drawable.ic_menu_manage, MenuItem.SHOW_AS_ACTION_NEVER, new Commands.StaticEnabledExecutable()

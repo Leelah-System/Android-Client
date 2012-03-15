@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
+import android.support.v4.app.FragmentManager;
 import android.view.View;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -75,7 +76,7 @@ public class ProductsListFragment
     {
       if (objectEvent == ObjectEvent.Clicked)
       {
-        showProductDialog(businessObject);
+        showProductDialog(getFragmentManager(), businessObject);
       }
       return super.onObjectEvent(activity, viewAttributes, view, businessObject, objectEvent, position);
     }
@@ -137,9 +138,9 @@ public class ProductsListFragment
     refreshBusinessObjectsAndDisplay(true);
   }
 
-  private void showProductDialog(Product businessObject)
+  static void showProductDialog(FragmentManager fragmentManager, Product businessObject)
   {
     final ProductDetailsDialogFragment productDetailsDialogFragment = ProductDetailsDialogFragment.newInstance(ActionType.ViewProduct, businessObject);
-    productDetailsDialogFragment.show(getFragmentManager(), "dialog");
+    productDetailsDialogFragment.show(fragmentManager, "dialog");
   }
 }

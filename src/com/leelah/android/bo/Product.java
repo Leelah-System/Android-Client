@@ -10,6 +10,7 @@ public class Product
 
   @JsonIgnoreProperties(ignoreUnknown = true)
   public static class ProductDetails
+      implements Serializable
   {
 
     private static final long serialVersionUID = -5310872872120289664L;
