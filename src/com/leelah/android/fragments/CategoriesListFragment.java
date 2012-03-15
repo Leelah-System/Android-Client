@@ -13,13 +13,14 @@ import com.leelah.android.R;
 import com.leelah.android.bo.Category;
 import com.leelah.android.ws.LeelahSystemServices;
 import com.smartnsoft.droid4me.LifeCycle.BusinessObjectsRetrievalAsynchronousPolicy;
+import com.smartnsoft.droid4me.app.AppPublics.SendLoadingIntent;
 import com.smartnsoft.droid4me.framework.SmartAdapters.BusinessViewWrapper;
 import com.smartnsoft.droid4me.framework.SmartAdapters.SimpleBusinessViewWrapper;
 import com.smartnsoft.droid4me.support.v4.app.SmartListViewFragment;
 
 public class CategoriesListFragment
     extends SmartListViewFragment<Bar.BarAggregate, ListView>
-    implements BusinessObjectsRetrievalAsynchronousPolicy
+    implements BusinessObjectsRetrievalAsynchronousPolicy, Bar.BarRefreshFeature, SendLoadingIntent
 {
 
   private static final class CategoryViewHolder
@@ -62,6 +63,15 @@ public class CategoriesListFragment
 
   }
 
+  @Override
+  public void onRetrieveDisplayObjects()
+  {
+    super.onRetrieveDisplayObjects();
+
+    getWrappedListView().getListView().setBackgroundResource(R.drawable.shadow_left);
+    getWrappedListView().getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+  }
+
   public List<? extends BusinessViewWrapper<?>> retrieveBusinessObjectsList()
       throws BusinessObjectUnavailableException
   {
@@ -83,5 +93,10 @@ public class CategoriesListFragment
     }
 
     return wrappers;
+  }
+
+  public void onTitleBarRefresh()
+  {
+    refreshBusinessObjectsAndDisplay(true);
   }
 }

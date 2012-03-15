@@ -24,7 +24,7 @@ public class Product
 
     public String reference;
 
-    public String price;
+    public float price;
   }
 
   public ProductDetails product;

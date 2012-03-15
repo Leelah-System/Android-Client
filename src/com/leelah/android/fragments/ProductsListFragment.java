@@ -15,13 +15,14 @@ import com.leelah.android.bo.Product;
 import com.leelah.android.fragments.ProductDetailsDialogFragment.ActionType;
 import com.leelah.android.ws.LeelahSystemServices;
 import com.smartnsoft.droid4me.LifeCycle.BusinessObjectsRetrievalAsynchronousPolicy;
+import com.smartnsoft.droid4me.app.AppPublics.SendLoadingIntent;
 import com.smartnsoft.droid4me.framework.SmartAdapters.BusinessViewWrapper;
 import com.smartnsoft.droid4me.framework.SmartAdapters.ObjectEvent;
 import com.smartnsoft.droid4me.framework.SmartAdapters.SimpleBusinessViewWrapper;
 
 public class ProductsListFragment
     extends SmartGridViewFragment<Bar.BarAggregate, GridView>
-    implements BusinessObjectsRetrievalAsynchronousPolicy
+    implements BusinessObjectsRetrievalAsynchronousPolicy, SendLoadingIntent
 {
 
   private static final class ProductAttributes
@@ -85,6 +86,8 @@ public class ProductsListFragment
   public void onRetrieveDisplayObjects()
   {
     super.onRetrieveDisplayObjects();
+
+    getWrappedListView().getListView().setBackgroundResource(android.R.color.white);
   }
 
   public List<? extends BusinessViewWrapper<?>> retrieveBusinessObjectsList()

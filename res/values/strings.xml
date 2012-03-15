@@ -28,5 +28,8 @@
   <string name="Login_user_hint">Utilisateur</string>
   <string name="Login_password_hint">Mot de passe</string>
   <string name="Login_connect_button">Valider</string>
+  <string name="Cart_total_price">Total:</string>
+  <string name="Menu_call_server">Appeler un serveur</string>
+  <string name="Menu_empty_cart">Vider le caddie</string>
 
 </resources>

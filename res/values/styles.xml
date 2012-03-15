@@ -52,7 +52,7 @@
     name="Widget.Holo.Light.ActionBar.Leelah"
     parent="android:Widget.Holo.Light.ActionBar"
   >
-    <item name="android:displayOptions">showHome|useLogo</item>
+    <!-- item name="android:displayOptions">showHome</item -->
     <item name="android:background">@color/leelah_primary_color</item>
     <item name="android:customNavigationLayout">@layout/action_bar</item>
     <!--<item name="android:selectableItemBackground">@drawable/title_bar_button_background</item-->

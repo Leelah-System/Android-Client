@@ -41,7 +41,7 @@ public class ProductDetailsDialogFragment
       productName.setText(businessObject.product.name);
       productDescription.setText(businessObject.product.description);
       productReference.setText(businessObject.product.reference);
-      productPrice.setText(businessObject.product.price);
+      productPrice.setText(Float.toString(businessObject.product.price));
     }
   }
 

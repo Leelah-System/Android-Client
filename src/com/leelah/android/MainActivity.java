@@ -8,7 +8,12 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.MenuItem;
 
+import com.leelah.android.fragments.CategoriesListFragment;
 import com.leelah.android.fragments.MainFragment;
+import com.leelah.android.fragments.ProductsListFragment;
+import com.leelah.android.ws.LeelahSystemServices;
+import com.leelah.android.ws.LeelahSystemServices.LeelahCredentials;
+import com.leelah.android.ws.LeelahSystemServices.LeelahCredentialsInformations;
 import com.smartnsoft.droid4me.framework.Commands;
 import com.smartnsoft.droid4me.menu.StaticMenuCommand;
 import com.smartnsoft.droid4me.support.v4.app.SmartFragmentActivity;
@@ -22,8 +27,12 @@ import com.smartnsoft.droid4me.support.v4.menu.ActionMenuCommand;
  */
 public final class MainActivity
     extends SmartFragmentActivity<Bar.BarAggregate>
-    implements Bar.BarRefreshFeature
+    implements Bar.BarRefreshFeature, LeelahCredentialsInformations
 {
+
+  private CategoriesListFragment categoriesFragment;
+
+  private ProductsListFragment productsFragment;
 
   public void onRetrieveDisplayObjects()
   {
@@ -36,7 +45,9 @@ public final class MainActivity
   public void onRetrieveBusinessObjects()
       throws BusinessObjectUnavailableException
   {
-
+    LeelahSystemServices.getInstance().setLeelahCredentialsInformations(this);
+    categoriesFragment = (CategoriesListFragment) getSupportFragmentManager().findFragmentById(R.id.categoriesFragment);
+    productsFragment = (ProductsListFragment) getSupportFragmentManager().findFragmentById(R.id.productsFragment);
   }
 
   public void onFulfillDisplayObjects()
@@ -53,6 +64,20 @@ public final class MainActivity
   public List<StaticMenuCommand> getMenuCommands()
   {
     final List<StaticMenuCommand> commands = new ArrayList<StaticMenuCommand>();
+    commands.add(new ActionMenuCommand(R.string.Menu_call_server, '1', 'm', android.R.drawable.ic_menu_myplaces, MenuItem.SHOW_AS_ACTION_ALWAYS, new Commands.StaticEnabledExecutable()
+    {
+      @Override
+      public void run()
+      {
+      }
+    }));
+    commands.add(new ActionMenuCommand(R.string.Menu_empty_cart, '1', 'm', android.R.drawable.ic_menu_delete, MenuItem.SHOW_AS_ACTION_ALWAYS, new Commands.StaticEnabledExecutable()
+    {
+      @Override
+      public void run()
+      {
+      }
+    }));
     commands.add(new ActionMenuCommand(R.string.Menu_admin_mode, '1', 'm', android.R.drawable.ic_menu_manage, MenuItem.SHOW_AS_ACTION_NEVER, new Commands.StaticEnabledExecutable()
     {
       @Override
@@ -73,7 +98,18 @@ public final class MainActivity
 
   public void onTitleBarRefresh()
   {
+    categoriesFragment.onTitleBarRefresh();
+    productsFragment.onTitleBarRefresh();
+  }
 
+  public LeelahCredentials getCredentials()
+  {
+    return new LeelahCredentials(getPreferences().getString(LoginActivity.USER_LOGIN, ""), getPreferences().getString(LoginActivity.USER_PASSWORD, ""));
+  }
+
+  public String getServerURL()
+  {
+    return getPreferences().getString(LoginActivity.SERVER_ADDRESS, "");
   }
 
 }

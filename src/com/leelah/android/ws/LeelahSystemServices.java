@@ -46,9 +46,32 @@ public final class LeelahSystemServices
     extends WebServiceCaller
 {
 
+  public final static class LeelahCredentials
+  {
+    public String login;
+
+    public String password;
+
+    public LeelahCredentials(String login, String password)
+    {
+      this.login = login;
+      this.password = password;
+    }
+
+  }
+
+  public interface LeelahCredentialsInformations
+  {
+    public LeelahCredentials getCredentials();
+
+    public String getServerURL();
+  }
+
   private static volatile LeelahSystemServices instance;
 
-  private UserResult user;
+  private LeelahCredentialsInformations leelahCredentialsInformations;
+
+  private String token;
 
   public static LeelahSystemServices getInstance()
   {
@@ -67,6 +90,11 @@ public final class LeelahSystemServices
 
   private LeelahSystemServices()
   {
+  }
+
+  public void setLeelahCredentialsInformations(LeelahCredentialsInformations leelahCredentialsInformations)
+  {
+    this.leelahCredentialsInformations = leelahCredentialsInformations;
   }
 
   @Override
@@ -163,7 +191,7 @@ public final class LeelahSystemServices
     public KeysAggregator<String> computeUri(String parameter)
     {
       return SimpleIOStreamerSourceKey.fromUriStreamerSourceKey(
-          new HttpCallTypeAndBody(computeUri("http://" + user.result.user.address, "api/" + user.result.user.token + "/category", null)), parameter);
+          new HttpCallTypeAndBody(computeUri("http://" + leelahCredentialsInformations.getServerURL(), "api/" + token + "/category", null)), parameter);
     }
 
     public List<Category> parse(String parameter, InputStream inputStream)
@@ -187,7 +215,7 @@ public final class LeelahSystemServices
     public KeysAggregator<String> computeUri(String parameter)
     {
       return SimpleIOStreamerSourceKey.fromUriStreamerSourceKey(
-          new HttpCallTypeAndBody(computeUri("http://" + user.result.user.address, "api/" + user.result.user.token + "/product", null)), parameter);
+          new HttpCallTypeAndBody(computeUri("http://" + leelahCredentialsInformations.getServerURL(), "api/" + token + "/product", null)), parameter);
     }
 
     public List<Product> parse(String parameter, InputStream inputStream)
@@ -211,7 +239,7 @@ public final class LeelahSystemServices
     public KeysAggregator<String> computeUri(String parameter)
     {
       return SimpleIOStreamerSourceKey.fromUriStreamerSourceKey(
-          new HttpCallTypeAndBody(computeUri("http://" + user.result.user.address, "api/" + user.result.user.token + "/users", null)), parameter);
+          new HttpCallTypeAndBody(computeUri("http://" + leelahCredentialsInformations.getServerURL(), "api/" + token + "/users", null)), parameter);
     }
 
     public List<User> parse(String parameter, InputStream inputStream)
@@ -235,7 +263,7 @@ public final class LeelahSystemServices
     public KeysAggregator<String> computeUri(String parameter)
     {
       return SimpleIOStreamerSourceKey.fromUriStreamerSourceKey(
-          new HttpCallTypeAndBody(computeUri("http://" + user.result.user.address, "api/" + user.result.user.token + "/product/" + parameter, null), CallType.Delete, null),
+          new HttpCallTypeAndBody(computeUri("http://" + leelahCredentialsInformations.getServerURL(), "api/" + token + "/product/" + parameter, null), CallType.Delete, null),
           parameter);
     }
 
@@ -260,7 +288,7 @@ public final class LeelahSystemServices
     public KeysAggregator<String> computeUri(String parameter)
     {
       return SimpleIOStreamerSourceKey.fromUriStreamerSourceKey(
-          new HttpCallTypeAndBody(computeUri("http://" + user.result.user.address, "api/" + user.result.user.token + "/user/" + parameter, null), CallType.Delete, null),
+          new HttpCallTypeAndBody(computeUri("http://" + leelahCredentialsInformations.getServerURL(), "api/" + token + "/user/" + parameter, null), CallType.Delete, null),
           parameter);
     }
 
@@ -320,12 +348,12 @@ public final class LeelahSystemServices
 
   };
 
-  public UserResult authenticate(User u)
+  public User authenticate(User u)
       throws CacheException
   {
-    user = authenticateStreamParser.backed.getValue(false, null, u);
-    user.result.user.address = u.address;
-    return user;
+    final UserResult user = authenticateStreamParser.backed.getValue(false, null, u);
+    token = user.result.user.token;
+    return user.result.user;
   }
 
 }
