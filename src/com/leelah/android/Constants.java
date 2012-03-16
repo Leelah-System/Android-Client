@@ -28,4 +28,6 @@ public abstract class Constants
    */
   public static final String WEBSERVICES_HTML_ENCODING = HTTP.ISO_8859_1;
 
+  public static final long RETENTION_PERIOD_IN_MILLISECONDS = 24l * 3600l * 1000l;
+
 }

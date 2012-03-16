@@ -1,5 +1,7 @@
 package com.leelah.android;
 
+import java.util.List;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -8,8 +10,11 @@ import android.content.DialogInterface.OnClickListener;
 import android.view.LayoutInflater;
 import android.view.Window;
 
+import com.leelah.android.bo.Category;
 import com.leelah.android.bo.User;
 import com.leelah.android.ws.LeelahSystemServices;
+import com.leelah.android.ws.LeelahSystemServices.LeelahCredentials;
+import com.leelah.android.ws.LeelahSystemServices.LeelahCredentialsInformations;
 import com.smartnsoft.droid4me.LifeCycle;
 import com.smartnsoft.droid4me.app.SmartSplashScreenActivity;
 import com.smartnsoft.droid4me.cache.Values.CacheException;
@@ -22,7 +27,7 @@ import com.smartnsoft.droid4me.cache.Values.CacheException;
  */
 public final class LeelahSystemSplashScreenActivity
     extends SmartSplashScreenActivity<Bar.BarAggregate, Void>
-    implements LifeCycle.BusinessObjectsRetrievalAsynchronousPolicy, Bar.BarDiscardedFeature
+    implements LifeCycle.BusinessObjectsRetrievalAsynchronousPolicy, Bar.BarDiscardedFeature, LeelahCredentialsInformations
 {
 
   private final static int MISSING_SD_CARD_DIALOG_ID = 0;
@@ -86,7 +91,14 @@ public final class LeelahSystemSplashScreenActivity
 
       try
       {
+        LeelahSystemServices.getInstance().setLeelahCredentialsInformations(this);
         LeelahSystemServices.getInstance().authenticate(user);
+        final List<Category> categories = LeelahSystemServices.getInstance().getCategories(false);
+        LeelahSystemServices.getInstance().getProducts(false);
+        for (Category category : categories)
+        {
+          LeelahSystemServices.getInstance().getProductsByCateogry(false, category.category.id);
+        }
       }
       catch (CacheException exception)
       {
@@ -110,4 +122,13 @@ public final class LeelahSystemSplashScreenActivity
     return null;
   }
 
+  public LeelahCredentials getCredentials()
+  {
+    return new LeelahCredentials(getPreferences().getString(LoginActivity.USER_LOGIN, ""), getPreferences().getString(LoginActivity.USER_PASSWORD, ""));
+  }
+
+  public String getServerURL()
+  {
+    return getPreferences().getString(LoginActivity.SERVER_ADDRESS, "");
+  }
 }

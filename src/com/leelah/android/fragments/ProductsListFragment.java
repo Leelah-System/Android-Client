@@ -89,6 +89,8 @@ public class ProductsListFragment
 
   private int categoryId = -1;
 
+  private boolean fromCache = true;
+
   public BroadcastListener getBroadcastListener()
   {
     return new BroadcastListener()
@@ -128,8 +130,8 @@ public class ProductsListFragment
     final List<Product> products;
     try
     {
-      products = categoryId > -1 ? LeelahSystemServices.getInstance().getProductsByCateogry(categoryId)
-          : LeelahSystemServices.getInstance().getProducts("test");
+      products = categoryId > -1 ? LeelahSystemServices.getInstance().getProductsByCateogry(fromCache, categoryId)
+          : LeelahSystemServices.getInstance().getProducts(fromCache);
     }
     catch (Exception exception)
     {
@@ -147,6 +149,7 @@ public class ProductsListFragment
     // wrappers.add(new ProductWrapper(new Product()));
     // wrappers.add(new ProductWrapper(new Product()));
 
+    fromCache = true;
     return wrappers;
   }
 
@@ -165,6 +168,7 @@ public class ProductsListFragment
 
   public void onTitleBarRefresh()
   {
+    fromCache = false;
     refreshBusinessObjectsAndDisplay(true);
   }
 

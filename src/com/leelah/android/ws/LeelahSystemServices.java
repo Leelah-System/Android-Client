@@ -185,16 +185,16 @@ public final class LeelahSystemServices
     return preferences.contains(LoginActivity.SERVER_ADDRESS) && preferences.contains(LoginActivity.USER_LOGIN) && preferences.contains(LoginActivity.USER_PASSWORD);
   }
 
-  private final WSUriStreamParser<List<Category>, String, JSONException> getCategoriesStreamParser = new WSUriStreamParser<List<Category>, String, JSONException>(this)
+  private final BackedWSUriStreamParser.BackedUriStreamedValue<List<Category>, Void, JSONException, PersistenceException> getCategoriesStreamParser = new BackedWSUriStreamParser.BackedUriStreamedValue<List<Category>, Void, JSONException, PersistenceException>(Persistence.getInstance(), this)
   {
 
-    public KeysAggregator<String> computeUri(String parameter)
+    public KeysAggregator<Void> computeUri(Void parameter)
     {
       return SimpleIOStreamerSourceKey.fromUriStreamerSourceKey(
           new HttpCallTypeAndBody(computeUri("http://" + leelahCredentialsInformations.getServerURL(), "api/" + token + "/category", null)), parameter);
     }
 
-    public List<Category> parse(String parameter, InputStream inputStream)
+    public List<Category> parse(Void parameter, InputStream inputStream)
         throws JSONException
     {
       final CategoriesResult categoriesResult = (CategoriesResult) deserializeJson(inputStream, CategoriesResult.class);
@@ -203,13 +203,13 @@ public final class LeelahSystemServices
 
   };
 
-  public List<Category> getCategories(String address)
-      throws CacheException, CallException
+  public List<Category> getCategories(boolean fromCache)
+      throws CacheException
   {
-    return getCategoriesStreamParser.getValue(address);
+    return getCategoriesStreamParser.backed.getRetentionValue(fromCache, Constants.RETENTION_PERIOD_IN_MILLISECONDS, null, null);
   }
 
-  private final WSUriStreamParser<List<Product>, String, JSONException> getProductsCategoryStreamParser = new WSUriStreamParser<List<Product>, String, JSONException>(this)
+  private final BackedWSUriStreamParser.BackedUriStreamedMap<List<Product>, String, JSONException, PersistenceException> getProductsCategoryStreamParser = new BackedWSUriStreamParser.BackedUriStreamedMap<List<Product>, String, JSONException, PersistenceException>(Persistence.getInstance(), this)
   {
 
     public KeysAggregator<String> computeUri(String parameter)
@@ -228,22 +228,22 @@ public final class LeelahSystemServices
 
   };
 
-  public List<Product> getProductsByCateogry(int categoryId)
-      throws CacheException, CallException
+  public List<Product> getProductsByCateogry(boolean fromCache, int categoryId)
+      throws CacheException
   {
-    return getProductsCategoryStreamParser.getValue(Integer.toString(categoryId));
+    return getProductsCategoryStreamParser.backed.getRetentionValue(fromCache, Constants.RETENTION_PERIOD_IN_MILLISECONDS, null, Integer.toString(categoryId));
   }
 
-  private final WSUriStreamParser<List<Product>, String, JSONException> getProductsStreamParser = new WSUriStreamParser<List<Product>, String, JSONException>(this)
+  private final BackedWSUriStreamParser.BackedUriStreamedValue<List<Product>, Void, JSONException, PersistenceException> getProductsStreamParser = new BackedWSUriStreamParser.BackedUriStreamedValue<List<Product>, Void, JSONException, PersistenceException>(Persistence.getInstance(), this)
   {
 
-    public KeysAggregator<String> computeUri(String parameter)
+    public KeysAggregator<Void> computeUri(Void parameter)
     {
       return SimpleIOStreamerSourceKey.fromUriStreamerSourceKey(
           new HttpCallTypeAndBody(computeUri("http://" + leelahCredentialsInformations.getServerURL(), "api/" + token + "/product", null)), parameter);
     }
 
-    public List<Product> parse(String parameter, InputStream inputStream)
+    public List<Product> parse(Void parameter, InputStream inputStream)
         throws JSONException
     {
       final ProductResult products = (ProductResult) deserializeJson(inputStream, ProductResult.class);
@@ -252,10 +252,10 @@ public final class LeelahSystemServices
 
   };
 
-  public List<Product> getProducts(String address)
-      throws CacheException, CallException
+  public List<Product> getProducts(boolean fromCache)
+      throws CacheException
   {
-    return getProductsStreamParser.getValue(address);
+    return getProductsStreamParser.backed.getRetentionValue(fromCache, Constants.RETENTION_PERIOD_IN_MILLISECONDS, null, null);
   }
 
   private final WSUriStreamParser<List<User>, String, JSONException> getUsersStreamParser = new WSUriStreamParser<List<User>, String, JSONException>(this)

@@ -80,6 +80,10 @@ public class CategoriesListFragment
 
   }
 
+  private boolean firstLaunch = true;
+
+  private boolean fromCache = true;
+
   @Override
   public void onRetrieveDisplayObjects()
   {
@@ -97,7 +101,7 @@ public class CategoriesListFragment
     final List<Category> categories;
     try
     {
-      categories = LeelahSystemServices.getInstance().getCategories("fdfdsa");
+      categories = LeelahSystemServices.getInstance().getCategories(fromCache);
     }
     catch (Exception exception)
     {
@@ -114,23 +118,29 @@ public class CategoriesListFragment
     {
       wrappers.add(new CategoryWrapper(category));
     }
-
+    fromCache = true;
     return wrappers;
+  }
+
+  @Override
+  public void onSynchronizeDisplayObjects()
+  {
+    if (getWrappedListView().getListView().getCount() > 0 && firstLaunch == true)
+    {
+      firstLaunch = false;
+      getWrappedListView().getListView().setSelection(0);
+    }
   }
 
   @Override
   public void onFulfillDisplayObjects()
   {
     super.onFulfillDisplayObjects();
-
-    if (getWrappedListView().getListView().getCount() > 0)
-    {
-      getWrappedListView().getListView().setSelection(0);
-    }
   }
 
   public void onTitleBarRefresh()
   {
+    fromCache = false;
     refreshBusinessObjectsAndDisplay(true);
   }
 }
