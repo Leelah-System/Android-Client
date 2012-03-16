@@ -1,5 +1,6 @@
 package com.leelah.android.fragments;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -33,19 +35,65 @@ public class CartListFragment
   public class CartProduct
       extends Product
   {
+    private static final long serialVersionUID = 7172872330572247666L;
+
     public int quantityOrder;
+
+    @Override
+    public int hashCode()
+    {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + getOuterType().hashCode();
+      return result;
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+      if (this == obj)
+        return true;
+      if (obj == null)
+        return false;
+      if (getClass() != obj.getClass())
+        return false;
+      CartProduct other = (CartProduct) obj;
+      if (!getOuterType().equals(other.getOuterType()))
+        return false;
+      return true;
+    }
+
+    private CartListFragment getOuterType()
+    {
+      return CartListFragment.this;
+    }
+
   }
 
   private static final class CartViewHolder
   {
 
+    private final ImageView productImage;
+
+    private final TextView productName;
+
+    private final TextView productPrice;
+
+    private final TextView productQuantity;
+
     public CartViewHolder(View view)
     {
+      productImage = (ImageView) view.findViewById(R.id.productImage);
+      productName = (TextView) view.findViewById(R.id.productName);
+      productPrice = (TextView) view.findViewById(R.id.productPrice);
+      productQuantity = (TextView) view.findViewById(R.id.productQuantity);
     }
 
     public void update(CartProduct businessObject)
     {
-
+      productName.setText(businessObject.product.name);
+      productPrice.setText(productPrice.getResources().getString(R.string.Price_euro, Float.toString(businessObject.product.price)));
+      productQuantity.setText("x" + businessObject.quantityOrder);
     }
 
   }
@@ -87,6 +135,8 @@ public class CartListFragment
 
   protected static final String PRODUCT = CartListFragment.ADD_TO_CART + ".product";
 
+  protected static final String QUANTITY = CartListFragment.ADD_TO_CART + ".quantity";
+
   private final List<CartProduct> cartProducts = new ArrayList<CartListFragment.CartProduct>();
 
   private View submitLayout;
@@ -96,6 +146,8 @@ public class CartListFragment
   private float price;
 
   private Button submitButton;
+
+  private final DecimalFormat decimalFormat = new DecimalFormat("0.00");
 
   public BroadcastListener getBroadcastListener()
   {
@@ -114,10 +166,28 @@ public class CartListFragment
       {
         if (CartListFragment.ADD_TO_CART.equals(intent.getAction()))
         {
-          final CartProduct product = new CartProduct();
-          product.quantityOrder = 1;
-          product.product = (ProductDetails) intent.getSerializableExtra(CartListFragment.PRODUCT);
-          cartProducts.add(product);
+          final ProductDetails product = (ProductDetails) intent.getSerializableExtra(CartListFragment.PRODUCT);
+          final int quantity = intent.getIntExtra(CartListFragment.QUANTITY, 1);
+          boolean isUpdate = intent.hasExtra(ProductDetailsDialogFragment.IS_UPDATE);
+          final CartProduct cartProduct = new CartProduct();
+          cartProduct.product = product;
+
+          boolean alreadyInCart = false;
+
+          for (CartProduct cartProduct2 : cartProducts)
+          {
+            if (cartProduct2.product.id.equals(cartProduct.product.id))
+            {
+              cartProduct2.quantityOrder = isUpdate == true ? quantity : cartProduct2.quantityOrder + quantity;
+              alreadyInCart = true;
+              break;
+            }
+          }
+          if (alreadyInCart == false)
+          {
+            cartProduct.quantityOrder = quantity;
+            cartProducts.add(cartProduct);
+          }
           refreshBusinessObjectsAndDisplay();
         }
       }
@@ -163,7 +233,8 @@ public class CartListFragment
   public void onSynchronizeDisplayObjects()
   {
     super.onSynchronizeDisplayObjects();
-    totalPrice.setText(Float.toString(price));
+
+    totalPrice.setText(getString(R.string.Price_euro, decimalFormat.format(price)));
   }
 
   public void onClick(View view)

@@ -1,23 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content" >
+    android:layout_height="wrap_content" 
+    android:padding="@dimen/defaultPadding">
 
     <ImageView
-        android:id="@+id/imageView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/productImage"
+        android:layout_width="64dip"
+        android:layout_height="64dip"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
+        android:layout_marginRight="@dimen/defaultPadding"
         android:padding="@dimen/defaultPadding"
-        android:src="@drawable/icon" />
+        android:background="@drawable/image_shadow"
+        android:scaleType="centerCrop"
+        android:src="@drawable/pack" />
 
     <TextView
-        android:id="@+id/textView1"
+        android:id="@+id/productName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/imageView1"
-        android:layout_centerVertical="true"
+        android:layout_toRightOf="@+id/productImage"
+        android:textColor="@android:color/black"
+        android:textSize="18dip"
+        android:textStyle="bold"
+        android:text="TextView" />
+    
+    <TextView
+        android:id="@+id/productPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/productImage"
+        android:layout_alignParentBottom="true"
+        android:textColor="@android:color/black"
+        android:textSize="26dip"
+        android:text="TextView" />
+    
+    <TextView
+        android:id="@+id/productQuantity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:textSize="26dip"
+        android:textColor="#459A2A"
         android:text="TextView" />
 
 </RelativeLayout>

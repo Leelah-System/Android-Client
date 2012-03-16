@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.v4.app.FragmentManager;
 import android.view.View;
 import android.widget.GridView;
@@ -16,6 +18,8 @@ import com.leelah.android.bo.Product;
 import com.leelah.android.fragments.ProductDetailsDialogFragment.ActionType;
 import com.leelah.android.ws.LeelahSystemServices;
 import com.smartnsoft.droid4me.LifeCycle.BusinessObjectsRetrievalAsynchronousPolicy;
+import com.smartnsoft.droid4me.app.AppPublics.BroadcastListener;
+import com.smartnsoft.droid4me.app.AppPublics.BroadcastListenerProvider;
 import com.smartnsoft.droid4me.app.AppPublics.SendLoadingIntent;
 import com.smartnsoft.droid4me.framework.SmartAdapters.BusinessViewWrapper;
 import com.smartnsoft.droid4me.framework.SmartAdapters.ObjectEvent;
@@ -23,7 +27,7 @@ import com.smartnsoft.droid4me.framework.SmartAdapters.SimpleBusinessViewWrapper
 
 public class ProductsListFragment
     extends SmartGridViewFragment<Bar.BarAggregate, GridView>
-    implements BusinessObjectsRetrievalAsynchronousPolicy, SendLoadingIntent
+    implements BusinessObjectsRetrievalAsynchronousPolicy, SendLoadingIntent, BroadcastListenerProvider
 {
 
   private static final class ProductAttributes
@@ -83,6 +87,31 @@ public class ProductsListFragment
 
   }
 
+  private int categoryId = -1;
+
+  public BroadcastListener getBroadcastListener()
+  {
+    return new BroadcastListener()
+    {
+      public IntentFilter getIntentFilter()
+      {
+        final IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(CategoriesListFragment.CHANGE_CATEGORY);
+        return intentFilter;
+      }
+
+      public void onReceive(Intent intent)
+      {
+        if (CategoriesListFragment.CHANGE_CATEGORY.equals(intent.getAction()))
+        {
+          categoryId = intent.getIntExtra(CategoriesListFragment.SELECTED_CATEGORY, -1);
+          refreshBusinessObjectsAndDisplay(true);
+        }
+      }
+
+    };
+  }
+
   @Override
   public void onRetrieveDisplayObjects()
   {
@@ -99,7 +128,8 @@ public class ProductsListFragment
     final List<Product> products;
     try
     {
-      products = LeelahSystemServices.getInstance().getProducts("test");
+      products = categoryId > -1 ? LeelahSystemServices.getInstance().getProductsByCateogry(categoryId)
+          : LeelahSystemServices.getInstance().getProducts("test");
     }
     catch (Exception exception)
     {
@@ -143,4 +173,5 @@ public class ProductsListFragment
     final ProductDetailsDialogFragment productDetailsDialogFragment = ProductDetailsDialogFragment.newInstance(ActionType.ViewProduct, businessObject);
     productDetailsDialogFragment.show(fragmentManager, "dialog");
   }
+
 }

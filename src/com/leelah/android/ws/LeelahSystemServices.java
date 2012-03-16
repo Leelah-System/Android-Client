@@ -209,6 +209,31 @@ public final class LeelahSystemServices
     return getCategoriesStreamParser.getValue(address);
   }
 
+  private final WSUriStreamParser<List<Product>, String, JSONException> getProductsCategoryStreamParser = new WSUriStreamParser<List<Product>, String, JSONException>(this)
+  {
+
+    public KeysAggregator<String> computeUri(String parameter)
+    {
+      return SimpleIOStreamerSourceKey.fromUriStreamerSourceKey(
+          new HttpCallTypeAndBody(computeUri("http://" + leelahCredentialsInformations.getServerURL(), "api/" + token + "/product/" + parameter, null)),
+          parameter);
+    }
+
+    public List<Product> parse(String parameter, InputStream inputStream)
+        throws JSONException
+    {
+      final ProductResult products = (ProductResult) deserializeJson(inputStream, ProductResult.class);
+      return products.result.products;
+    }
+
+  };
+
+  public List<Product> getProductsByCateogry(int categoryId)
+      throws CacheException, CallException
+  {
+    return getProductsCategoryStreamParser.getValue(Integer.toString(categoryId));
+  }
+
   private final WSUriStreamParser<List<Product>, String, JSONException> getProductsStreamParser = new WSUriStreamParser<List<Product>, String, JSONException>(this)
   {
 

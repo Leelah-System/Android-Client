@@ -33,5 +33,10 @@
   <string name="Menu_empty_cart">Vider le caddie</string>
   <string name="Cart_empty_cart_dialog_title">Vider le panier ?</string>
   <string name="Cart_empty_cart_dialog_message">Voulez vous effacer le contenus de votre panier ?</string>
-
+  <string name="Price_euro">%1$s €</string>
+  <string name="Product_request_order">Requete client (ingrédients, autres demandes...)</string>
+  <string name="Category_all_categories">Tous les produits</string>
+  <string name="Product_in_stock">En stock</string>
+  <string name="Product_not_in_stock">Indisponible</string>
+  <string name="Product_update_cart">Mettre à jour</string>
 </resources>

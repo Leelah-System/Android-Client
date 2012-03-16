@@ -11,5 +11,7 @@
   <color name="leelah_primary_color">#561f37</color>
   <color name="leelah_second_color">#b6003d</color>
   <color name="leelah_primary_color_light">#25561f37</color>
+  <color name="leelah_green">#96CA2D</color>
+  <color name="leelah_red">#FF0000</color>
 
 </resources>

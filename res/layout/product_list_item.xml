@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/product_background_selector"
     android:padding="@dimen/defaultPadding" >
 
     <ImageView
@@ -10,25 +11,33 @@
         android:layout_height="100dip"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
+        android:layout_marginRight="@dimen/defaultPadding"
+        android:background="@drawable/image_shadow"
         android:padding="@dimen/defaultPadding"
-        android:src="@drawable/pack"
-        android:scaleType="centerCrop" />
+        android:scaleType="centerCrop"
+        android:src="@drawable/pack" />
+
     <TextView
         android:id="@+id/productName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/image"
-        android:text="Nom du produit"
-        android:maxLines="2"
         android:ellipsize="end"
+        android:maxLines="2"
+        android:text="Nom du produit"
+        android:textSize="24dip"
+        android:textColor="@android:color/black"
         android:textStyle="bold" />
-    
-      <TextView
+
+    <TextView
         android:id="@+id/description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/productName"
         android:layout_toRightOf="@id/image"
+        android:textColor="@android:color/black"
+        android:maxLines="3"
+        android:ellipsize="end"
         android:text="TextView" />
-
+    
 </RelativeLayout>
