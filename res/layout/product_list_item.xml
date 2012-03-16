@@ -13,7 +13,6 @@
         android:layout_centerVertical="true"
         android:layout_marginRight="@dimen/defaultPadding"
         android:background="@drawable/image_shadow"
-        android:padding="@dimen/defaultPadding"
         android:scaleType="centerCrop"
         android:src="@drawable/pack" />
 
@@ -22,12 +21,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/image"
-        android:ellipsize="end"
         android:maxLines="2"
         android:text="Nom du produit"
         android:textSize="24dip"
         android:textColor="@android:color/black"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:singleLine="true"
+        android:ellipsize="marquee"
+        android:marqueeRepeatLimit="marquee_forever" />
 
     <TextView
         android:id="@+id/description"

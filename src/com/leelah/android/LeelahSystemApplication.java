@@ -4,20 +4,30 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
+import java.util.List;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.view.View;
+import android.widget.ImageView;
 
+import com.leelah.android.bo.GoogleImage.GoogleImageItem;
+import com.leelah.android.ws.LeelahSystemServices;
 import com.smartnsoft.droid4me.app.ActivityController;
 import com.smartnsoft.droid4me.app.SmartApplication;
+import com.smartnsoft.droid4me.app.SmartCommands;
 import com.smartnsoft.droid4me.bo.Business.InputAtom;
 import com.smartnsoft.droid4me.cache.DbPersistence;
 import com.smartnsoft.droid4me.cache.Persistence;
+import com.smartnsoft.droid4me.cache.Values.CacheException;
 import com.smartnsoft.droid4me.download.BasisDownloadInstructions;
 import com.smartnsoft.droid4me.download.BitmapDownloader;
 import com.smartnsoft.droid4me.download.DownloadInstructions;
+import com.smartnsoft.droid4me.download.DownloadSpecs;
 
 /**
  * The entry point of the application.
@@ -32,6 +42,11 @@ public final class LeelahSystemApplication
   public interface BelongsToUserRegistration
   {
 
+  }
+
+  public enum ImageType
+  {
+    Full, Thumbnail
   }
 
   public static class CacheInstructions
@@ -53,9 +68,54 @@ public final class LeelahSystemApplication
       return inputAtom == null ? null : inputAtom.inputStream;
     }
 
+    @Override
+    public boolean onBindBitmap(boolean downloaded, View view, Bitmap bitmap, String bitmapUid, Object imageSpecs)
+    {
+      final boolean isLandscape = bitmap.getWidth() >= bitmap.getHeight();
+      final Bitmap finalBitmap = Bitmap.createBitmap(bitmap, isLandscape ? bitmap.getWidth() / 2 - bitmap.getHeight() / 2 : 0,
+          isLandscape ? 0 : bitmap.getHeight() / 2 - bitmap.getWidth() / 2, isLandscape ? bitmap.getWidth() / 2 + bitmap.getHeight() / 2 : bitmap.getWidth(),
+          isLandscape ? bitmap.getHeight() : bitmap.getHeight() / 2 + bitmap.getWidth() / 2);
+
+      // Bitmap resizedBitmap = Bitmap.createBitmap(finalBitmap, 0, 0, width, height, matrix, true);
+
+      if (view instanceof ImageView)
+      {
+        ((ImageView) view).setImageBitmap(finalBitmap);
+      }
+      return true;
+
+      // return super.onBindBitmap(downloaded, view, finalBitmap, bitmapUid, imageSpecs);
+    }
+
   }
 
   public final static DownloadInstructions.Instructions CACHE_IMAGE_INSTRUCTIONS = new LeelahSystemApplication.CacheInstructions();
+
+  public static void requestImageAndDisplay(final Handler handler, final String query, final View view, final ImageType imageType)
+  {
+    SmartCommands.execute(new Runnable()
+    {
+      public void run()
+      {
+        try
+        {
+          final List<GoogleImageItem> images = LeelahSystemServices.getInstance().requestGoogleImage(true, query);
+          if (images.size() > 0)
+          {
+            BitmapDownloader.getInstance().get(view, imageType == ImageType.Thumbnail ? images.get(0).tbUrl : images.get(0).url,
+                new DownloadSpecs.TemporaryAndNoImageSpecs(R.drawable.pack, R.drawable.pack), handler, LeelahSystemApplication.CACHE_IMAGE_INSTRUCTIONS);
+          }
+        }
+        catch (CacheException exception)
+        {
+          if (log.isWarnEnabled())
+          {
+            log.warn("An error occurs on google image call for retrieve for product with name '" + query + "'");
+          }
+        }
+      }
+    });
+  }
 
   @Override
   protected int getLogLevel()
@@ -91,8 +151,8 @@ public final class LeelahSystemApplication
 
     // We set the BitmapDownloader instances
     BitmapDownloader.INSTANCES_COUNT = 1;
-    BitmapDownloader.MAX_MEMORY_IN_BYTES = new long[] { 3 * 1024 * 1024 };
-    BitmapDownloader.LOW_LEVEL_MEMORY_WATER_MARK_IN_BYTES = new long[] { 1 * 1024 * 1024 };
+    BitmapDownloader.MAX_MEMORY_IN_BYTES = new long[] { 10 * 1024 * 1024 };
+    BitmapDownloader.LOW_LEVEL_MEMORY_WATER_MARK_IN_BYTES = new long[] { 10 * 1024 * 1024 };
   }
 
   @Override

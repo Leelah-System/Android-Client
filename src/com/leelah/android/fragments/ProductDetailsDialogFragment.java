@@ -5,11 +5,15 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.DialogFragment;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.leelah.android.LeelahSystemApplication;
+import com.leelah.android.LeelahSystemApplication.ImageType;
 import com.leelah.android.R;
 import com.leelah.android.bo.Product;
 import com.leelah.android.fragments.CartListFragment.CartProduct;
@@ -44,10 +48,13 @@ public class ProductDetailsDialogFragment
 
     private final TextView productDispo;
 
+    private final ImageView productImage;
+
     private int quantity = 1;
 
     public ProductDetailsAttributes(View view)
     {
+      productImage = (ImageView) view.findViewById(R.id.productImage);
       productName = (TextView) view.findViewById(R.id.productName);
       productDescription = (TextView) view.findViewById(R.id.productDescription);
       productReference = (TextView) view.findViewById(R.id.productReference);
@@ -92,6 +99,8 @@ public class ProductDetailsDialogFragment
       });
       quantityMinus.setOnClickListener(this);
       quantityPlus.setOnClickListener(this);
+
+      LeelahSystemApplication.requestImageAndDisplay(new Handler(), businessObject.product.name, productImage, ImageType.Full);
     }
 
     public void onClick(View view)
@@ -124,7 +133,6 @@ public class ProductDetailsDialogFragment
     {
       ((ProductDetailsAttributes) viewAttributes).update(activity, businessObject);
     }
-
   }
 
   enum ActionType

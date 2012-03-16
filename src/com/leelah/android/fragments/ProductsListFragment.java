@@ -6,6 +6,7 @@ import java.util.List;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Handler;
 import android.support.v4.app.FragmentManager;
 import android.view.View;
 import android.widget.GridView;
@@ -13,6 +14,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.leelah.android.Bar;
+import com.leelah.android.LeelahSystemApplication;
+import com.leelah.android.LeelahSystemApplication.ImageType;
 import com.leelah.android.R;
 import com.leelah.android.bo.Product;
 import com.leelah.android.fragments.ProductDetailsDialogFragment.ActionType;
@@ -46,10 +49,11 @@ public class ProductsListFragment
       productDescription = (TextView) view.findViewById(R.id.description);
     }
 
-    public void update(Product businessObject)
+    public void update(final Handler handler, final Product businessObject)
     {
       productName.setText(businessObject.product.name);
       productDescription.setText(businessObject.product.description);
+      LeelahSystemApplication.requestImageAndDisplay(handler, businessObject.product.name, image, ImageType.Thumbnail);
     }
 
   }
@@ -72,7 +76,7 @@ public class ProductsListFragment
     @Override
     protected void updateView(Activity activity, Object viewAttributes, View view, Product businessObject, int position)
     {
-      ((ProductAttributes) viewAttributes).update(businessObject);
+      ((ProductAttributes) viewAttributes).update(getHandler(), businessObject);
     }
 
     @Override
@@ -142,12 +146,6 @@ public class ProductsListFragment
     {
       wrappers.add(new ProductWrapper(product));
     }
-
-    // wrappers.add(new ProductWrapper(new Product()));
-    // wrappers.add(new ProductWrapper(new Product()));
-    // wrappers.add(new ProductWrapper(new Product()));
-    // wrappers.add(new ProductWrapper(new Product()));
-    // wrappers.add(new ProductWrapper(new Product()));
 
     fromCache = true;
     return wrappers;

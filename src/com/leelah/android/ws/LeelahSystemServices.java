@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -23,6 +25,8 @@ import com.leelah.android.Constants;
 import com.leelah.android.LoginActivity;
 import com.leelah.android.bo.CategoriesResult;
 import com.leelah.android.bo.Category;
+import com.leelah.android.bo.GoogleImage;
+import com.leelah.android.bo.GoogleImage.GoogleImageItem;
 import com.leelah.android.bo.Product;
 import com.leelah.android.bo.ProductResult;
 import com.leelah.android.bo.User;
@@ -183,6 +187,40 @@ public final class LeelahSystemServices
   public boolean hasParameters(SharedPreferences preferences)
   {
     return preferences.contains(LoginActivity.SERVER_ADDRESS) && preferences.contains(LoginActivity.USER_LOGIN) && preferences.contains(LoginActivity.USER_PASSWORD);
+  }
+
+  // https://ajax.googleapis.com/ajax/services/search/images?v=1.0&q=Mousse%20au%20chocolat&imgsz=xlarge&imgtype=photo&rsz=4&safe=active
+
+  private final BackedWSUriStreamParser.BackedUriStreamedMap<List<GoogleImageItem>, String, JSONException, PersistenceException> requestGoogleImageStreamParser = new BackedWSUriStreamParser.BackedUriStreamedMap<List<GoogleImageItem>, String, JSONException, PersistenceException>(Persistence.getInstance(), this)
+  {
+
+    public KeysAggregator<String> computeUri(String parameter)
+    {
+      final Map<String, String> uriParameters = new HashMap<String, String>();
+
+      uriParameters.put("v", "1.0");
+      uriParameters.put("q", parameter);
+      uriParameters.put("imgsz", "xlarge");
+      uriParameters.put("imgtype", "photo");
+      uriParameters.put("safe", "active");
+
+      return SimpleIOStreamerSourceKey.fromUriStreamerSourceKey(
+          new HttpCallTypeAndBody(computeUri("https://ajax.googleapis.com/ajax/services/search/images", null, uriParameters)), parameter);
+    }
+
+    public List<GoogleImageItem> parse(String parameter, InputStream inputStream)
+        throws JSONException
+    {
+      final GoogleImage googleImage = (GoogleImage) deserializeJson(inputStream, GoogleImage.class);
+      return googleImage.responseData.results;
+    }
+
+  };
+
+  public List<GoogleImageItem> requestGoogleImage(boolean fromCache, String query)
+      throws CacheException
+  {
+    return requestGoogleImageStreamParser.backed.getRetentionValue(fromCache, Constants.RETENTION_PERIOD_IN_MILLISECONDS, null, query);
   }
 
   private final BackedWSUriStreamParser.BackedUriStreamedValue<List<Category>, Void, JSONException, PersistenceException> getCategoriesStreamParser = new BackedWSUriStreamParser.BackedUriStreamedValue<List<Category>, Void, JSONException, PersistenceException>(Persistence.getInstance(), this)

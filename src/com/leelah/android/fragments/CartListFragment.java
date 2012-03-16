@@ -7,6 +7,7 @@ import java.util.List;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -16,6 +17,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.leelah.android.Bar;
+import com.leelah.android.LeelahSystemApplication;
+import com.leelah.android.LeelahSystemApplication.ImageType;
 import com.leelah.android.R;
 import com.leelah.android.bo.Product;
 import com.leelah.android.bo.Product.ProductDetails;
@@ -89,11 +92,12 @@ public class CartListFragment
       productQuantity = (TextView) view.findViewById(R.id.productQuantity);
     }
 
-    public void update(CartProduct businessObject)
+    public void update(Handler handler, CartProduct businessObject)
     {
       productName.setText(businessObject.product.name);
       productPrice.setText(productPrice.getResources().getString(R.string.Price_euro, Float.toString(businessObject.product.price)));
       productQuantity.setText("x" + businessObject.quantityOrder);
+      LeelahSystemApplication.requestImageAndDisplay(handler, businessObject.product.name, productImage, ImageType.Thumbnail);
     }
 
   }
@@ -116,7 +120,7 @@ public class CartListFragment
     @Override
     protected void updateView(Activity activity, Object businessViewHolder, View view, CartProduct businessObject, int position)
     {
-      ((CartViewHolder) businessViewHolder).update(businessObject);
+      ((CartViewHolder) businessViewHolder).update(getHandler(), businessObject);
     }
 
     @Override
