@@ -108,6 +108,7 @@ public final class MainActivity
       @Override
       public void run()
       {
+        startActivity(new Intent(MainActivity.this, OrdersActivity.class));
       }
     }));
     commands.add(new ActionMenuCommand(R.string.Menu_settings, '1', 'm', android.R.drawable.ic_menu_preferences, MenuItem.SHOW_AS_ACTION_NEVER, new Commands.StaticEnabledExecutable()

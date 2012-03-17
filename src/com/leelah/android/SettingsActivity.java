@@ -13,7 +13,7 @@ import com.smartnsoft.droid4me.app.SmartPreferenceActivity;
  */
 public final class SettingsActivity
     extends SmartPreferenceActivity<Bar.BarAggregate>
-    implements Bar.BarShowHomeFeature, Bar.BarShowBackFeature
+    implements Bar.BarShowHomeFeature
 {
 
   public void onRetrieveDisplayObjects()
