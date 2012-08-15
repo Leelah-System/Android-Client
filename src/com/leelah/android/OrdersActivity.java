@@ -3,29 +3,32 @@ package com.leelah.android;
 import java.util.List;
 
 import com.smartnsoft.droid4me.menu.StaticMenuCommand;
-import com.smartnsoft.droid4me.support.v4.app.SmartFragmentActivity;
 
 public class OrdersActivity
-    extends SmartFragmentActivity<Bar.BarAttributes>
+    extends LeelahFragmentActivity
     implements Bar.BarShowHomeFeature
 {
 
+  @Override
   public void onRetrieveDisplayObjects()
   {
     setContentView(R.layout.orders);
   }
 
+  @Override
   public void onRetrieveBusinessObjects()
       throws BusinessObjectUnavailableException
   {
-
+    super.onRetrieveBusinessObjects();
   }
 
+  @Override
   public void onFulfillDisplayObjects()
   {
 
   }
 
+  @Override
   public void onSynchronizeDisplayObjects()
   {
 

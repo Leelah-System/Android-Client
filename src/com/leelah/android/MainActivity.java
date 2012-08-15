@@ -14,12 +14,8 @@ import com.leelah.android.fragments.CartListFragment;
 import com.leelah.android.fragments.CategoriesListFragment;
 import com.leelah.android.fragments.MainFragment;
 import com.leelah.android.fragments.ProductsListFragment;
-import com.leelah.android.ws.LeelahSystemServices;
-import com.leelah.android.ws.LeelahSystemServices.LeelahCredentials;
-import com.leelah.android.ws.LeelahSystemServices.LeelahCredentialsInformations;
 import com.smartnsoft.droid4me.framework.Commands;
 import com.smartnsoft.droid4me.menu.StaticMenuCommand;
-import com.smartnsoft.droid4me.support.v4.app.SmartFragmentActivity;
 import com.smartnsoft.droid4me.support.v4.menu.ActionMenuCommand;
 
 /**
@@ -29,8 +25,8 @@ import com.smartnsoft.droid4me.support.v4.menu.ActionMenuCommand;
  * @since 2012.02.10
  */
 public final class MainActivity
-    extends SmartFragmentActivity<Bar.BarAggregate>
-    implements Bar.BarRefreshFeature, LeelahCredentialsInformations
+    extends LeelahFragmentActivity
+    implements Bar.BarRefreshFeature
 {
 
   private CategoriesListFragment categoriesFragment;
@@ -39,6 +35,7 @@ public final class MainActivity
 
   private CartListFragment cartFragment;
 
+  @Override
   public void onRetrieveDisplayObjects()
   {
     final FragmentManager fragmentManager = getSupportFragmentManager();
@@ -47,20 +44,23 @@ public final class MainActivity
     fragmentTransaction.commit();
   }
 
+  @Override
   public void onRetrieveBusinessObjects()
       throws BusinessObjectUnavailableException
   {
-    LeelahSystemServices.getInstance().setLeelahCredentialsInformations(this);
+    super.onRetrieveBusinessObjects();
     categoriesFragment = (CategoriesListFragment) getSupportFragmentManager().findFragmentById(R.id.categoriesFragment);
     productsFragment = (ProductsListFragment) getSupportFragmentManager().findFragmentById(R.id.productsFragment);
     cartFragment = (CartListFragment) getSupportFragmentManager().findFragmentById(R.id.cartFragment);
   }
 
+  @Override
   public void onFulfillDisplayObjects()
   {
     getAggregate().getAttributes().setTitle(getString(R.string.applicationName));
   }
 
+  @Override
   public void onSynchronizeDisplayObjects()
   {
 
@@ -126,16 +126,6 @@ public final class MainActivity
   {
     categoriesFragment.onTitleBarRefresh();
     productsFragment.onTitleBarRefresh();
-  }
-
-  public LeelahCredentials getCredentials()
-  {
-    return new LeelahCredentials(getPreferences().getString(LoginActivity.USER_LOGIN, ""), getPreferences().getString(LoginActivity.USER_PASSWORD, ""));
-  }
-
-  public String getServerURL()
-  {
-    return getPreferences().getString(LoginActivity.SERVER_ADDRESS, "");
   }
 
 }

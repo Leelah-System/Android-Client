@@ -64,6 +64,13 @@ public final class LeelahSystemServices
 
   }
 
+  public interface LeelahApiStatusViewer
+  {
+    public void OnApiStatusSucced(String message);
+
+    public void OnApiStatusError(String message);
+  }
+
   public interface LeelahCredentialsInformations
   {
     public LeelahCredentials getCredentials();
@@ -76,6 +83,8 @@ public final class LeelahSystemServices
   private LeelahCredentialsInformations leelahCredentialsInformations;
 
   private String token;
+
+  private LeelahApiStatusViewer leelahApiStatusViewer;
 
   public static LeelahSystemServices getInstance()
   {
@@ -99,6 +108,11 @@ public final class LeelahSystemServices
   public void setLeelahCredentialsInformations(LeelahCredentialsInformations leelahCredentialsInformations)
   {
     this.leelahCredentialsInformations = leelahCredentialsInformations;
+  }
+
+  public void setLeelahApiStatus(LeelahApiStatusViewer leelahApiStatusViewer)
+  {
+    this.leelahApiStatusViewer = leelahApiStatusViewer;
   }
 
   @Override
@@ -189,6 +203,21 @@ public final class LeelahSystemServices
     return preferences.contains(LoginActivity.SERVER_ADDRESS) && preferences.contains(LoginActivity.USER_LOGIN) && preferences.contains(LoginActivity.USER_PASSWORD);
   }
 
+  public void checkApiStatus(WebServiceResult webServiceResult)
+  {
+    if (leelahApiStatusViewer != null)
+    {
+      if (webServiceResult.success == true)
+      {
+        leelahApiStatusViewer.OnApiStatusSucced(webServiceResult.msg);
+      }
+      else
+      {
+        leelahApiStatusViewer.OnApiStatusError(webServiceResult.msg);
+      }
+    }
+  }
+
   // https://ajax.googleapis.com/ajax/services/search/images?v=1.0&q=Mousse%20au%20chocolat&imgsz=xlarge&imgtype=photo&rsz=4&safe=active
 
   private final BackedWSUriStreamParser.BackedUriStreamedMap<List<GoogleImageItem>, String, JSONException, PersistenceException> requestGoogleImageStreamParser = new BackedWSUriStreamParser.BackedUriStreamedMap<List<GoogleImageItem>, String, JSONException, PersistenceException>(Persistence.getInstance(), this)
@@ -236,6 +265,7 @@ public final class LeelahSystemServices
         throws JSONException
     {
       final CategoriesResult categoriesResult = (CategoriesResult) deserializeJson(inputStream, CategoriesResult.class);
+      checkApiStatus(categoriesResult);
       return categoriesResult.result.categories;
     }
 
@@ -261,6 +291,7 @@ public final class LeelahSystemServices
         throws JSONException
     {
       final ProductResult products = (ProductResult) deserializeJson(inputStream, ProductResult.class);
+      checkApiStatus(products);
       return products.result.products;
     }
 
@@ -285,6 +316,7 @@ public final class LeelahSystemServices
         throws JSONException
     {
       final ProductResult products = (ProductResult) deserializeJson(inputStream, ProductResult.class);
+      checkApiStatus(products);
       return products.result.products;
     }
 
@@ -309,6 +341,7 @@ public final class LeelahSystemServices
         throws JSONException
     {
       final UsersResult usersResult = (UsersResult) deserializeJson(inputStream, UsersResult.class);
+      checkApiStatus(usersResult);
       return usersResult.result.users;
     }
 
@@ -334,6 +367,7 @@ public final class LeelahSystemServices
         throws JSONException
     {
       final WebServiceResult products = (WebServiceResult) deserializeJson(inputStream, WebServiceResult.class);
+      checkApiStatus(products);
       return products.success;
     }
 
@@ -359,6 +393,7 @@ public final class LeelahSystemServices
         throws JSONException
     {
       final WebServiceResult products = (WebServiceResult) deserializeJson(inputStream, WebServiceResult.class);
+      checkApiStatus(products);
       return products.success;
     }
 

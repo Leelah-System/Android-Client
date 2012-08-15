@@ -12,12 +12,11 @@ import com.leelah.android.LeelahSystemApplication.BelongsToUserRegistration;
 import com.leelah.android.bo.User;
 import com.leelah.android.ws.LeelahSystemServices;
 import com.smartnsoft.droid4me.LifeCycle.BusinessObjectsRetrievalAsynchronousPolicy;
-import com.smartnsoft.droid4me.app.SmartActivity;
 import com.smartnsoft.droid4me.app.SmartCommands;
 import com.smartnsoft.droid4me.cache.Values.CacheException;
 
 public final class LoginActivity
-    extends SmartActivity<Bar.BarAggregate>
+    extends LeelahActivity
     implements BusinessObjectsRetrievalAsynchronousPolicy, BelongsToUserRegistration, OnClickListener, Bar.BarDiscardedFeature
 {
   public static final String USER_PASSWORD = "password";
@@ -34,6 +33,7 @@ public final class LoginActivity
 
   private Button buttonLogin;
 
+  @Override
   public void onRetrieveDisplayObjects()
   {
     // On set le layout de l'activité
@@ -46,12 +46,14 @@ public final class LoginActivity
     buttonLogin = (Button) findViewById(R.id.loginButton);
   }
 
+  @Override
   public void onRetrieveBusinessObjects()
       throws BusinessObjectUnavailableException
   {
-
+    super.onRetrieveBusinessObjects();
   }
 
+  @Override
   public void onFulfillDisplayObjects()
   {
     // Set l'interface de clique au boutton
@@ -62,6 +64,7 @@ public final class LoginActivity
     editPassword.setText(getPreferences().getString(USER_PASSWORD, ""));
   }
 
+  @Override
   public void onSynchronizeDisplayObjects()
   {
 

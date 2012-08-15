@@ -39,4 +39,5 @@
   <string name="Product_in_stock">En stock</string>
   <string name="Product_not_in_stock">Indisponible</string>
   <string name="Product_update_cart">Mettre à jour</string>
+  <string name="Service_error_title">Service Error !</string>
 </resources>
