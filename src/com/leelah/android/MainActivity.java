@@ -10,16 +10,13 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.MenuItem;
 
-import com.leelah.android.bo.Category;
 import com.leelah.android.fragments.CartListFragment;
 import com.leelah.android.fragments.CategoriesListFragment;
 import com.leelah.android.fragments.MainFragment;
 import com.leelah.android.fragments.ProductsListFragment;
-import com.leelah.android.ws.LeelahSystemServices;
 import com.smartnsoft.droid4me.framework.Commands;
 import com.smartnsoft.droid4me.menu.StaticMenuCommand;
 import com.smartnsoft.droid4me.support.v4.menu.ActionMenuCommand;
-import com.smartnsoft.droid4me.ws.WebServiceClient.CallException;
 
 /**
  * The starting screen of the application.
@@ -80,32 +77,35 @@ public final class MainActivity
       {
       }
     }));
-    commands.add(new ActionMenuCommand(R.string.Menu_empty_cart, '1', 'm', android.R.drawable.ic_menu_delete, MenuItem.SHOW_AS_ACTION_ALWAYS, new Commands.StaticEnabledExecutable()
+    if (LeelahSystemApplication.isTabletMode == true)
     {
-      @Override
-      public void run()
+      commands.add(new ActionMenuCommand(R.string.Menu_empty_cart, '1', 'm', android.R.drawable.ic_menu_delete, MenuItem.SHOW_AS_ACTION_ALWAYS, new Commands.StaticEnabledExecutable()
       {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-        builder.setTitle(R.string.Cart_empty_cart_dialog_title);
-        builder.setMessage(R.string.Cart_empty_cart_dialog_message);
-        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener()
+        @Override
+        public void run()
         {
-          public void onClick(DialogInterface dialog, int which)
+          final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+          builder.setTitle(R.string.Cart_empty_cart_dialog_title);
+          builder.setMessage(R.string.Cart_empty_cart_dialog_message);
+          builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener()
           {
-            cartFragment.emptyCart();
-            dialog.dismiss();
-          }
-        });
-        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener()
-        {
-          public void onClick(DialogInterface dialog, int which)
+            public void onClick(DialogInterface dialog, int which)
+            {
+              cartFragment.emptyCart();
+              dialog.dismiss();
+            }
+          });
+          builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener()
           {
-            dialog.dismiss();
-          }
-        });
-        builder.show();
-      }
-    }));
+            public void onClick(DialogInterface dialog, int which)
+            {
+              dialog.dismiss();
+            }
+          });
+          builder.show();
+        }
+      }));
+    }
     commands.add(new ActionMenuCommand(R.string.Menu_admin_mode, '1', 'm', android.R.drawable.ic_menu_manage, MenuItem.SHOW_AS_ACTION_NEVER, new Commands.StaticEnabledExecutable()
     {
       @Override
@@ -122,34 +122,16 @@ public final class MainActivity
         startActivity(new Intent(MainActivity.this, SettingsActivity.class));
       }
     }));
-
-    commands.add(new ActionMenuCommand(R.string.Menu_settings, '1', 'm', android.R.drawable.ic_menu_add, MenuItem.SHOW_AS_ACTION_NEVER, new Commands.StaticEnabledExecutable()
-    {
-      @Override
-      public void run()
-      {
-        final Category category = new Category();
-        category.category.name = "add category test";
-        category.category.label = "add category test label";
-        category.category.description = "add category test decription";
-        try
-        {
-          LeelahSystemServices.getInstance().addCategorie(category);
-        }
-        catch (CallException e)
-        {
-          // TODO Auto-generated catch block
-          e.printStackTrace();
-        }
-      }
-    }));
     return commands;
   }
 
   public void onTitleBarRefresh()
   {
     categoriesFragment.onTitleBarRefresh();
-    productsFragment.onTitleBarRefresh();
+    if (LeelahSystemApplication.isTabletMode == true)
+    {
+      productsFragment.onTitleBarRefresh();
+    }
   }
 
 }

@@ -34,7 +34,7 @@ public class Category
   @JsonIgnoreProperties(ignoreUnknown = true)
   public final static class CategoryDetails
   {
-    public int id;
+    public Integer id;
 
     public String description;
 

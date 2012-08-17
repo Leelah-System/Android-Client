@@ -124,6 +124,7 @@ public class ProductsListFragment
     super.onRetrieveDisplayObjects();
 
     getWrappedListView().getListView().setBackgroundResource(android.R.color.white);
+    categoryId = getCheckedActivity().getIntent().getIntExtra(CategoriesListFragment.SELECTED_CATEGORY, -1);
   }
 
   public List<? extends BusinessViewWrapper<?>> retrieveBusinessObjectsList()

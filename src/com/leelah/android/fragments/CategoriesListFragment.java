@@ -10,8 +10,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.leelah.android.Bar;
+import com.leelah.android.LeelahSystemApplication;
 import com.leelah.android.R;
 import com.leelah.android.bo.Category.CategoryDetails;
+import com.leelah.android.phone.ProductsActivity;
 import com.leelah.android.ws.LeelahSystemServices;
 import com.smartnsoft.droid4me.LifeCycle.BusinessObjectsRetrievalAsynchronousPolicy;
 import com.smartnsoft.droid4me.app.AppPublics.SendLoadingIntent;
@@ -72,8 +74,16 @@ public class CategoriesListFragment
     {
       if (objectEvent == ObjectEvent.Clicked)
       {
-        activity.sendBroadcast(new Intent(CategoriesListFragment.CHANGE_CATEGORY).putExtra(CategoriesListFragment.SELECTED_CATEGORY, businessObject.id));
+        if (LeelahSystemApplication.isTabletMode == true)
+        {
+          activity.sendBroadcast(new Intent(CategoriesListFragment.CHANGE_CATEGORY).putExtra(CategoriesListFragment.SELECTED_CATEGORY, businessObject.id));
+        }
+        else
+        {
+          activity.startActivity(new Intent(activity, ProductsActivity.class).putExtra(CategoriesListFragment.SELECTED_CATEGORY, businessObject.id));
+        }
       }
+
       return super.onObjectEvent(activity, viewAttributes, view, businessObject, objectEvent, position);
     }
 
@@ -88,8 +98,11 @@ public class CategoriesListFragment
   {
     super.onRetrieveDisplayObjects();
 
-    getWrappedListView().getListView().setBackgroundResource(R.drawable.shadow_left);
-    getWrappedListView().getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+    if (LeelahSystemApplication.isTabletMode == true)
+    {
+      getWrappedListView().getListView().setBackgroundResource(R.drawable.shadow_left);
+      getWrappedListView().getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+    }
   }
 
   public List<? extends BusinessViewWrapper<?>> retrieveBusinessObjectsList()
@@ -141,4 +154,5 @@ public class CategoriesListFragment
     fromCache = false;
     refreshBusinessObjectsAndDisplay(true);
   }
+
 }

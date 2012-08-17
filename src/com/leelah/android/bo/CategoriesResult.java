@@ -2,6 +2,8 @@ package com.leelah.android.bo;
 
 import java.util.List;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+
 import com.leelah.android.bo.Category.CategoryDetails;
 
 public class CategoriesResult
@@ -10,6 +12,7 @@ public class CategoriesResult
 
   private static final long serialVersionUID = 2550759817643443106L;
 
+  @JsonIgnoreProperties(ignoreUnknown = true)
   public static class Result
   {
     public List<CategoryDetails> categories;

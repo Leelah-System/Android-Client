@@ -10,12 +10,7 @@
     android:layout_height="match_parent"
     android:src="@drawable/background_restaurant"
     android:scaleType="centerCrop" 
-  />
-  <View
-    android:id="@+id/center"
-    android:layout_width="0dip"
-    android:layout_height="match_parent"
-    android:layout_centerInParent="true"
+    android:visibility="gone"
   />
   <LinearLayout
     android:id="@+id/background"
@@ -26,16 +21,17 @@
     android:padding="@dimen/defaultPadding"
     android:gravity="center"
     android:background="@drawable/login_screen_gradient"
+    android:visibility="gone"
   />
+
   <LinearLayout
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_toRightOf="@id/center"
-    android:layout_alignParentRight="true"
-    android:padding="@dimen/defaultPadding"
-    android:gravity="center"
-  >
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_alignParentRight="true"
+      android:gravity="center"
+      android:orientation="vertical"
+      android:padding="@dimen/defaultPadding" >
+
       <ImageView 
           android:layout_width="wrap_content"
           android:layout_height="140dip"

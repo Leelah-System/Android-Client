@@ -77,8 +77,13 @@
       android:configChanges="keyboardHidden|orientation"
     />
 
-        <activity
+    <activity
       android:name=".OrdersActivity"
+      android:configChanges="keyboardHidden|orientation"
+    />
+    
+    <activity
+      android:name=".phone.ProductsActivity"
       android:configChanges="keyboardHidden|orientation"
     />
     

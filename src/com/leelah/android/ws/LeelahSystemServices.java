@@ -53,6 +53,11 @@ public final class LeelahSystemServices
     extends WebServiceCaller
 {
 
+  public enum ScopeProduct
+  {
+    with_stock, without_stock, search_text, search_reference, search_label, search_name, search_description, price
+  }
+
   public final static class LeelahCredentials
   {
     public String login;
@@ -470,7 +475,7 @@ public final class LeelahSystemServices
   public boolean addCategorie(Category category)
       throws CallException
   {
-    final String json = serializeObjectToJson(category);
+    final String json = serializeObjectToJson(category.category);
     if (log.isDebugEnabled())
     {
       log.debug("Json to send after serializeToJson :" + json);

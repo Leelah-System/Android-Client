@@ -4,7 +4,9 @@ public class Authentication
     extends WebServiceResult
 {
 
-  private final class Result
+  private static final long serialVersionUID = 1L;
+
+  private final static class Result
   {
     public String token;
   }

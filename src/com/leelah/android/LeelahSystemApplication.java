@@ -9,6 +9,7 @@ import java.util.List;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -117,6 +118,8 @@ public final class LeelahSystemApplication
     });
   }
 
+  public static boolean isTabletMode;
+
   @Override
   protected int getLogLevel()
   {
@@ -139,6 +142,9 @@ public final class LeelahSystemApplication
   public void onCreateCustom()
   {
     super.onCreateCustom();
+
+    final int screenLayout = getResources().getConfiguration().screenLayout;
+    isTabletMode = (screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_LARGE || (screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_XLARGE;
 
     // We initialize the persistence
     final String directoryName = getPackageManager().getApplicationLabel(getApplicationInfo()).toString();
