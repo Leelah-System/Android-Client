@@ -11,8 +11,7 @@ import android.widget.TextView;
 
 import com.leelah.android.Bar;
 import com.leelah.android.R;
-import com.leelah.android.bo.Category;
-import com.leelah.android.bo.Category.CategoryDestails;
+import com.leelah.android.bo.Category.CategoryDetails;
 import com.leelah.android.ws.LeelahSystemServices;
 import com.smartnsoft.droid4me.LifeCycle.BusinessObjectsRetrievalAsynchronousPolicy;
 import com.smartnsoft.droid4me.app.AppPublics.SendLoadingIntent;
@@ -36,9 +35,9 @@ public class CategoriesListFragment
       name = (TextView) view.findViewById(R.id.name);
     }
 
-    public void update(Category businessObject)
+    public void update(CategoryDetails businessObject)
     {
-      name.setText(businessObject.category.name);
+      name.setText(businessObject.name);
     }
 
   }
@@ -48,32 +47,32 @@ public class CategoriesListFragment
   public static final String SELECTED_CATEGORY = CategoriesListFragment.CHANGE_CATEGORY + ".selectedCategory";
 
   private final static class CategoryWrapper
-      extends SimpleBusinessViewWrapper<Category>
+      extends SimpleBusinessViewWrapper<CategoryDetails>
   {
 
-    public CategoryWrapper(Category businessObject)
+    public CategoryWrapper(CategoryDetails businessObject)
     {
       super(businessObject, 0, R.layout.category_list_item);
     }
 
     @Override
-    protected Object extractNewViewAttributes(Activity activity, View view, Category businessObject)
+    protected Object extractNewViewAttributes(Activity activity, View view, CategoryDetails businessObject)
     {
       return new CategoryViewHolder(view);
     }
 
     @Override
-    protected void updateView(Activity activity, Object businessViewHolder, View view, Category businessObject, int position)
+    protected void updateView(Activity activity, Object businessViewHolder, View view, CategoryDetails businessObject, int position)
     {
       ((CategoryViewHolder) businessViewHolder).update(businessObject);
     }
 
     @Override
-    public boolean onObjectEvent(Activity activity, Object viewAttributes, View view, Category businessObject, ObjectEvent objectEvent, int position)
+    public boolean onObjectEvent(Activity activity, Object viewAttributes, View view, CategoryDetails businessObject, ObjectEvent objectEvent, int position)
     {
       if (objectEvent == ObjectEvent.Clicked)
       {
-        activity.sendBroadcast(new Intent(CategoriesListFragment.CHANGE_CATEGORY).putExtra(CategoriesListFragment.SELECTED_CATEGORY, businessObject.category.id));
+        activity.sendBroadcast(new Intent(CategoriesListFragment.CHANGE_CATEGORY).putExtra(CategoriesListFragment.SELECTED_CATEGORY, businessObject.id));
       }
       return super.onObjectEvent(activity, viewAttributes, view, businessObject, objectEvent, position);
     }
@@ -98,7 +97,7 @@ public class CategoriesListFragment
   {
     final List<BusinessViewWrapper<?>> wrappers = new ArrayList<BusinessViewWrapper<?>>();
 
-    final List<Category> categories;
+    final List<CategoryDetails> categories;
     try
     {
       categories = LeelahSystemServices.getInstance().getCategories(fromCache);
@@ -108,13 +107,12 @@ public class CategoriesListFragment
       throw new BusinessObjectUnavailableException(exception);
     }
 
-    final Category allCategory = new Category();
-    allCategory.category = new CategoryDestails();
-    allCategory.category.id = -1;
-    allCategory.category.name = getString(R.string.Category_all_categories);
+    final CategoryDetails allCategory = new CategoryDetails();
+    allCategory.id = -1;
+    allCategory.name = getString(R.string.Category_all_categories);
     wrappers.add(new CategoryWrapper(allCategory));
 
-    for (Category category : categories)
+    for (CategoryDetails category : categories)
     {
       wrappers.add(new CategoryWrapper(category));
     }

@@ -17,7 +17,7 @@ import com.leelah.android.Bar;
 import com.leelah.android.LeelahSystemApplication;
 import com.leelah.android.LeelahSystemApplication.ImageType;
 import com.leelah.android.R;
-import com.leelah.android.bo.Product;
+import com.leelah.android.bo.Product.ProductDetails;
 import com.leelah.android.fragments.ProductDetailsDialogFragment.ActionType;
 import com.leelah.android.ws.LeelahSystemServices;
 import com.smartnsoft.droid4me.LifeCycle.BusinessObjectsRetrievalAsynchronousPolicy;
@@ -49,38 +49,38 @@ public class ProductsListFragment
       productDescription = (TextView) view.findViewById(R.id.description);
     }
 
-    public void update(final Handler handler, final Product businessObject)
+    public void update(final Handler handler, final ProductDetails businessObject)
     {
-      productName.setText(businessObject.product.name);
-      productDescription.setText(businessObject.product.description);
-      LeelahSystemApplication.requestImageAndDisplay(handler, businessObject.product.name, image, ImageType.Thumbnail);
+      productName.setText(businessObject.name);
+      productDescription.setText(businessObject.description);
+      LeelahSystemApplication.requestImageAndDisplay(handler, businessObject.name, image, ImageType.Thumbnail);
     }
 
   }
 
   private final class ProductWrapper
-      extends SimpleBusinessViewWrapper<Product>
+      extends SimpleBusinessViewWrapper<ProductDetails>
   {
 
-    public ProductWrapper(Product businessObject)
+    public ProductWrapper(ProductDetails businessObject)
     {
       super(businessObject, 0, R.layout.product_list_item);
     }
 
     @Override
-    protected Object extractNewViewAttributes(Activity activity, View view, Product businessObject)
+    protected Object extractNewViewAttributes(Activity activity, View view, ProductDetails businessObject)
     {
       return new ProductAttributes(view);
     }
 
     @Override
-    protected void updateView(Activity activity, Object viewAttributes, View view, Product businessObject, int position)
+    protected void updateView(Activity activity, Object viewAttributes, View view, ProductDetails businessObject, int position)
     {
       ((ProductAttributes) viewAttributes).update(getHandler(), businessObject);
     }
 
     @Override
-    public boolean onObjectEvent(Activity activity, Object viewAttributes, View view, Product businessObject, ObjectEvent objectEvent, int position)
+    public boolean onObjectEvent(Activity activity, Object viewAttributes, View view, ProductDetails businessObject, ObjectEvent objectEvent, int position)
     {
       if (objectEvent == ObjectEvent.Clicked)
       {
@@ -131,7 +131,7 @@ public class ProductsListFragment
   {
     final List<BusinessViewWrapper<?>> wrappers = new ArrayList<BusinessViewWrapper<?>>();
 
-    final List<Product> products;
+    final List<ProductDetails> products;
     try
     {
       products = categoryId > -1 ? LeelahSystemServices.getInstance().getProductsByCateogry(fromCache, categoryId)
@@ -142,11 +142,16 @@ public class ProductsListFragment
       throw new BusinessObjectUnavailableException(exception);
     }
 
-    for (Product product : products)
+    if (products != null)
     {
-      wrappers.add(new ProductWrapper(product));
+      for (ProductDetails product : products)
+      {
+        if (product != null)
+        {
+          wrappers.add(new ProductWrapper(product));
+        }
+      }
     }
-
     fromCache = true;
     return wrappers;
   }
@@ -170,7 +175,7 @@ public class ProductsListFragment
     refreshBusinessObjectsAndDisplay(true);
   }
 
-  static void showProductDialog(FragmentManager fragmentManager, Product businessObject)
+  static void showProductDialog(FragmentManager fragmentManager, ProductDetails businessObject)
   {
     final ProductDetailsDialogFragment productDetailsDialogFragment = ProductDetailsDialogFragment.newInstance(ActionType.ViewProduct, businessObject);
     productDetailsDialogFragment.show(fragmentManager, "dialog");

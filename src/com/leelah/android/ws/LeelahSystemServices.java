@@ -8,8 +8,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicNameValuePair;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonParseException;
@@ -25,9 +27,10 @@ import com.leelah.android.Constants;
 import com.leelah.android.LoginActivity;
 import com.leelah.android.bo.CategoriesResult;
 import com.leelah.android.bo.Category;
+import com.leelah.android.bo.Category.CategoryDetails;
 import com.leelah.android.bo.GoogleImage;
 import com.leelah.android.bo.GoogleImage.GoogleImageItem;
-import com.leelah.android.bo.Product;
+import com.leelah.android.bo.Product.ProductDetails;
 import com.leelah.android.bo.ProductResult;
 import com.leelah.android.bo.User;
 import com.leelah.android.bo.UserResult;
@@ -224,6 +227,56 @@ public final class LeelahSystemServices
 
   // https://ajax.googleapis.com/ajax/services/search/images?v=1.0&q=Mousse%20au%20chocolat&imgsz=xlarge&imgtype=photo&rsz=4&safe=active
 
+  private final BackedWSUriStreamParser.BackedUriStreamedMap<UserResult, User, JSONException, PersistenceException> authenticateStreamParser = new BackedWSUriStreamParser.BackedUriStreamedMap<UserResult, User, JSONException, PersistenceException>(Persistence.getInstance(0), this)
+  {
+
+    public KeysAggregator<User> computeUri(User parameter)
+    {
+      final List<NameValuePair> postParams = new ArrayList<NameValuePair>();
+      postParams.add(new BasicNameValuePair("json", serializeObjectToJson(parameter)));
+      postParams.add(new BasicNameValuePair("login", parameter.login));
+      postParams.add(new BasicNameValuePair("password", parameter.password));
+
+      UrlEncodedFormEntity entity = null;
+      try
+      {
+        entity = new UrlEncodedFormEntity(postParams);
+      }
+      catch (UnsupportedEncodingException exception)
+      {
+        if (log.isErrorEnabled())
+        {
+          log.error("Problems when initializing Entity with post parameters", exception);
+        }
+      }
+
+      return SimpleIOStreamerSourceKey.fromUriStreamerSourceKey(
+          new HttpCallTypeAndBody(computeUri("http://" + parameter.address, "api/authenticate", null), CallType.Post, entity), parameter);
+
+    }
+
+    public UserResult parse(User parameter, InputStream inputStream)
+        throws JSONException
+    {
+      final UserResult userResult = (UserResult) deserializeJson(inputStream, UserResult.class);
+      checkApiStatus(userResult);
+      if (userResult.success == false)
+      {
+        throw new JSONException(userResult.msg);
+      }
+      return userResult;
+    }
+
+  };
+
+  public User authenticate(User u)
+      throws CacheException
+  {
+    final UserResult user = authenticateStreamParser.backed.getValue(false, null, u);
+    token = user.result.token;
+    return user.result;
+  }
+
   private final BackedWSUriStreamParser.BackedUriStreamedMap<List<GoogleImageItem>, String, JSONException, PersistenceException> requestGoogleImageStreamParser = new BackedWSUriStreamParser.BackedUriStreamedMap<List<GoogleImageItem>, String, JSONException, PersistenceException>(Persistence.getInstance(), this)
   {
 
@@ -256,7 +309,7 @@ public final class LeelahSystemServices
     return requestGoogleImageStreamParser.backed.getRetentionValue(fromCache, Constants.RETENTION_PERIOD_IN_MILLISECONDS, null, query);
   }
 
-  private final BackedWSUriStreamParser.BackedUriStreamedValue<List<Category>, Void, JSONException, PersistenceException> getCategoriesStreamParser = new BackedWSUriStreamParser.BackedUriStreamedValue<List<Category>, Void, JSONException, PersistenceException>(Persistence.getInstance(), this)
+  private final BackedWSUriStreamParser.BackedUriStreamedValue<List<CategoryDetails>, Void, JSONException, PersistenceException> getCategoriesStreamParser = new BackedWSUriStreamParser.BackedUriStreamedValue<List<CategoryDetails>, Void, JSONException, PersistenceException>(Persistence.getInstance(), this)
   {
 
     public KeysAggregator<Void> computeUri(Void parameter)
@@ -266,7 +319,7 @@ public final class LeelahSystemServices
           parameter);
     }
 
-    public List<Category> parse(Void parameter, InputStream inputStream)
+    public List<CategoryDetails> parse(Void parameter, InputStream inputStream)
         throws JSONException
     {
       final CategoriesResult categoriesResult = (CategoriesResult) deserializeJson(inputStream, CategoriesResult.class);
@@ -276,23 +329,23 @@ public final class LeelahSystemServices
 
   };
 
-  public List<Category> getCategories(boolean fromCache)
+  public List<CategoryDetails> getCategories(boolean fromCache)
       throws CacheException
   {
     return getCategoriesStreamParser.backed.getRetentionValue(fromCache, Constants.RETENTION_PERIOD_IN_MILLISECONDS, null, null);
   }
 
-  private final BackedWSUriStreamParser.BackedUriStreamedMap<List<Product>, String, JSONException, PersistenceException> getProductsCategoryStreamParser = new BackedWSUriStreamParser.BackedUriStreamedMap<List<Product>, String, JSONException, PersistenceException>(Persistence.getInstance(), this)
+  private final BackedWSUriStreamParser.BackedUriStreamedMap<List<ProductDetails>, String, JSONException, PersistenceException> getProductsCategoryStreamParser = new BackedWSUriStreamParser.BackedUriStreamedMap<List<ProductDetails>, String, JSONException, PersistenceException>(Persistence.getInstance(), this)
   {
 
     public KeysAggregator<String> computeUri(String parameter)
     {
       return SimpleIOStreamerSourceKey.fromUriStreamerSourceKey(
-          new HttpCallTypeAndBody(computeUri("http://" + leelahCredentialsInformations.getServerURL(), "api/" + token + "/catalog/products/" + parameter, null)),
-          parameter);
+          new HttpCallTypeAndBody(computeUri("http://" + leelahCredentialsInformations.getServerURL(), "api/" + token + "/catalog/categories/" + parameter,
+              null)), parameter);
     }
 
-    public List<Product> parse(String parameter, InputStream inputStream)
+    public List<ProductDetails> parse(String parameter, InputStream inputStream)
         throws JSONException
     {
       final ProductResult products = (ProductResult) deserializeJson(inputStream, ProductResult.class);
@@ -302,22 +355,26 @@ public final class LeelahSystemServices
 
   };
 
-  public List<Product> getProductsByCateogry(boolean fromCache, int categoryId)
+  public List<ProductDetails> getProductsByCateogry(boolean fromCache, int categoryId)
       throws CacheException
   {
     return getProductsCategoryStreamParser.backed.getRetentionValue(fromCache, Constants.RETENTION_PERIOD_IN_MILLISECONDS, null, Integer.toString(categoryId));
   }
 
-  private final BackedWSUriStreamParser.BackedUriStreamedValue<List<Product>, Void, JSONException, PersistenceException> getProductsStreamParser = new BackedWSUriStreamParser.BackedUriStreamedValue<List<Product>, Void, JSONException, PersistenceException>(Persistence.getInstance(), this)
+  private final BackedWSUriStreamParser.BackedUriStreamedValue<List<ProductDetails>, Void, JSONException, PersistenceException> getProductsStreamParser = new BackedWSUriStreamParser.BackedUriStreamedValue<List<ProductDetails>, Void, JSONException, PersistenceException>(Persistence.getInstance(), this)
   {
 
     public KeysAggregator<Void> computeUri(Void parameter)
     {
+      final Map<String, String> getParameters = new HashMap<String, String>();
+      // getParameters.put("scope", "with_stock");
+
       return SimpleIOStreamerSourceKey.fromUriStreamerSourceKey(
-          new HttpCallTypeAndBody(computeUri("http://" + leelahCredentialsInformations.getServerURL(), "api/" + token + "/catalog/products", null)), parameter);
+          new HttpCallTypeAndBody(computeUri("http://" + leelahCredentialsInformations.getServerURL(), "api/" + token + "/catalog/products", getParameters)),
+          parameter);
     }
 
-    public List<Product> parse(Void parameter, InputStream inputStream)
+    public List<ProductDetails> parse(Void parameter, InputStream inputStream)
         throws JSONException
     {
       final ProductResult products = (ProductResult) deserializeJson(inputStream, ProductResult.class);
@@ -327,7 +384,7 @@ public final class LeelahSystemServices
 
   };
 
-  public List<Product> getProducts(boolean fromCache)
+  public List<ProductDetails> getProducts(boolean fromCache)
       throws CacheException
   {
     return getProductsStreamParser.backed.getRetentionValue(fromCache, Constants.RETENTION_PERIOD_IN_MILLISECONDS, null, null);
@@ -410,54 +467,28 @@ public final class LeelahSystemServices
     return deleteUserStreamParser.getValue(id);
   }
 
-  private final BackedWSUriStreamParser.BackedUriStreamedMap<UserResult, User, JSONException, PersistenceException> authenticateStreamParser = new BackedWSUriStreamParser.BackedUriStreamedMap<UserResult, User, JSONException, PersistenceException>(Persistence.getInstance(0), this)
+  public boolean addCategorie(Category category)
+      throws CallException
   {
-
-    public KeysAggregator<User> computeUri(User parameter)
+    final String json = serializeObjectToJson(category);
+    if (log.isDebugEnabled())
     {
-      final List<NameValuePair> postParams = new ArrayList<NameValuePair>();
-      postParams.add(new BasicNameValuePair("json", serializeObjectToJson(parameter)));
-      postParams.add(new BasicNameValuePair("login", parameter.login));
-      postParams.add(new BasicNameValuePair("password", parameter.password));
-
-      UrlEncodedFormEntity entity = null;
-      try
-      {
-        entity = new UrlEncodedFormEntity(postParams);
-      }
-      catch (UnsupportedEncodingException exception)
-      {
-        if (log.isErrorEnabled())
-        {
-          log.error("Problems when initializing Entity with post parameters", exception);
-        }
-      }
-
-      return SimpleIOStreamerSourceKey.fromUriStreamerSourceKey(
-          new HttpCallTypeAndBody(computeUri("http://" + parameter.address, "api/authenticate", null), CallType.Post, entity), parameter);
-
+      log.debug("Json to send after serializeToJson :" + json);
     }
-
-    public UserResult parse(User parameter, InputStream inputStream)
-        throws JSONException
+    HttpEntity httpEntity;
+    try
     {
-      final UserResult userResult = (UserResult) deserializeJson(inputStream, UserResult.class);
-      checkApiStatus(userResult);
-      if (userResult.success == false)
-      {
-        throw new JSONException(userResult.msg);
-      }
-      return userResult;
+      httpEntity = new StringEntity(json);
     }
-
-  };
-
-  public User authenticate(User u)
-      throws CacheException
-  {
-    final UserResult user = authenticateStreamParser.backed.getValue(false, null, u);
-    token = user.result.token;
-    return user.result;
+    catch (UnsupportedEncodingException exception)
+    {
+      throw new CallException(exception);
+    }
+    final InputStream inputStream = getInputStream(
+        computeUri("http://" + leelahCredentialsInformations.getServerURL(), "api/" + token + "/catalog/categories", null), CallType.Post, httpEntity);
+    final CategoriesResult categoriesResult = (CategoriesResult) deserializeJson(inputStream, CategoriesResult.class);
+    checkApiStatus(categoriesResult);
+    return categoriesResult.success;
   }
 
 }

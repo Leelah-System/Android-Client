@@ -2,6 +2,8 @@ package com.leelah.android.bo;
 
 import java.util.List;
 
+import com.leelah.android.bo.Category.CategoryDetails;
+
 public class CategoriesResult
     extends WebServiceResult
 {
@@ -10,7 +12,7 @@ public class CategoriesResult
 
   public static class Result
   {
-    public List<Category> categories;
+    public List<CategoryDetails> categories;
   }
 
   public Result result;

@@ -20,7 +20,6 @@ import com.leelah.android.Bar;
 import com.leelah.android.LeelahSystemApplication;
 import com.leelah.android.LeelahSystemApplication.ImageType;
 import com.leelah.android.R;
-import com.leelah.android.bo.Product;
 import com.leelah.android.bo.Product.ProductDetails;
 import com.smartnsoft.droid4me.LifeCycle.BusinessObjectsRetrievalAsynchronousPolicy;
 import com.smartnsoft.droid4me.app.AppPublics.BroadcastListener;
@@ -36,7 +35,7 @@ public class CartListFragment
 {
 
   public class CartProduct
-      extends Product
+      extends ProductDetails
   {
     private static final long serialVersionUID = 7172872330572247666L;
 
@@ -94,10 +93,10 @@ public class CartListFragment
 
     public void update(Handler handler, CartProduct businessObject)
     {
-      productName.setText(businessObject.product.name);
-      productPrice.setText(productPrice.getResources().getString(R.string.Price_euro, Float.toString(businessObject.product.price)));
+      productName.setText(businessObject.name);
+      productPrice.setText(productPrice.getResources().getString(R.string.Price_euro, Float.toString(businessObject.price)));
       productQuantity.setText("x" + businessObject.quantityOrder);
-      LeelahSystemApplication.requestImageAndDisplay(handler, businessObject.product.name, productImage, ImageType.Thumbnail);
+      LeelahSystemApplication.requestImageAndDisplay(handler, businessObject.name, productImage, ImageType.Thumbnail);
     }
 
   }
@@ -173,14 +172,13 @@ public class CartListFragment
           final ProductDetails product = (ProductDetails) intent.getSerializableExtra(CartListFragment.PRODUCT);
           final int quantity = intent.getIntExtra(CartListFragment.QUANTITY, 1);
           boolean isUpdate = intent.hasExtra(ProductDetailsDialogFragment.IS_UPDATE);
-          final CartProduct cartProduct = new CartProduct();
-          cartProduct.product = product;
+          final CartProduct cartProduct = (CartProduct) product;
 
           boolean alreadyInCart = false;
 
           for (CartProduct cartProduct2 : cartProducts)
           {
-            if (cartProduct2.product.id.equals(cartProduct.product.id))
+            if (cartProduct2.id.equals(cartProduct.id))
             {
               cartProduct2.quantityOrder = isUpdate == true ? quantity : cartProduct2.quantityOrder + quantity;
               alreadyInCart = true;
@@ -219,7 +217,7 @@ public class CartListFragment
 
     for (CartProduct cartProduct : cartProducts)
     {
-      price += cartProduct.quantityOrder * cartProduct.product.price;
+      price += cartProduct.quantityOrder * cartProduct.price;
       wrappers.add(new CartWrapper(cartProduct));
     }
 

@@ -10,13 +10,16 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.MenuItem;
 
+import com.leelah.android.bo.Category;
 import com.leelah.android.fragments.CartListFragment;
 import com.leelah.android.fragments.CategoriesListFragment;
 import com.leelah.android.fragments.MainFragment;
 import com.leelah.android.fragments.ProductsListFragment;
+import com.leelah.android.ws.LeelahSystemServices;
 import com.smartnsoft.droid4me.framework.Commands;
 import com.smartnsoft.droid4me.menu.StaticMenuCommand;
 import com.smartnsoft.droid4me.support.v4.menu.ActionMenuCommand;
+import com.smartnsoft.droid4me.ws.WebServiceClient.CallException;
 
 /**
  * The starting screen of the application.
@@ -117,6 +120,27 @@ public final class MainActivity
       public void run()
       {
         startActivity(new Intent(MainActivity.this, SettingsActivity.class));
+      }
+    }));
+
+    commands.add(new ActionMenuCommand(R.string.Menu_settings, '1', 'm', android.R.drawable.ic_menu_add, MenuItem.SHOW_AS_ACTION_NEVER, new Commands.StaticEnabledExecutable()
+    {
+      @Override
+      public void run()
+      {
+        final Category category = new Category();
+        category.category.name = "add category test";
+        category.category.label = "add category test label";
+        category.category.description = "add category test decription";
+        try
+        {
+          LeelahSystemServices.getInstance().addCategorie(category);
+        }
+        catch (CallException e)
+        {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        }
       }
     }));
     return commands;

@@ -10,7 +10,7 @@ import android.content.DialogInterface.OnClickListener;
 import android.view.LayoutInflater;
 import android.view.Window;
 
-import com.leelah.android.bo.Category;
+import com.leelah.android.bo.Category.CategoryDetails;
 import com.leelah.android.bo.User;
 import com.leelah.android.ws.LeelahSystemServices;
 import com.leelah.android.ws.LeelahSystemServices.LeelahCredentials;
@@ -93,11 +93,11 @@ public final class LeelahSystemSplashScreenActivity
       {
         LeelahSystemServices.getInstance().setLeelahCredentialsInformations(this);
         LeelahSystemServices.getInstance().authenticate(user);
-        final List<Category> categories = LeelahSystemServices.getInstance().getCategories(false);
+        final List<CategoryDetails> categories = LeelahSystemServices.getInstance().getCategories(false);
         LeelahSystemServices.getInstance().getProducts(false);
-        for (Category category : categories)
+        for (CategoryDetails category : categories)
         {
-          LeelahSystemServices.getInstance().getProductsByCateogry(false, category.category.id);
+          LeelahSystemServices.getInstance().getProductsByCateogry(false, category.id);
         }
       }
       catch (CacheException exception)
