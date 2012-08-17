@@ -207,6 +207,10 @@ public final class LeelahSystemServices
   {
     if (leelahApiStatusViewer != null)
     {
+      if (log.isDebugEnabled())
+      {
+        log.debug("Checking the webservice result : " + webServiceResult.success);
+      }
       if (webServiceResult.success == true)
       {
         leelahApiStatusViewer.OnApiStatusSucced(webServiceResult.msg);
@@ -258,7 +262,8 @@ public final class LeelahSystemServices
     public KeysAggregator<Void> computeUri(Void parameter)
     {
       return SimpleIOStreamerSourceKey.fromUriStreamerSourceKey(
-          new HttpCallTypeAndBody(computeUri("http://" + leelahCredentialsInformations.getServerURL(), "api/" + token + "/category", null)), parameter);
+          new HttpCallTypeAndBody(computeUri("http://" + leelahCredentialsInformations.getServerURL(), "api/" + token + "/catalog/categories", null)),
+          parameter);
     }
 
     public List<Category> parse(Void parameter, InputStream inputStream)
@@ -283,7 +288,7 @@ public final class LeelahSystemServices
     public KeysAggregator<String> computeUri(String parameter)
     {
       return SimpleIOStreamerSourceKey.fromUriStreamerSourceKey(
-          new HttpCallTypeAndBody(computeUri("http://" + leelahCredentialsInformations.getServerURL(), "api/" + token + "/product/" + parameter, null)),
+          new HttpCallTypeAndBody(computeUri("http://" + leelahCredentialsInformations.getServerURL(), "api/" + token + "/catalog/products/" + parameter, null)),
           parameter);
     }
 
@@ -309,7 +314,7 @@ public final class LeelahSystemServices
     public KeysAggregator<Void> computeUri(Void parameter)
     {
       return SimpleIOStreamerSourceKey.fromUriStreamerSourceKey(
-          new HttpCallTypeAndBody(computeUri("http://" + leelahCredentialsInformations.getServerURL(), "api/" + token + "/product", null)), parameter);
+          new HttpCallTypeAndBody(computeUri("http://" + leelahCredentialsInformations.getServerURL(), "api/" + token + "/catalog/products", null)), parameter);
     }
 
     public List<Product> parse(Void parameter, InputStream inputStream)
@@ -437,6 +442,7 @@ public final class LeelahSystemServices
         throws JSONException
     {
       final UserResult userResult = (UserResult) deserializeJson(inputStream, UserResult.class);
+      checkApiStatus(userResult);
       if (userResult.success == false)
       {
         throw new JSONException(userResult.msg);
@@ -450,8 +456,8 @@ public final class LeelahSystemServices
       throws CacheException
   {
     final UserResult user = authenticateStreamParser.backed.getValue(false, null, u);
-    token = user.result.user.token;
-    return user.result.user;
+    token = user.result.token;
+    return user.result;
   }
 
 }
