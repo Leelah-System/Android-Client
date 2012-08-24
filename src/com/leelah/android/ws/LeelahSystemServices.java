@@ -13,6 +13,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HTTP;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
@@ -214,6 +215,27 @@ public final class LeelahSystemServices
       }
     }
     return null;
+  }
+
+  private HttpEntity createPostBody(final Object object)
+      throws CallException
+  {
+    final String json = serializeObjectToJson(object);
+    if (log.isDebugEnabled())
+    {
+      log.debug("Json to send after serializeToJson :" + json);
+    }
+    final StringEntity httpEntity;
+    try
+    {
+      httpEntity = new StringEntity(json, HTTP.UTF_8);
+      httpEntity.setContentType("application/json");
+    }
+    catch (UnsupportedEncodingException exception)
+    {
+      throw new CallException(exception);
+    }
+    return httpEntity;
   }
 
   public boolean hasParameters(SharedPreferences preferences)
@@ -485,22 +507,9 @@ public final class LeelahSystemServices
   public boolean addCategorie(Category category)
       throws CallException
   {
-    final String json = serializeObjectToJson(category.category);
-    if (log.isDebugEnabled())
-    {
-      log.debug("Json to send after serializeToJson :" + json);
-    }
-    final HttpEntity httpEntity;
-    try
-    {
-      httpEntity = new StringEntity(json);
-    }
-    catch (UnsupportedEncodingException exception)
-    {
-      throw new CallException(exception);
-    }
     final InputStream inputStream = getInputStream(
-        computeUri("http://" + leelahCredentialsInformations.getServerURL(), "api/" + token + "/catalog/categories", null), CallType.Post, httpEntity);
+        computeUri("http://" + leelahCredentialsInformations.getServerURL(), "api/" + token + "/catalog/categories", null), CallType.Post,
+        createPostBody(category.category));
     final CategoriesResult categoriesResult = (CategoriesResult) deserializeJson(inputStream, CategoriesResult.class);
     checkApiStatus(categoriesResult);
     return categoriesResult.success;
@@ -515,23 +524,8 @@ public final class LeelahSystemServices
     addUserWrapper.user.login = loginValue;
     addUserWrapper.user.password = passwordValue;
     addUserWrapper.user.email = emailValue;
-
-    final String json = serializeObjectToJson(addUserWrapper);
-    if (log.isDebugEnabled())
-    {
-      log.debug("Json to send after serializeToJson :" + json);
-    }
-    final HttpEntity httpEntity;
-    try
-    {
-      httpEntity = new StringEntity("user=" + json);
-    }
-    catch (UnsupportedEncodingException exception)
-    {
-      throw new CallException(exception);
-    }
     final InputStream inputStream = getInputStream(computeUri("http://" + leelahCredentialsInformations.getServerURL(), "api/" + token + "/users", null),
-        CallType.Post, httpEntity);
+        CallType.Post, createPostBody(addUserWrapper));
     final WebServiceResult wsResult = (WebServiceResult) deserializeJson(inputStream, WebServiceResult.class);
     checkApiStatus(wsResult);
     return wsResult.success;
