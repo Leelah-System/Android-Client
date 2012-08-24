@@ -1,5 +1,6 @@
 package com.leelah.android.bo;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
@@ -19,7 +20,10 @@ public class Category
 
   @JsonIgnoreProperties(ignoreUnknown = true)
   public final static class PictureAttributes
+      implements Serializable
   {
+    private static final long serialVersionUID = 1L;
+
     public String name;
 
     public String label;
@@ -33,7 +37,10 @@ public class Category
 
   @JsonIgnoreProperties(ignoreUnknown = true)
   public final static class CategoryDetails
+      implements Serializable
   {
+    private static final long serialVersionUID = 1L;
+
     public Integer id;
 
     public String description;

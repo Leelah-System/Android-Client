@@ -31,6 +31,7 @@ import com.leelah.android.bo.Category;
 import com.leelah.android.bo.Category.CategoryDetails;
 import com.leelah.android.bo.GoogleImage;
 import com.leelah.android.bo.GoogleImage.GoogleImageItem;
+import com.leelah.android.bo.Order;
 import com.leelah.android.bo.Product;
 import com.leelah.android.bo.Product.ProductDetails;
 import com.leelah.android.bo.ProductResult;
@@ -107,7 +108,7 @@ public final class LeelahSystemServices
 
   private LeelahCredentialsInformations leelahCredentialsInformations;
 
-  private String token;
+  public String token;
 
   private LeelahApiStatusViewer leelahApiStatusViewer;
 
@@ -538,6 +539,16 @@ public final class LeelahSystemServices
     final InputStream inputStream = getInputStream(
         computeUri("http://" + leelahCredentialsInformations.getServerURL(), "api/" + token + "/catalog/products", null), CallType.Post,
         createPostBody(product));
+    final WebServiceResult wsResult = (WebServiceResult) deserializeJson(inputStream, WebServiceResult.class);
+    checkApiStatus(wsResult);
+    return wsResult.success;
+  }
+
+  public boolean addOrder(Order order)
+      throws CallException
+  {
+    final InputStream inputStream = getInputStream(computeUri("http://" + leelahCredentialsInformations.getServerURL(), "api/" + token + "/orders", null),
+        CallType.Post, createPostBody(order));
     final WebServiceResult wsResult = (WebServiceResult) deserializeJson(inputStream, WebServiceResult.class);
     checkApiStatus(wsResult);
     return wsResult.success;

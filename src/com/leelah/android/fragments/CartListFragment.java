@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Handler;
@@ -20,10 +21,15 @@ import com.leelah.android.Bar;
 import com.leelah.android.LeelahSystemApplication;
 import com.leelah.android.LeelahSystemApplication.ImageType;
 import com.leelah.android.R;
+import com.leelah.android.bo.Order;
+import com.leelah.android.bo.Order.OrderItem;
 import com.leelah.android.bo.Product.ProductDetails;
+import com.leelah.android.ws.LeelahSystemServices;
 import com.smartnsoft.droid4me.LifeCycle.BusinessObjectsRetrievalAsynchronousPolicy;
 import com.smartnsoft.droid4me.app.AppPublics.BroadcastListener;
 import com.smartnsoft.droid4me.app.AppPublics.BroadcastListenerProvider;
+import com.smartnsoft.droid4me.app.SmartCommands;
+import com.smartnsoft.droid4me.app.SmartCommands.DialogGuardedCommand;
 import com.smartnsoft.droid4me.framework.SmartAdapters.BusinessViewWrapper;
 import com.smartnsoft.droid4me.framework.SmartAdapters.ObjectEvent;
 import com.smartnsoft.droid4me.framework.SmartAdapters.SimpleBusinessViewWrapper;
@@ -40,6 +46,19 @@ public class CartListFragment
     private static final long serialVersionUID = 7172872330572247666L;
 
     public int quantityOrder;
+
+    public CartProduct(ProductDetails product)
+    {
+      this.category_id = product.category_id;
+      this.stock = product.stock;
+      this.description = product.description;
+      this.id = product.id;
+      this.label = product.label;
+      this.name = product.name;
+      this.picture_attributes = product.picture_attributes;
+      this.price = product.price;
+      this.reference = product.reference;
+    }
 
     @Override
     public int hashCode()
@@ -172,7 +191,7 @@ public class CartListFragment
           final ProductDetails product = (ProductDetails) intent.getSerializableExtra(CartListFragment.PRODUCT);
           final int quantity = intent.getIntExtra(CartListFragment.QUANTITY, 1);
           boolean isUpdate = intent.hasExtra(ProductDetailsDialogFragment.IS_UPDATE);
-          final CartProduct cartProduct = (CartProduct) product;
+          final CartProduct cartProduct = new CartProduct(product);
 
           boolean alreadyInCart = false;
 
@@ -229,6 +248,7 @@ public class CartListFragment
   {
     super.onFulfillDisplayObjects();
     getWrappedListView().addHeaderFooterView(false, true, submitLayout);
+    submitButton.setOnClickListener(this);
   }
 
   @Override
@@ -243,7 +263,30 @@ public class CartListFragment
   {
     if (view == submitButton)
     {
-
+      final ProgressDialog progress = new ProgressDialog(getActivity());
+      progress.setMessage(getString(R.string.loading));
+      progress.setIndeterminate(true);
+      progress.show();
+      SmartCommands.execute(new DialogGuardedCommand(getActivity(), CartListFragment.this, "An error occured when add Order", R.string.add_user_error_message, progress)
+      {
+        @Override
+        protected void runGuardedDialog()
+            throws Exception
+        {
+          final Order order = new Order();
+          order.order.status = 0;
+          order.order.reference = String.valueOf(cartProducts.hashCode() + LeelahSystemServices.getInstance().token.hashCode());
+          for (CartProduct product : cartProducts)
+          {
+            final OrderItem orderItem = new OrderItem();
+            orderItem.product_id = Integer.parseInt(product.id);
+            orderItem.quantity = product.quantityOrder;
+            order.order.order_lines_attributes.add(orderItem);
+          }
+          LeelahSystemServices.getInstance().addOrder(order);
+          emptyCart();
+        }
+      });
     }
   }
 
