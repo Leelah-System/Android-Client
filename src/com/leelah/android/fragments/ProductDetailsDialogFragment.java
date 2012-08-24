@@ -74,9 +74,9 @@ public class ProductDetailsDialogFragment
       productReference.setText("ref.:" + businessObject.reference);
       productPrice.setText(activity.getString(R.string.Price_euro, Float.toString(businessObject.price)));
       productQuantity.setText(Integer.toString(quantity));
-      productDispo.setText(businessObject.stocks > 0 ? getString(R.string.Product_in_stock) : getString(R.string.Product_not_in_stock));
-      productDispo.setBackgroundResource(businessObject.stocks > 0 ? R.color.leelah_green : R.color.leelah_red);
-      if (businessObject.stocks <= 0)
+      productDispo.setText(businessObject.stock > 0 ? getString(R.string.Product_in_stock) : getString(R.string.Product_not_in_stock));
+      productDispo.setBackgroundResource(businessObject.stock > 0 ? R.color.leelah_green : R.color.leelah_red);
+      if (businessObject.stock <= 0)
       {
         addtoCart.setEnabled(false);
         quantityMinus.setEnabled(false);

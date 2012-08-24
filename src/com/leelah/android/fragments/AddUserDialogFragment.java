@@ -30,6 +30,7 @@ public final class AddUserDialogFragment
     final EditText password = (EditText) view.findViewById(R.id.password);
     final EditText email = (EditText) view.findViewById(R.id.email);
     builder.setView(view);
+    builder.setTitle(R.string.add_user_title);
     builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener()
     {
       public void onClick(DialogInterface dialog, int which)

@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
+import com.leelah.android.bo.Category.PictureAttributes;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Product
     implements Serializable
@@ -30,8 +32,23 @@ public class Product
 
     public float price;
 
-    public int stocks;
+    public int stock;
+
+    public int category_id;
+
+    public PictureAttributes picture_attributes;
+
+    public ProductDetails()
+    {
+      picture_attributes = new PictureAttributes();
+    }
   }
 
   public ProductDetails product;
+
+  public Product()
+  {
+    product = new ProductDetails();
+  }
+
 }

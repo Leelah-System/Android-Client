@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.MenuItem;
 
+import com.leelah.android.fragments.AddProductDialogFragment;
 import com.leelah.android.fragments.AddUserDialogFragment;
 import com.leelah.android.fragments.CartListFragment;
 import com.leelah.android.fragments.CategoriesListFragment;
@@ -115,13 +116,22 @@ public final class MainActivity
         startActivity(new Intent(MainActivity.this, OrdersActivity.class));
       }
     }));
-    commands.add(new ActionMenuCommand(android.R.string.cut, '1', 'm', android.R.drawable.ic_menu_manage, MenuItem.SHOW_AS_ACTION_NEVER, new Commands.StaticEnabledExecutable()
+    commands.add(new StaticMenuCommand("Add User", '1', 'm', android.R.drawable.ic_menu_add, new Commands.StaticEnabledExecutable()
     {
       @Override
       public void run()
       {
         final AddUserDialogFragment addUserDialogFragment = new AddUserDialogFragment();
         addUserDialogFragment.show(getSupportFragmentManager(), "addUser");
+      }
+    }));
+    commands.add(new StaticMenuCommand("Add Product", '1', 'm', android.R.drawable.ic_menu_add, new Commands.StaticEnabledExecutable()
+    {
+      @Override
+      public void run()
+      {
+        final AddProductDialogFragment addProductDialogFragment = new AddProductDialogFragment();
+        addProductDialogFragment.show(getSupportFragmentManager(), "addProduct");
       }
     }));
     commands.add(new ActionMenuCommand(R.string.Menu_settings, '1', 'm', android.R.drawable.ic_menu_preferences, MenuItem.SHOW_AS_ACTION_NEVER, new Commands.StaticEnabledExecutable()

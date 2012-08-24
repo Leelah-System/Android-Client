@@ -51,6 +51,12 @@ public class Category
       picture_attributes = new PictureAttributes();
     }
 
+    @Override
+    public String toString()
+    {
+      return name;
+    }
+
   }
 
   public CategoryDetails category;
