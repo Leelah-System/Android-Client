@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,8 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 import com.leelah.android.R;
 import com.leelah.android.bo.Category.CategoryDetails;
 import com.leelah.android.bo.Product;
@@ -25,7 +28,22 @@ import com.smartnsoft.droid4me.cache.Values.CacheException;
 
 public final class AddProductDialogFragment
     extends LeelahDialogFragment<Product>
+    implements View.OnClickListener
 {
+
+  @Override
+  public void onActivityResult(int requestCode, int resultCode, Intent intent)
+  {
+    final IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
+    if (scanResult != null)
+    {
+      // Retrieve the barcode
+    }
+    else
+    {
+      super.onActivityResult(requestCode, resultCode, intent);
+    }
+  }
 
   public AddProductDialogFragment()
   {
@@ -43,7 +61,9 @@ public final class AddProductDialogFragment
     final EditText stock = (EditText) view.findViewById(R.id.stock);
     final EditText reference = (EditText) view.findViewById(R.id.reference);
     final EditText description = (EditText) view.findViewById(R.id.description);
+    // final Button barcodeScanner = (Button) view.findViewById(R.id.barcodeScanner);
     final Spinner categoriesSpinner = (Spinner) view.findViewById(R.id.categories);
+    // barcodeScanner.setOnClickListener(this);
     try
     {
       final List<CategoryDetails> categories = LeelahSystemServices.getInstance().getCategories(true);
@@ -144,5 +164,14 @@ public final class AddProductDialogFragment
       }
     });
     return builder.create();
+  }
+
+  public void onClick(View view)
+  {
+    // if (view == barcodeScanner)
+    {
+      final IntentIntegrator integrator = new IntentIntegrator(getActivity());
+      integrator.initiateScan();
+    }
   }
 }
