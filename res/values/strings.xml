@@ -67,4 +67,5 @@
   <string name="add_product_reference">Reference</string>
   <string name="add_product_error_message">Erreur de création du produit</string>
   <string name="add_product_title">Ajout d\'un produit</string>
+  <string name="add_category_title">Ajout d\'une categorie</string>
 </resources>
