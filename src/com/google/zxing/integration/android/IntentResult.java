@@ -16,6 +16,8 @@
 
 package com.google.zxing.integration.android;
 
+import java.io.Serializable;
+
 /**
  * <p>
  * Encapsulates the result of a barcode scan invoked through {@link IntentIntegrator}.
@@ -24,7 +26,10 @@ package com.google.zxing.integration.android;
  * @author Sean Owen
  */
 public final class IntentResult
+    implements Serializable
 {
+
+  private static final long serialVersionUID = 1L;
 
   private final String contents;
 

@@ -2,8 +2,11 @@ package com.leelah.android;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.widget.Toast;
 
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 import com.leelah.android.ws.LeelahSystemServices;
 import com.leelah.android.ws.LeelahSystemServices.LeelahApiStatusViewer;
 import com.leelah.android.ws.LeelahSystemServices.LeelahCredentials;
@@ -16,6 +19,20 @@ public abstract class LeelahFragmentActivity
 {
 
   public abstract void onFulfillDisplayObjects();
+
+  @Override
+  public void onActivityResult(int requestCode, int resultCode, Intent intent)
+  {
+    final IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
+    if (scanResult != null)
+    {
+      sendBroadcast(new Intent(LeelahActivity.BARCODE_SCANNER_ACTION).putExtra(LeelahActivity.BARCODE_SCANNER_RESULT, scanResult));
+    }
+    else
+    {
+      super.onActivityResult(requestCode, resultCode, intent);
+    }
+  }
 
   public void onRetrieveBusinessObjects()
       throws BusinessObjectUnavailableException

@@ -2,14 +2,15 @@ package com.leelah.android.fragments;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.support.v4.app.DialogFragment;
 import android.widget.Toast;
 
+import com.leelah.android.Bar.BarAggregate;
 import com.leelah.android.R;
 import com.leelah.android.ws.LeelahSystemServices.LeelahApiStatusViewer;
+import com.smartnsoft.droid4me.support.v4.app.SmartDialogFragment;
 
 public class LeelahDialogFragment<T>
-    extends DialogFragment
+    extends SmartDialogFragment<BarAggregate>
     implements LeelahApiStatusViewer
 {
 

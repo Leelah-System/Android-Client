@@ -15,6 +15,10 @@ public abstract class LeelahActivity
     implements LeelahCredentialsInformations, LeelahApiStatusViewer
 {
 
+  public static final String BARCODE_SCANNER_ACTION = "barcodeScannerAction";
+
+  public static final String BARCODE_SCANNER_RESULT = "barCodeScannerResult";
+
   public abstract void onFulfillDisplayObjects();
 
   public void onRetrieveBusinessObjects()

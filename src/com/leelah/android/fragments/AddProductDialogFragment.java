@@ -7,42 +7,62 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.leelah.android.LeelahActivity;
 import com.leelah.android.R;
 import com.leelah.android.bo.Category.CategoryDetails;
 import com.leelah.android.bo.Product;
 import com.leelah.android.ws.LeelahSystemServices;
+import com.smartnsoft.droid4me.app.AppPublics.BroadcastListener;
+import com.smartnsoft.droid4me.app.AppPublics.BroadcastListenerProvider;
 import com.smartnsoft.droid4me.app.SmartCommands;
 import com.smartnsoft.droid4me.app.SmartCommands.DialogGuardedCommand;
 import com.smartnsoft.droid4me.cache.Values.CacheException;
 
 public final class AddProductDialogFragment
     extends LeelahDialogFragment<Product>
-    implements View.OnClickListener
+    implements View.OnClickListener, BroadcastListenerProvider
 {
 
-  @Override
-  public void onActivityResult(int requestCode, int resultCode, Intent intent)
+  private ImageButton barcodeScanner;
+
+  private EditText reference;
+
+  public BroadcastListener getBroadcastListener()
   {
-    final IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
-    if (scanResult != null)
+    return new BroadcastListener()
     {
-      // Retrieve the barcode
-    }
-    else
-    {
-      super.onActivityResult(requestCode, resultCode, intent);
-    }
+      public IntentFilter getIntentFilter()
+      {
+        final IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(LeelahActivity.BARCODE_SCANNER_ACTION);
+        return intentFilter;
+      }
+
+      public void onReceive(Intent intent)
+      {
+        if (intent.getAction().equals(LeelahActivity.BARCODE_SCANNER_ACTION))
+        {
+          final IntentResult intentResult = (IntentResult) intent.getSerializableExtra(LeelahActivity.BARCODE_SCANNER_RESULT);
+          if (intentResult != null)
+          {
+            reference.setText(intentResult.getContents());
+          }
+        }
+      }
+    };
   }
 
   public AddProductDialogFragment()
@@ -59,11 +79,11 @@ public final class AddProductDialogFragment
     final EditText label = (EditText) view.findViewById(R.id.label);
     final EditText price = (EditText) view.findViewById(R.id.price);
     final EditText stock = (EditText) view.findViewById(R.id.stock);
-    final EditText reference = (EditText) view.findViewById(R.id.reference);
+    reference = (EditText) view.findViewById(R.id.reference);
     final EditText description = (EditText) view.findViewById(R.id.description);
-    // final Button barcodeScanner = (Button) view.findViewById(R.id.barcodeScanner);
+    barcodeScanner = (ImageButton) view.findViewById(R.id.barcodeScanner);
     final Spinner categoriesSpinner = (Spinner) view.findViewById(R.id.categories);
-    // barcodeScanner.setOnClickListener(this);
+    barcodeScanner.setOnClickListener(this);
     try
     {
       final List<CategoryDetails> categories = LeelahSystemServices.getInstance().getCategories(true);
@@ -168,7 +188,7 @@ public final class AddProductDialogFragment
 
   public void onClick(View view)
   {
-    // if (view == barcodeScanner)
+    if (view == barcodeScanner)
     {
       final IntentIntegrator integrator = new IntentIntegrator(getActivity());
       integrator.initiateScan();
