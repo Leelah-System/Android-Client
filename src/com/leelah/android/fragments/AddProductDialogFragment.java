@@ -7,7 +7,6 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,10 +24,13 @@ import com.smartnsoft.droid4me.app.SmartCommands.DialogGuardedCommand;
 import com.smartnsoft.droid4me.cache.Values.CacheException;
 
 public final class AddProductDialogFragment
-    extends DialogFragment
+    extends LeelahDialogFragment<Product>
 {
 
-  private final boolean fromCache = true;
+  public AddProductDialogFragment()
+  {
+    super(new Product());
+  }
 
   @Override
   public Dialog onCreateDialog(Bundle savedInstanceState)
@@ -116,19 +118,18 @@ public final class AddProductDialogFragment
             protected void runGuardedDialog()
                 throws Exception
             {
-              final Product product = new Product();
-              product.product.category_id = categoryId;
-              product.product.name = nameValue;
-              product.product.label = labelValue;
-              product.product.stock = Integer.parseInt(stockValue);
-              product.product.price = Float.parseFloat(priceValue);
-              product.product.description = descriptionValue;
-              product.product.picture_attributes.path = "";
-              product.product.picture_attributes.data_picture = "";
-              product.product.picture_attributes.description = "";
-              product.product.picture_attributes.label = "";
-              product.product.picture_attributes.name = "";
-              LeelahSystemServices.getInstance().addProduct(product);
+              businessObject.product.category_id = categoryId;
+              businessObject.product.name = nameValue;
+              businessObject.product.label = labelValue;
+              businessObject.product.stock = Integer.parseInt(stockValue);
+              businessObject.product.price = Float.parseFloat(priceValue);
+              businessObject.product.description = descriptionValue;
+              businessObject.product.picture_attributes.path = "";
+              businessObject.product.picture_attributes.data_picture = "";
+              businessObject.product.picture_attributes.description = "";
+              businessObject.product.picture_attributes.label = "";
+              businessObject.product.picture_attributes.name = "";
+              LeelahSystemServices.getInstance().addProduct(businessObject);
               dialog.dismiss();
             }
           });

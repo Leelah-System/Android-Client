@@ -5,19 +5,24 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 
 import com.leelah.android.R;
+import com.leelah.android.bo.User;
 import com.leelah.android.ws.LeelahSystemServices;
 import com.smartnsoft.droid4me.app.SmartCommands;
 import com.smartnsoft.droid4me.app.SmartCommands.DialogGuardedCommand;
 
 public final class AddUserDialogFragment
-    extends DialogFragment
+    extends LeelahDialogFragment<User>
 {
+
+  public AddUserDialogFragment()
+  {
+    super(new User());
+  }
 
   @Override
   public Dialog onCreateDialog(Bundle savedInstanceState)
@@ -73,7 +78,12 @@ public final class AddUserDialogFragment
             protected void runGuardedDialog()
                 throws Exception
             {
-              LeelahSystemServices.getInstance().addUser(firstnameValue, lastnameValue, loginValue, passwordValue, emailValue);
+              businessObject.first_name = firstnameValue;
+              businessObject.last_name = lastnameValue;
+              businessObject.login = loginValue;
+              businessObject.password = passwordValue;
+              businessObject.email = emailValue;
+              LeelahSystemServices.getInstance().addUser(businessObject);
               dialog.dismiss();
             }
           });

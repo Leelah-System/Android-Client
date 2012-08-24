@@ -80,7 +80,12 @@ public final class LeelahSystemServices
 
     public AddUserWrapper()
     {
-      user = new User();
+      this(new User());
+    }
+
+    public AddUserWrapper(User user)
+    {
+      this.user = user;
     }
   }
 
@@ -516,15 +521,10 @@ public final class LeelahSystemServices
     return categoriesResult.success;
   }
 
-  public boolean addUser(String firstnameValue, String lastnameValue, String loginValue, String passwordValue, String emailValue)
+  public boolean addUser(User user)
       throws CallException
   {
-    final AddUserWrapper addUserWrapper = new AddUserWrapper();
-    addUserWrapper.user.first_name = firstnameValue;
-    addUserWrapper.user.last_name = lastnameValue;
-    addUserWrapper.user.login = loginValue;
-    addUserWrapper.user.password = passwordValue;
-    addUserWrapper.user.email = emailValue;
+    final AddUserWrapper addUserWrapper = new AddUserWrapper(user);
     final InputStream inputStream = getInputStream(computeUri("http://" + leelahCredentialsInformations.getServerURL(), "api/" + token + "/users", null),
         CallType.Post, createPostBody(addUserWrapper));
     final WebServiceResult wsResult = (WebServiceResult) deserializeJson(inputStream, WebServiceResult.class);

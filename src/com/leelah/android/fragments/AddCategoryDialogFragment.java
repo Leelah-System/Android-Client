@@ -5,7 +5,6 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -17,10 +16,15 @@ import com.smartnsoft.droid4me.app.SmartCommands;
 import com.smartnsoft.droid4me.app.SmartCommands.DialogGuardedCommand;
 
 public final class AddCategoryDialogFragment
-    extends DialogFragment
+    extends LeelahDialogFragment<Category>
 {
 
   private final boolean fromCache = true;
+
+  public AddCategoryDialogFragment()
+  {
+    super(new Category());
+  }
 
   @Override
   public Dialog onCreateDialog(Bundle savedInstanceState)
@@ -63,16 +67,15 @@ public final class AddCategoryDialogFragment
             protected void runGuardedDialog()
                 throws Exception
             {
-              final Category category = new Category();
-              category.category.name = nameValue;
-              category.category.label = labelValue;
-              category.category.description = descriptionValue;
-              category.category.picture_attributes.path = "";
-              category.category.picture_attributes.data_picture = "";
-              category.category.picture_attributes.description = "";
-              category.category.picture_attributes.label = "";
-              category.category.picture_attributes.name = "";
-              LeelahSystemServices.getInstance().addCategorie(category);
+              businessObject.category.name = nameValue;
+              businessObject.category.label = labelValue;
+              businessObject.category.description = descriptionValue;
+              businessObject.category.picture_attributes.path = "";
+              businessObject.category.picture_attributes.data_picture = "";
+              businessObject.category.picture_attributes.description = "";
+              businessObject.category.picture_attributes.label = "";
+              businessObject.category.picture_attributes.name = "";
+              LeelahSystemServices.getInstance().addCategorie(businessObject);
               dialog.dismiss();
             }
           });
