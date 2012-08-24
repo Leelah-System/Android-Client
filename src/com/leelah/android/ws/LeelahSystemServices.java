@@ -72,6 +72,16 @@ public final class LeelahSystemServices
 
   }
 
+  private static final class AddUserWrapper
+  {
+    public User user;
+
+    public AddUserWrapper()
+    {
+      user = new User();
+    }
+  }
+
   public interface LeelahApiStatusViewer
   {
     public void OnApiStatusSucced(String message);
@@ -401,7 +411,7 @@ public final class LeelahSystemServices
     public KeysAggregator<String> computeUri(String parameter)
     {
       return SimpleIOStreamerSourceKey.fromUriStreamerSourceKey(
-          new HttpCallTypeAndBody(computeUri("http://" + leelahCredentialsInformations.getServerURL(), "api/" + token + "/users", null)), parameter);
+          new HttpCallTypeAndBody(computeUri("http://" + leelahCredentialsInformations.getServerURL(), "api/" + token + "/users", null)), null);
     }
 
     public List<User> parse(String parameter, InputStream inputStream)
@@ -414,10 +424,10 @@ public final class LeelahSystemServices
 
   };
 
-  public List<User> getUsers(String address)
+  public List<User> getUsers()
       throws CacheException, CallException
   {
-    return getUsersStreamParser.getValue(address);
+    return getUsersStreamParser.getValue(null);
   }
 
   private final WSUriStreamParser<Boolean, String, JSONException> deleteProductStreamParser = new WSUriStreamParser<Boolean, String, JSONException>(this)
@@ -480,7 +490,7 @@ public final class LeelahSystemServices
     {
       log.debug("Json to send after serializeToJson :" + json);
     }
-    HttpEntity httpEntity;
+    final HttpEntity httpEntity;
     try
     {
       httpEntity = new StringEntity(json);
@@ -496,4 +506,34 @@ public final class LeelahSystemServices
     return categoriesResult.success;
   }
 
+  public boolean addUser(String firstnameValue, String lastnameValue, String loginValue, String passwordValue, String emailValue)
+      throws CallException
+  {
+    final AddUserWrapper addUserWrapper = new AddUserWrapper();
+    addUserWrapper.user.first_name = firstnameValue;
+    addUserWrapper.user.last_name = lastnameValue;
+    addUserWrapper.user.login = loginValue;
+    addUserWrapper.user.password = passwordValue;
+    addUserWrapper.user.email = emailValue;
+
+    final String json = serializeObjectToJson(addUserWrapper);
+    if (log.isDebugEnabled())
+    {
+      log.debug("Json to send after serializeToJson :" + json);
+    }
+    final HttpEntity httpEntity;
+    try
+    {
+      httpEntity = new StringEntity("user=" + json);
+    }
+    catch (UnsupportedEncodingException exception)
+    {
+      throw new CallException(exception);
+    }
+    final InputStream inputStream = getInputStream(computeUri("http://" + leelahCredentialsInformations.getServerURL(), "api/" + token + "/users", null),
+        CallType.Post, httpEntity);
+    final WebServiceResult wsResult = (WebServiceResult) deserializeJson(inputStream, WebServiceResult.class);
+    checkApiStatus(wsResult);
+    return wsResult.success;
+  }
 }

@@ -17,7 +17,6 @@ import com.leelah.android.ws.LeelahSystemServices.LeelahCredentials;
 import com.leelah.android.ws.LeelahSystemServices.LeelahCredentialsInformations;
 import com.smartnsoft.droid4me.LifeCycle;
 import com.smartnsoft.droid4me.app.SmartSplashScreenActivity;
-import com.smartnsoft.droid4me.cache.Values.CacheException;
 
 /**
  * The first activity displayed while the application is loading.
@@ -93,6 +92,7 @@ public final class LeelahSystemSplashScreenActivity
       {
         LeelahSystemServices.getInstance().setLeelahCredentialsInformations(this);
         LeelahSystemServices.getInstance().authenticate(user);
+        LeelahSystemServices.getInstance().getUsers();
         final List<CategoryDetails> categories = LeelahSystemServices.getInstance().getCategories(false);
         LeelahSystemServices.getInstance().getProducts(false);
         for (CategoryDetails category : categories)
@@ -100,7 +100,7 @@ public final class LeelahSystemSplashScreenActivity
           LeelahSystemServices.getInstance().getProductsByCateogry(false, category.id);
         }
       }
-      catch (CacheException exception)
+      catch (Exception exception)
       {
         throw new BusinessObjectUnavailableException(exception);
       }

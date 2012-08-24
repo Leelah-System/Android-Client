@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.MenuItem;
 
+import com.leelah.android.fragments.AddUserDialogFragment;
 import com.leelah.android.fragments.CartListFragment;
 import com.leelah.android.fragments.CategoriesListFragment;
 import com.leelah.android.fragments.MainFragment;
@@ -112,6 +113,15 @@ public final class MainActivity
       public void run()
       {
         startActivity(new Intent(MainActivity.this, OrdersActivity.class));
+      }
+    }));
+    commands.add(new ActionMenuCommand(android.R.string.cut, '1', 'm', android.R.drawable.ic_menu_manage, MenuItem.SHOW_AS_ACTION_NEVER, new Commands.StaticEnabledExecutable()
+    {
+      @Override
+      public void run()
+      {
+        final AddUserDialogFragment addUserDialogFragment = new AddUserDialogFragment();
+        addUserDialogFragment.show(getSupportFragmentManager(), "addUser");
       }
     }));
     commands.add(new ActionMenuCommand(R.string.Menu_settings, '1', 'm', android.R.drawable.ic_menu_preferences, MenuItem.SHOW_AS_ACTION_NEVER, new Commands.StaticEnabledExecutable()

@@ -40,4 +40,12 @@
   <string name="Product_not_in_stock">Indisponible</string>
   <string name="Product_update_cart">Mettre à jour</string>
   <string name="Service_error_title">Service Error !</string>
+  <string name="add_user_firstname">Prénom</string>
+  <string name="add_user_lastname">Nom</string>
+  <string name="add_user_username">Identifiant</string>
+  <string name="add_user_password">Mot de passe</string>
+  <string name="add_user_email">Adresse Email</string>
+  <string name="add_user_error">Veuillez remplir ce champ correctement !</string>
+  <string name="add_user_error_message">Erreur de création de l\'utilisateur</string>
+  <string name="loading">Chargement...</string>
 </resources>
