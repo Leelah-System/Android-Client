@@ -11,10 +11,10 @@ import com.leelah.android.ws.LeelahSystemServices;
 import com.leelah.android.ws.LeelahSystemServices.LeelahApiStatusViewer;
 import com.leelah.android.ws.LeelahSystemServices.LeelahCredentials;
 import com.leelah.android.ws.LeelahSystemServices.LeelahCredentialsInformations;
-import com.smartnsoft.droid4me.support.v4.app.SmartFragmentActivity;
+import com.smartnsoft.SmartSlidingFragmentActivity;
 
 public abstract class LeelahFragmentActivity
-    extends SmartFragmentActivity<Bar.BarAggregate>
+    extends SmartSlidingFragmentActivity<Bar.BarAggregate>
     implements LeelahCredentialsInformations, LeelahApiStatusViewer
 {
 
