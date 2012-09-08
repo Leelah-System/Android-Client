@@ -7,6 +7,7 @@ import android.widget.Toast;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.leelah.android.fragments.MenuFragment;
 import com.leelah.android.ws.LeelahSystemServices;
 import com.leelah.android.ws.LeelahSystemServices.LeelahApiStatusViewer;
 import com.leelah.android.ws.LeelahSystemServices.LeelahCredentials;
@@ -40,7 +41,17 @@ public abstract class LeelahFragmentActivity
     LeelahSystemServices.getInstance().setLeelahCredentialsInformations(this);
   }
 
-  public abstract void onRetrieveDisplayObjects();
+  public void onRetrieveDisplayObjects()
+  {
+    // set the Behind View
+    setBehindContentView(R.layout.menu_frame);
+    getSupportFragmentManager().beginTransaction().replace(R.id.menu_frame, new MenuFragment()).commit();
+
+    // customize the SlidingMenu
+    getSlidingMenu().setShadowWidthRes(R.dimen.shadow_width);
+    getSlidingMenu().setShadowDrawable(R.drawable.shadow);
+    getSlidingMenu().setBehindOffset((int) (getWindowManager().getDefaultDisplay().getWidth() / 1.3));
+  }
 
   public abstract void onSynchronizeDisplayObjects();
 

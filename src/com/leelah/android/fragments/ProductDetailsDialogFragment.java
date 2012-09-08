@@ -164,6 +164,7 @@ public class ProductDetailsDialogFragment
 
     final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
     final BusinessViewHolder<ProductDetails> viewHolder = new BusinessViewHolder<ProductDetails>(new ProductDetailsWrapper(product));
+    builder.setTitle(product.name);
     builder.setView(viewHolder.getView(getActivity()));
     viewHolder.updateView(getActivity());
     return builder.create();

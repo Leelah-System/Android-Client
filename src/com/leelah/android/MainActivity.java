@@ -6,7 +6,6 @@ import java.util.List;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.v4.app.FragmentTransaction;
 import android.view.MenuItem;
 
 import com.leelah.android.fragments.AddCategoryDialogFragment;
@@ -15,7 +14,6 @@ import com.leelah.android.fragments.AddUserDialogFragment;
 import com.leelah.android.fragments.CartListFragment;
 import com.leelah.android.fragments.CategoriesListFragment;
 import com.leelah.android.fragments.ProductsListFragment;
-import com.slidingmenu.lib.SlidingMenu;
 import com.smartnsoft.droid4me.framework.Commands;
 import com.smartnsoft.droid4me.menu.StaticMenuCommand;
 import com.smartnsoft.droid4me.support.v4.menu.ActionMenuCommand;
@@ -37,25 +35,11 @@ public final class MainActivity
 
   private CartListFragment cartFragment;
 
-  private SampleListFragment mFrag;
-
   @Override
   public void onRetrieveDisplayObjects()
   {
     setContentView(R.layout.main);
-
-    // set the Behind View
-    setBehindContentView(R.layout.menu_frame);
-    FragmentTransaction t = this.getSupportFragmentManager().beginTransaction();
-    mFrag = new SampleListFragment();
-    t.replace(R.id.menu_frame, mFrag);
-    t.commit();
-
-    // customize the SlidingMenu
-    SlidingMenu sm = getSlidingMenu();
-    sm.setShadowWidthRes(R.dimen.shadow_width);
-    sm.setShadowDrawable(R.drawable.shadow);
-    sm.setBehindOffsetRes(R.dimen.actionBarHeight);
+    super.onRetrieveDisplayObjects();
   }
 
   @Override
