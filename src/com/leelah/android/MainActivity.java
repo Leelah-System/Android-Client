@@ -29,11 +29,15 @@ public final class MainActivity
     implements Bar.BarRefreshFeature
 {
 
+  public static final String IS_ADMIN = "isAdmin";
+
   private CategoriesListFragment categoriesFragment;
 
   private ProductsListFragment productsFragment;
 
   private CartListFragment cartFragment;
+
+  private boolean isAdminMode;
 
   @Override
   public void onRetrieveDisplayObjects()
@@ -47,6 +51,9 @@ public final class MainActivity
       throws BusinessObjectUnavailableException
   {
     super.onRetrieveBusinessObjects();
+
+    isAdminMode = getIntent().getBooleanExtra(MainActivity.IS_ADMIN, false);
+
     categoriesFragment = (CategoriesListFragment) getSupportFragmentManager().findFragmentById(R.id.categoriesFragment);
     productsFragment = (ProductsListFragment) getSupportFragmentManager().findFragmentById(R.id.productsFragment);
     cartFragment = (CartListFragment) getSupportFragmentManager().findFragmentById(R.id.cartFragment);
@@ -61,7 +68,10 @@ public final class MainActivity
   @Override
   public void onSynchronizeDisplayObjects()
   {
-
+    if (isAdminMode == true)
+    {
+      getSupportFragmentManager().beginTransaction().hide(cartFragment).commit();
+    }
   }
 
   @Override
@@ -74,8 +84,14 @@ public final class MainActivity
       public void run()
       {
       }
+
+      @Override
+      public boolean isVisible()
+      {
+        return !isAdminMode;
+      }
     }));
-    if (LeelahSystemApplication.isTabletMode == true)
+    if (LeelahSystemApplication.isTabletMode == true && isAdminMode == false)
     {
       commands.add(new ActionMenuCommand(R.string.Menu_empty_cart, '1', 'm', android.R.drawable.ic_menu_delete, MenuItem.SHOW_AS_ACTION_ALWAYS, new Commands.StaticEnabledExecutable()
       {
@@ -104,14 +120,6 @@ public final class MainActivity
         }
       }));
     }
-    commands.add(new ActionMenuCommand(R.string.Menu_admin_mode, '1', 'm', android.R.drawable.ic_menu_manage, MenuItem.SHOW_AS_ACTION_NEVER, new Commands.StaticEnabledExecutable()
-    {
-      @Override
-      public void run()
-      {
-        startActivity(new Intent(MainActivity.this, OrdersActivity.class));
-      }
-    }));
     commands.add(new StaticMenuCommand("Add User", '1', 'm', android.R.drawable.ic_menu_add, new Commands.StaticEnabledExecutable()
     {
       @Override
@@ -120,6 +128,13 @@ public final class MainActivity
         final AddUserDialogFragment addUserDialogFragment = new AddUserDialogFragment();
         addUserDialogFragment.show(getSupportFragmentManager(), "addUser");
       }
+
+      @Override
+      public boolean isVisible()
+      {
+        return isAdminMode;
+      }
+
     }));
     commands.add(new StaticMenuCommand("Add Category", '1', 'm', android.R.drawable.ic_menu_add, new Commands.StaticEnabledExecutable()
     {
@@ -128,6 +143,12 @@ public final class MainActivity
       {
         final AddCategoryDialogFragment addCategoryDialogFragment = new AddCategoryDialogFragment();
         addCategoryDialogFragment.show(getSupportFragmentManager(), "addCategory");
+      }
+
+      @Override
+      public boolean isVisible()
+      {
+        return isAdminMode;
       }
     }));
     commands.add(new StaticMenuCommand("Add Product", '1', 'm', android.R.drawable.ic_menu_add, new Commands.StaticEnabledExecutable()
@@ -138,6 +159,12 @@ public final class MainActivity
         final AddProductDialogFragment addProductDialogFragment = new AddProductDialogFragment();
         addProductDialogFragment.show(getSupportFragmentManager(), "addProduct");
       }
+
+      @Override
+      public boolean isVisible()
+      {
+        return isAdminMode;
+      }
     }));
     commands.add(new ActionMenuCommand(R.string.Menu_settings, '1', 'm', android.R.drawable.ic_menu_preferences, MenuItem.SHOW_AS_ACTION_NEVER, new Commands.StaticEnabledExecutable()
     {
@@ -145,6 +172,12 @@ public final class MainActivity
       public void run()
       {
         startActivity(new Intent(MainActivity.this, SettingsActivity.class));
+      }
+
+      @Override
+      public boolean isVisible()
+      {
+        return isAdminMode;
       }
     }));
     return commands;

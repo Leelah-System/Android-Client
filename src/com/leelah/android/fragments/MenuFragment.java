@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.leelah.android.MainActivity;
 import com.leelah.android.OrdersActivity;
 import com.leelah.android.StatisticsActivity;
+import com.smartnsoft.SmartSlidingFragmentActivity;
 import com.smartnsoft.droid4me.framework.SmartAdapters.BusinessViewWrapper;
 import com.smartnsoft.droid4me.framework.SmartAdapters.ObjectEvent;
 import com.smartnsoft.droid4me.framework.SmartAdapters.SimpleBusinessViewWrapper;
@@ -27,13 +28,13 @@ public final class MenuFragment
 
     public String name;
 
-    private final Class<?> intentClass;
+    public Intent intent;
 
-    public MenuItem(int iconId, String name, Class<?> intentClass)
+    public MenuItem(int iconId, String name, Intent intent)
     {
       this.iconId = iconId;
       this.name = name;
-      this.intentClass = intentClass;
+      this.intent = intent;
     }
 
   }
@@ -81,7 +82,12 @@ public final class MenuFragment
     {
       if (objectEvent == ObjectEvent.Clicked)
       {
-        return new Intent(activity, businessObject.intentClass);
+        if (activity instanceof SmartSlidingFragmentActivity)
+        {
+          final SmartSlidingFragmentActivity<?> smartActivity = (SmartSlidingFragmentActivity<?>) activity;
+          smartActivity.showAbove();
+        }
+        return businessObject.intent;
       }
       return super.computeIntent(activity, viewAttributes, view, businessObject, objectEvent, position);
     }
@@ -93,9 +99,12 @@ public final class MenuFragment
   {
     final List<BusinessViewWrapper<?>> wrappers = new ArrayList<BusinessViewWrapper<?>>();
 
-    wrappers.add(new MenuWrapper(new MenuItem(0, "Menu", MainActivity.class)));
-    wrappers.add(new MenuWrapper(new MenuItem(0, "Administration", OrdersActivity.class)));
-    wrappers.add(new MenuWrapper(new MenuItem(0, "Statistiques", StatisticsActivity.class)));
+    wrappers.add(new MenuWrapper(new MenuItem(0, "Menu", new Intent(getCheckedActivity(), MainActivity.class))));
+    wrappers.add(new MenuWrapper(new MenuItem(0, "Users", null)));
+    wrappers.add(new MenuWrapper(new MenuItem(0, "Products/Categories", new Intent(getCheckedActivity(), MainActivity.class).putExtra(MainActivity.IS_ADMIN,
+        true))));
+    wrappers.add(new MenuWrapper(new MenuItem(0, "Orders", new Intent(getCheckedActivity(), OrdersActivity.class))));
+    wrappers.add(new MenuWrapper(new MenuItem(0, "Statistiques", new Intent(getCheckedActivity(), StatisticsActivity.class))));
 
     return wrappers;
   }

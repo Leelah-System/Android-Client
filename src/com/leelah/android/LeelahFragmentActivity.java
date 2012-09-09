@@ -3,6 +3,7 @@ package com.leelah.android;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.widget.Toast;
 
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -51,6 +52,11 @@ public abstract class LeelahFragmentActivity
     getSlidingMenu().setShadowWidthRes(R.dimen.shadow_width);
     getSlidingMenu().setShadowDrawable(R.drawable.shadow);
     getSlidingMenu().setBehindOffset((int) (getWindowManager().getDefaultDisplay().getWidth() / 1.3));
+    // customize the ActionBar
+    if (Build.VERSION.SDK_INT >= 11)
+    {
+      getActionBar().setDisplayHomeAsUpEnabled(true);
+    }
   }
 
   public abstract void onSynchronizeDisplayObjects();
