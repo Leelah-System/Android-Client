@@ -23,6 +23,7 @@
         android:textColor="@android:color/black"
         android:textSize="18dip"
         android:textStyle="bold"
+        android:singleLine="true"
         android:text="TextView" />
     
     <TextView

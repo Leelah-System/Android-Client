@@ -18,6 +18,7 @@
   <dimen name="defaultPadding">10dip</dimen>
 
   <dimen name="gridColumnWidth">300dip</dimen>
+  <dimen name="caisseGridColumnWidth">200dip</dimen>
   
   <dimen name="shadow_width">15dp</dimen>
   

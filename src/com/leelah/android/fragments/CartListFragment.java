@@ -148,6 +148,11 @@ public class CartListFragment
       {
         ProductsListFragment.showProductDialog(getFragmentManager(), businessObject);
       }
+      else if (objectEvent == ObjectEvent.WipedLeftToRight || objectEvent == ObjectEvent.WipedRightToLeft)
+      {
+        cartProducts.remove(position);
+        refreshBusinessObjectsAndDisplay();
+      }
       return super.onObjectEvent(activity, viewAttributes, view, businessObject, objectEvent, position);
     }
 

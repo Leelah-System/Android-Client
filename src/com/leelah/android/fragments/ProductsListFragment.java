@@ -14,10 +14,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.leelah.android.Bar;
+import com.leelah.android.CaisseActivity;
 import com.leelah.android.LeelahSystemApplication;
 import com.leelah.android.LeelahSystemApplication.ImageType;
 import com.leelah.android.R;
 import com.leelah.android.bo.Product.ProductDetails;
+import com.leelah.android.fragments.CartListFragment.CartProduct;
 import com.leelah.android.fragments.ProductDetailsDialogFragment.ActionType;
 import com.leelah.android.ws.LeelahSystemServices;
 import com.smartnsoft.droid4me.LifeCycle.BusinessObjectsRetrievalAsynchronousPolicy;
@@ -64,7 +66,7 @@ public class ProductsListFragment
 
     public ProductWrapper(ProductDetails businessObject)
     {
-      super(businessObject, 0, R.layout.product_list_item);
+      super(businessObject, 0, getProductLayout());
     }
 
     @Override
@@ -84,7 +86,20 @@ public class ProductsListFragment
     {
       if (objectEvent == ObjectEvent.Clicked)
       {
-        showProductDialog(getFragmentManager(), businessObject);
+        if (activity instanceof CaisseActivity)
+        {
+          final Intent intent = new Intent(CartListFragment.ADD_TO_CART).putExtra(CartListFragment.PRODUCT, businessObject).putExtra(CartListFragment.QUANTITY,
+              1);
+          if (businessObject instanceof CartProduct)
+          {
+            intent.putExtra(ProductDetailsDialogFragment.IS_UPDATE, true);
+          }
+          activity.sendBroadcast(intent);
+        }
+        else
+        {
+          showProductDialog(getFragmentManager(), businessObject);
+        }
       }
       return super.onObjectEvent(activity, viewAttributes, view, businessObject, objectEvent, position);
     }
@@ -123,7 +138,7 @@ public class ProductsListFragment
   {
     super.onRetrieveDisplayObjects();
 
-    getWrappedListView().getListView().setBackgroundResource(android.R.color.white);
+    getWrappedListView().getListView().setBackgroundResource(R.drawable.background_red_light);
     categoryId = getCheckedActivity().getIntent().getIntExtra(CategoriesListFragment.SELECTED_CATEGORY, -1);
   }
 
@@ -180,6 +195,11 @@ public class ProductsListFragment
   {
     final ProductDetailsDialogFragment productDetailsDialogFragment = ProductDetailsDialogFragment.newInstance(ActionType.ViewProduct, businessObject);
     productDetailsDialogFragment.show(fragmentManager, "dialog");
+  }
+
+  protected int getProductLayout()
+  {
+    return R.layout.product_list_item;
   }
 
 }

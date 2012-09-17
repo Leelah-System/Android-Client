@@ -93,6 +93,11 @@
     />
     
     <activity
+      android:name=".CaisseActivity"
+      android:configChanges="keyboardHidden|orientation"
+    />
+    
+    <activity
       android:name=".StatisticsActivity"
       android:configChanges="keyboardHidden|orientation"
     />
