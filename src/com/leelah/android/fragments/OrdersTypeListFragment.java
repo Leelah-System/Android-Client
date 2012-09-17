@@ -8,6 +8,7 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -19,6 +20,8 @@ import com.leelah.android.bar.Bar.BarRefreshFeature;
 import com.leelah.android.bo.Order.OrderDetails;
 import com.leelah.android.ws.LeelahSystemServices;
 import com.smartnsoft.droid4me.LifeCycle.BusinessObjectsRetrievalAsynchronousPolicy;
+import com.smartnsoft.droid4me.app.AppPublics.BroadcastListener;
+import com.smartnsoft.droid4me.app.AppPublics.BroadcastListenerProvider;
 import com.smartnsoft.droid4me.framework.SmartAdapters.BusinessViewWrapper;
 import com.smartnsoft.droid4me.framework.SmartAdapters.ObjectEvent;
 import com.smartnsoft.droid4me.framework.SmartAdapters.SimpleBusinessViewWrapper;
@@ -26,7 +29,7 @@ import com.smartnsoft.droid4me.support.v4.app.SmartListViewFragment;
 
 public final class OrdersTypeListFragment
     extends SmartListViewFragment<Bar.BarAggregate, ListView>
-    implements BusinessObjectsRetrievalAsynchronousPolicy, BarRefreshFeature
+    implements BusinessObjectsRetrievalAsynchronousPolicy, BarRefreshFeature, BroadcastListenerProvider
 {
 
   private final static class OrderAttributes
@@ -47,10 +50,26 @@ public final class OrdersTypeListFragment
 
     public void update(OrderDetails businessObject)
     {
-      final DecimalFormat decimalFormat = new DecimalFormat("#.## Euros");
+      final DecimalFormat decimalFormat = new DecimalFormat("#.## \u20AC");
       text.setText(text.getResources().getString(R.string.Order_orderItemTitle, businessObject.reference.replaceAll("-", "")));
       description.setText(description.getResources().getString(R.string.Order_orderItemDetails, decimalFormat.format(businessObject.amount),
           businessObject.created_at.toLocaleString()));
+      if (businessObject.status == 0)
+      {
+        icon.setImageResource(R.drawable.asterisk_orange);
+      }
+      else if (businessObject.status == 1)
+      {
+        icon.setImageResource(R.drawable.cog);
+      }
+      else if (businessObject.status == 2)
+      {
+        icon.setImageResource(R.drawable.accept);
+      }
+      else if (businessObject.status == -1)
+      {
+        icon.setImageResource(R.drawable.cancel);
+      }
     }
 
   }
@@ -88,6 +107,28 @@ public final class OrdersTypeListFragment
 
   }
 
+  protected static final String REFRESH = "refresh";
+
+  public BroadcastListener getBroadcastListener()
+  {
+    return new BroadcastListener()
+    {
+
+      public IntentFilter getIntentFilter()
+      {
+        return new IntentFilter(OrdersTypeListFragment.REFRESH);
+      }
+
+      public void onReceive(Intent intent)
+      {
+        if (intent.getAction().equals(OrdersTypeListFragment.REFRESH))
+        {
+          refreshBusinessObjectsAndDisplay();
+        }
+      }
+    };
+  }
+
   @Override
   public void onRetrieveDisplayObjects()
   {
@@ -123,11 +164,28 @@ public final class OrdersTypeListFragment
     });
 
     final List<BusinessViewWrapper<?>> wrappers = new ArrayList<BusinessViewWrapper<?>>();
+
     for (OrderDetails order : orders)
     {
       wrappers.add(new OrderWrapper(order));
     }
     return wrappers;
+  }
+
+  @Override
+  public void onFulfillDisplayObjects()
+  {
+    super.onFulfillDisplayObjects();
+  }
+
+  @Override
+  public void onSynchronizeDisplayObjects()
+  {
+    super.onSynchronizeDisplayObjects();
+    if (getWrappedListView().getListView().getChildCount() > 0)
+    {
+      getWrappedListView().getListView().setSelection(0);
+    }
   }
 
   public void onBarRefresh()

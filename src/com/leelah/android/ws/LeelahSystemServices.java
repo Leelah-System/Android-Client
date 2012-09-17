@@ -580,4 +580,14 @@ public final class LeelahSystemServices
   {
     return getOrdersStreamParser.getValue(null);
   }
+
+  public boolean updateOrder(OrderDetails order)
+      throws CallException
+  {
+    final InputStream inputStream = getInputStream(
+        computeUri("http://" + leelahCredentialsInformations.getServerURL(), "api/" + token + "/orders/" + order.id, null), CallType.Put, createPostBody(order));
+    final WebServiceResult wsResult = (WebServiceResult) deserializeJson(inputStream, WebServiceResult.class);
+    checkApiStatus(wsResult);
+    return wsResult.success;
+  }
 }
