@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.leelah.android.bar.Bar;
 import com.leelah.android.fragments.MenuFragment;
 import com.leelah.android.ws.LeelahSystemServices;
 import com.leelah.android.ws.LeelahSystemServices.LeelahApiStatusViewer;

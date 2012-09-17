@@ -1,11 +1,16 @@
 package com.leelah.android.bo;
 
+import java.io.Serializable;
+
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class User
+    implements Serializable
 {
+
+  private static final long serialVersionUID = -8479545031484426412L;
 
   /**
    * Pour les objets metier, les attributs n'on pas de getter/setter, ils sont publics et on les manipule directement (meilleur perf pour l'embarquer)

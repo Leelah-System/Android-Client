@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.widget.Toast;
 
+import com.leelah.android.bar.Bar;
 import com.leelah.android.ws.LeelahSystemServices;
 import com.leelah.android.ws.LeelahSystemServices.LeelahApiStatusViewer;
 import com.leelah.android.ws.LeelahSystemServices.LeelahCredentials;

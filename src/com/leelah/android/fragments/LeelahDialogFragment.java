@@ -4,13 +4,13 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.widget.Toast;
 
-import com.leelah.android.Bar.BarAggregate;
+import com.leelah.android.bar.Bar;
 import com.leelah.android.R;
 import com.leelah.android.ws.LeelahSystemServices.LeelahApiStatusViewer;
 import com.smartnsoft.droid4me.support.v4.app.SmartDialogFragment;
 
 public class LeelahDialogFragment<T>
-    extends SmartDialogFragment<BarAggregate>
+    extends SmartDialogFragment<Bar.BarAggregate>
     implements LeelahApiStatusViewer
 {
 

@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.leelah.android.LeelahSystemApplication.BelongsToUserRegistration;
+import com.leelah.android.bar.Bar.BarDiscardedFeature;
 import com.leelah.android.bo.User;
 import com.leelah.android.ws.LeelahSystemServices;
 import com.smartnsoft.droid4me.LifeCycle.BusinessObjectsRetrievalAsynchronousPolicy;
@@ -17,7 +18,7 @@ import com.smartnsoft.droid4me.cache.Values.CacheException;
 
 public final class LoginActivity
     extends LeelahActivity
-    implements BusinessObjectsRetrievalAsynchronousPolicy, BelongsToUserRegistration, OnClickListener, Bar.BarDiscardedFeature
+    implements BusinessObjectsRetrievalAsynchronousPolicy, BelongsToUserRegistration, OnClickListener, BarDiscardedFeature
 {
   public static final String USER_PASSWORD = "password";
 

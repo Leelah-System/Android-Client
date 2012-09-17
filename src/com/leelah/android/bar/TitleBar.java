@@ -1,4 +1,4 @@
-package com.leelah.android;
+package com.leelah.android.bar;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,7 +6,6 @@ import java.util.Map.Entry;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Handler;
 import android.util.AndroidRuntimeException;
 import android.view.View;
 import android.view.Window;
@@ -15,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.leelah.android.R;
 import com.smartnsoft.droid4me.app.ActivityController;
 import com.smartnsoft.droid4me.app.AppPublics;
 import com.smartnsoft.droid4me.app.Smarted;
@@ -25,31 +25,13 @@ import com.smartnsoft.droid4me.app.Smarted;
  * @author Édouard Mercier
  * @since 2011.06.22
  */
-public final class TitleBar
+public class TitleBar
     extends Bar
 {
 
   static class TitleBarAttributes
       extends BarAttributes
   {
-
-    protected static class ActionDetail
-    {
-
-      private final View block;
-
-      private final int resourceId;
-
-      private final View.OnClickListener onClickListener;
-
-      private ActionDetail(View block, int resourceId, View.OnClickListener onClickListener)
-      {
-        this.block = block;
-        this.resourceId = resourceId;
-        this.onClickListener = onClickListener;
-      }
-
-    }
 
     private final View view;
 
@@ -89,9 +71,9 @@ public final class TitleBar
 
     private final ProgressBar refreshProgress;
 
-    private final Map<ImageButton, TitleBarAttributes.ActionDetail> actions = new HashMap<ImageButton, TitleBarAttributes.ActionDetail>();
+    private final Map<ImageButton, BarAttributes.ActionDetail> actions = new HashMap<ImageButton, BarAttributes.ActionDetail>();
 
-    private TitleBarAttributes.ActionDetail homeDetail;
+    private BarAttributes.ActionDetail homeDetail;
 
     private CharSequence titleString;
 
@@ -99,14 +81,13 @@ public final class TitleBar
 
     private boolean enabled = true;
 
-    protected TitleBarAttributes(Activity activity, View view)
+    protected TitleBarAttributes(View view)
     {
       this.view = view;
       homeBlock = view.findViewById(R.id.titleBarHomeBlock);
       home = (ImageButton) view.findViewById(R.id.titleBarHome);
       titleImage = (ImageView) view.findViewById(R.id.titleBarTitleImage);
       titleText = (TextView) view.findViewById(R.id.titleBarTitleText);
-      setTitle(activity.getTitle());
       action1Block = view.findViewById(R.id.titleBarAction1Block);
       action1 = (ImageButton) view.findViewById(R.id.titleBarAction1);
       action2Block = view.findViewById(R.id.titleBarAction2Block);
@@ -119,6 +100,7 @@ public final class TitleBar
       refreshSeparator = view.findViewById(R.id.titleBarRefreshSeparator);
       refresh = (ImageButton) view.findViewById(R.id.titleBarRefresh);
       refreshProgress = (ProgressBar) view.findViewById(R.id.titleBarRefreshProgress);
+
       setShowHome(-1, null);
       setShowRefresh(null);
       setShowAction1(-1, null);
@@ -127,26 +109,25 @@ public final class TitleBar
       setShowAction4(-1, null);
     }
 
-    protected TitleBarAttributes(Activity activity, TitleBarAttributes titleBar)
+    protected TitleBarAttributes(TitleBarAttributes titleBarAttributes)
     {
-      view = titleBar.view;
-      homeBlock = titleBar.homeBlock;
-      home = titleBar.home;
-      titleImage = titleBar.titleImage;
-      titleText = titleBar.titleText;
-      action1Block = titleBar.action1Block;
-      action1 = titleBar.action1;
-      action2Block = titleBar.action2Block;
-      action2 = titleBar.action2;
-      action3Block = titleBar.action3Block;
-      action3 = titleBar.action3;
-      action4Block = titleBar.action4Block;
-      action4 = titleBar.action4;
-      refreshBlock = titleBar.refreshBlock;
-      refreshSeparator = titleBar.refreshSeparator;
-      refresh = titleBar.refresh;
-      refreshProgress = titleBar.refreshProgress;
-      titleString = activity.getTitle();
+      view = titleBarAttributes.view;
+      homeBlock = titleBarAttributes.homeBlock;
+      home = titleBarAttributes.home;
+      titleImage = titleBarAttributes.titleImage;
+      titleText = titleBarAttributes.titleText;
+      action1Block = titleBarAttributes.action1Block;
+      action1 = titleBarAttributes.action1;
+      action2Block = titleBarAttributes.action2Block;
+      action2 = titleBarAttributes.action2;
+      action3Block = titleBarAttributes.action3Block;
+      action3 = titleBarAttributes.action3;
+      action4Block = titleBarAttributes.action4Block;
+      action4 = titleBarAttributes.action4;
+      refreshBlock = titleBarAttributes.refreshBlock;
+      refreshSeparator = titleBarAttributes.refreshSeparator;
+      refresh = titleBarAttributes.refresh;
+      refreshProgress = titleBarAttributes.refreshProgress;
     }
 
     @Override
@@ -160,19 +141,6 @@ public final class TitleBar
     }
 
     @Override
-    public void setTitle(CharSequence title)
-    {
-      if (enabled == true)
-      {
-        titleImage.setVisibility(View.GONE);
-        titleText.setText(title);
-        titleText.setVisibility(View.VISIBLE);
-      }
-
-      // We remember the values
-      titleString = title;
-    }
-
     public void setTitle(int imageResourceId)
     {
       if (enabled == true)
@@ -191,9 +159,23 @@ public final class TitleBar
     }
 
     @Override
+    public void setTitle(CharSequence title)
+    {
+      if (enabled == true)
+      {
+        titleImage.setVisibility(View.GONE);
+        titleText.setText(title);
+        titleText.setVisibility(View.VISIBLE);
+      }
+
+      // We remember the values
+      titleString = title;
+    }
+
+    @Override
     public void setShowHome(int iconResourceId, View.OnClickListener onClickListener)
     {
-      if (iconResourceId != -1)
+      if (iconResourceId > 0)
       {
         homeBlock.setVisibility(View.VISIBLE);
         home.setImageResource(iconResourceId);
@@ -203,11 +185,11 @@ public final class TitleBar
         homeBlock.setVisibility(View.GONE);
         home.setImageDrawable(null);
       }
-      home.setEnabled(onClickListener != null);
+      // home.setEnabled(onClickListener != null);
       home.setOnClickListener(onClickListener);
 
       // We remember the values
-      homeDetail = new TitleBarAttributes.ActionDetail(null, iconResourceId, onClickListener);
+      homeDetail = new BarAttributes.ActionDetail(null, iconResourceId, onClickListener);
     }
 
     @Override
@@ -232,6 +214,29 @@ public final class TitleBar
     public void setShowAction4(int iconResourceId, View.OnClickListener onClickListener)
     {
       setShowAction(action4Block, action4, iconResourceId, onClickListener);
+    }
+
+    @Override
+    public Object getControl(BarControl barControl)
+    {
+      switch (barControl)
+      {
+      case Home:
+      default:
+        return home;
+      case Title:
+        return titleText;
+      case Refresh:
+        return refreshBlock;
+      case Action1:
+        return action1;
+      case Action2:
+        return action2;
+      case Action3:
+        return action3;
+      case Action4:
+        return action4;
+      }
     }
 
     @Override
@@ -270,11 +275,11 @@ public final class TitleBar
       return view == action4;
     }
 
-    protected void setShowAction(View actionBlockView, ImageButton actionButton, int iconResourceId, View.OnClickListener onClickListener)
+    private void setShowAction(View actionBlockView, ImageButton actionButton, int iconResourceId, View.OnClickListener onClickListener)
     {
       if (enabled == true)
       {
-        if (iconResourceId != -1)
+        if (iconResourceId > 0)
         {
           actionButton.setImageResource(iconResourceId);
         }
@@ -293,7 +298,7 @@ public final class TitleBar
       }
       else
       {
-        actions.put(actionButton, new TitleBarAttributes.ActionDetail(actionBlockView, iconResourceId, onClickListener));
+        actions.put(actionButton, new BarAttributes.ActionDetail(actionBlockView, iconResourceId, onClickListener));
       }
     }
 
@@ -311,7 +316,8 @@ public final class TitleBar
       this.refreshOnClickListener = onClickListener;
     }
 
-    public void toggleVisibility(Handler handler)
+    @Override
+    public void toggleVisibility()
     {
       if (view.getParent() != null && view.getParent() instanceof View)
       {
@@ -338,6 +344,8 @@ public final class TitleBar
           refresh.setVisibility(isLoading == true ? View.INVISIBLE : View.VISIBLE);
         }
         refreshProgress.setVisibility(isLoading ? View.VISIBLE : View.INVISIBLE);
+        // This also makes the refresh block gone, so that there is more space for the title
+        refreshBlock.setVisibility(isLoading ? View.VISIBLE : View.GONE);
       }
     }
 
@@ -360,8 +368,8 @@ public final class TitleBar
       {
         log.debug("Applying the title bar");
       }
-      final Map<ImageButton, TitleBarAttributes.ActionDetail> actions = forgetActions();
-      for (Entry<ImageButton, TitleBarAttributes.ActionDetail> entry : actions.entrySet())
+      final Map<ImageButton, BarAttributes.ActionDetail> actions = forgetActions();
+      for (Entry<ImageButton, BarAttributes.ActionDetail> entry : actions.entrySet())
       {
         setShowAction(entry.getValue().block, entry.getKey(), entry.getValue().resourceId, entry.getValue().onClickListener);
       }
@@ -371,14 +379,25 @@ public final class TitleBar
       setShowRefresh(refreshOnClickListener);
     }
 
-    protected Map<ImageButton, TitleBarAttributes.ActionDetail> forgetActions()
+    private Map<ImageButton, BarAttributes.ActionDetail> forgetActions()
     {
-      final Map<ImageButton, TitleBarAttributes.ActionDetail> previousActions = new HashMap<ImageButton, TitleBarAttributes.ActionDetail>(actions);
+      final Map<ImageButton, BarAttributes.ActionDetail> previousActions = new HashMap<ImageButton, BarAttributes.ActionDetail>(actions);
       setShowAction1(-1, null);
       setShowAction2(-1, null);
       setShowAction3(-1, null);
       setShowAction4(-1, null);
       return previousActions;
+    }
+
+  }
+
+  static class TitleBarAggregate
+      extends BarAggregate
+  {
+
+    public TitleBarAggregate(Activity activity, boolean customTitleSupported, Intent homeActivityIntent)
+    {
+      super(activity, customTitleSupported, homeActivityIntent);
     }
 
   }
@@ -389,11 +408,27 @@ public final class TitleBar
   }
 
   @Override
+  protected BarAggregate newBarAggregate(Activity activity, Intent homeActivityIntent, boolean requestWindowFeature)
+  {
+    return new TitleBarAggregate(activity, requestWindowFeature, homeActivityIntent);
+  }
+
+  protected TitleBarAttributes newTitleBarAttributes(View view)
+  {
+    return new TitleBarAttributes(view);
+  }
+
+  protected TitleBarAttributes newTitleBarAttributes(TitleBarAttributes barAttributes)
+  {
+    return new TitleBarAttributes(barAttributes);
+  }
+
+  @Override
   public boolean onLifeCycleEvent(Activity activity, Object component, ActivityController.Interceptor.InterceptorEvent event)
   {
     onLifeCycleEventApplyTheme(activity, component, event);
 
-    if (event == ActivityController.Interceptor.InterceptorEvent.onSuperCreateBefore && activity instanceof TitleBar.BarDiscardedFeature == false)
+    if (event == ActivityController.Interceptor.InterceptorEvent.onSuperCreateBefore && activity instanceof Bar.BarDiscardedFeature == false)
     {
       if (activity instanceof Smarted<?>)
       {
@@ -415,65 +450,74 @@ public final class TitleBar
           requestWindowFeature = true;
         }
         // We test whether we can customize the title bar
-        final BarAggregate titleBarAggregate = newTitleBarAggregate(activity, homeActivityIntent, requestWindowFeature);
+        final BarAggregate titleBarAggregate = newBarAggregate(activity, homeActivityIntent, requestWindowFeature);
         @SuppressWarnings("unchecked")
         final Smarted<BarAggregate> smartedActivity = (Smarted<BarAggregate>) activity;
         smartedActivity.setAggregate(titleBarAggregate);
-        return true;
       }
     }
-    else if (event == ActivityController.Interceptor.InterceptorEvent.onContentChanged && activity instanceof BarDiscardedFeature == false)
+    if (event == ActivityController.Interceptor.InterceptorEvent.onSuperCreateBefore && activity instanceof Bar.BarDiscardedFeature == false)
+    {
+      // We listen to specific broadcast events
+      if (activity instanceof Smarted<?>)
+      {
+        @SuppressWarnings("unchecked")
+        final Smarted<BarAggregate> smartedActivity = (Smarted<BarAggregate>) activity;
+        final BarAggregate barAggregate = smartedActivity.getAggregate();
+        smartedActivity.registerBroadcastListeners(new AppPublics.BroadcastListener[] { barAggregate });
+      }
+    }
+    if (event == ActivityController.Interceptor.InterceptorEvent.onContentChanged && activity instanceof BarDiscardedFeature == false)
     {
       if (activity instanceof Smarted<?>)
       {
         @SuppressWarnings("unchecked")
         final Smarted<BarAggregate> smartedActivity = (Smarted<BarAggregate>) activity;
-        final BarAggregate titleBarAggregate = smartedActivity.getAggregate();
-        if (titleBarAggregate != null && titleBarAggregate.customTitleSupported == true && titleBarAggregate.getAttributes() == null)
+        final BarAggregate barAggregate = smartedActivity.getAggregate();
+        if (barAggregate != null && barAggregate.customTitleSupported == true && barAggregate.getAttributes() == null)
         {
-          final TitleBarAttributes parentTitleBarAttributes;
+          final TitleBarAttributes parentBarAttributes;
           if (activity.getParent() != null && activity.getParent() instanceof Smarted<?>)
           {
             @SuppressWarnings("unchecked")
             final Smarted<BarAggregate> parentSmartedActivity = (Smarted<BarAggregate>) activity.getParent();
-            parentTitleBarAttributes = (TitleBarAttributes) parentSmartedActivity.getAggregate().getAttributes();
+            parentBarAttributes = (TitleBarAttributes) parentSmartedActivity.getAggregate().getAttributes();
           }
           else
           {
-            parentTitleBarAttributes = null;
+            parentBarAttributes = null;
           }
           final Activity actualActivity = activity.getParent() == null ? activity : activity.getParent();
-          if (parentTitleBarAttributes == null)
+          if (parentBarAttributes == null)
           {
             actualActivity.getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.title_bar);
-            titleBarAggregate.setAttributes(new TitleBarAttributes(activity, actualActivity.findViewById(R.id.titleBar)));
+            barAggregate.setAttributes(newTitleBarAttributes(actualActivity.findViewById(R.id.titleBar)));
           }
           else
           {
-            titleBarAggregate.setAttributes(new TitleBarAttributes(activity, parentTitleBarAttributes));
+            barAggregate.setAttributes(newTitleBarAttributes(parentBarAttributes));
           }
-          if (activity.getIntent().hasExtra(TitleBar.DO_NOT_APPLY_TITLE_BAR) == true)
+          if (activity.getIntent().hasExtra(Bar.DO_NOT_APPLY_BAR) == true)
           {
-            titleBarAggregate.getAttributes().setEnabled(false);
+            barAggregate.getAttributes().setEnabled(false);
           }
-          titleBarAggregate.updateBarAttributes(activity, defaultHomeResourceId);
-          smartedActivity.registerBroadcastListeners(new AppPublics.BroadcastListener[] { titleBarAggregate });
+          barAggregate.updateBarAttributes(activity, defaultHomeResourceId);
         }
       }
       return true;
     }
-    else if (event == ActivityController.Interceptor.InterceptorEvent.onResume && !(activity instanceof TitleBar.BarDiscardedFeature))
+    else if (event == ActivityController.Interceptor.InterceptorEvent.onResume && activity instanceof Bar.BarDiscardedFeature == false)
     {
-      if (activity.getIntent().hasExtra(TitleBar.DO_NOT_APPLY_TITLE_BAR) == false)
+      if (activity.getIntent().hasExtra(Bar.DO_NOT_APPLY_BAR) == false)
       {
         if (activity.getParent() != null && activity instanceof Smarted<?> && activity.getParent() instanceof Smarted<?>)
         {
           @SuppressWarnings("unchecked")
           final Smarted<BarAggregate> smartedActivity = (Smarted<BarAggregate>) activity;
-          final BarAggregate titleBarAggregate = smartedActivity.getAggregate();
-          if (titleBarAggregate != null && titleBarAggregate.customTitleSupported == true)
+          final BarAggregate barAggregate = smartedActivity.getAggregate();
+          if (barAggregate != null && barAggregate.customTitleSupported == true)
           {
-            titleBarAggregate.updateBarAttributes(activity, defaultHomeResourceId);
+            barAggregate.updateBarAttributes(activity, defaultHomeResourceId);
           }
           return true;
         }

@@ -6,6 +6,7 @@ import java.util.List;
 import android.app.Activity;
 import android.content.Intent;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -46,14 +47,18 @@ public final class MenuFragment
 
     private final TextView text;
 
+    private final ImageView image;
+
     public MenuAttributes(View view)
     {
-      text = (TextView) view.findViewById(android.R.id.text1);
+      text = (TextView) view.findViewById(R.id.title);
+      image = (ImageView) view.findViewById(R.id.image);
     }
 
     public void update(MenuItem businessObject)
     {
       text.setText(businessObject.name);
+      image.setImageResource(businessObject.iconId);
     }
 
   }
@@ -64,7 +69,7 @@ public final class MenuFragment
 
     public MenuWrapper(MenuItem businessObject)
     {
-      super(businessObject, 0, android.R.layout.simple_list_item_1);
+      super(businessObject, 0, R.layout.menu_item);
     }
 
     @Override
@@ -101,13 +106,13 @@ public final class MenuFragment
   {
     final List<BusinessViewWrapper<?>> wrappers = new ArrayList<BusinessViewWrapper<?>>();
 
-    wrappers.add(new MenuWrapper(new MenuItem(0, "Menu", new Intent(getCheckedActivity(), MainActivity.class))));
-    wrappers.add(new MenuWrapper(new MenuItem(0, "Users", null)));
-    wrappers.add(new MenuWrapper(new MenuItem(0, "Products/Categories", new Intent(getCheckedActivity(), MainActivity.class).putExtra(MainActivity.IS_ADMIN,
-        true))));
-    wrappers.add(new MenuWrapper(new MenuItem(0, "Caisse", new Intent(getCheckedActivity(), CaisseActivity.class))));
-    wrappers.add(new MenuWrapper(new MenuItem(0, "Orders", new Intent(getCheckedActivity(), OrdersActivity.class))));
-    wrappers.add(new MenuWrapper(new MenuItem(0, "Statistiques", new Intent(getCheckedActivity(), StatisticsActivity.class))));
+    wrappers.add(new MenuWrapper(new MenuItem(R.drawable.book, "Menu", new Intent(getCheckedActivity(), MainActivity.class))));
+    wrappers.add(new MenuWrapper(new MenuItem(R.drawable.users, "Utilisateurs", null)));
+    wrappers.add(new MenuWrapper(new MenuItem(R.drawable.tag, "Produits & Catégories", new Intent(getCheckedActivity(), MainActivity.class).putExtra(
+        MainActivity.IS_ADMIN, true))));
+    wrappers.add(new MenuWrapper(new MenuItem(R.drawable.calculator, "Caisse", new Intent(getCheckedActivity(), CaisseActivity.class))));
+    wrappers.add(new MenuWrapper(new MenuItem(R.drawable.shopping_cart, "Commandes", new Intent(getCheckedActivity(), OrdersActivity.class))));
+    wrappers.add(new MenuWrapper(new MenuItem(R.drawable.chart, "Statistiques", new Intent(getCheckedActivity(), StatisticsActivity.class))));
 
     return wrappers;
   }

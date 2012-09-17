@@ -3,6 +3,8 @@ package com.leelah.android;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.preference.Preference;
 
+import com.leelah.android.bar.Bar;
+import com.leelah.android.bar.Bar.BarShowHomeFeature;
 import com.smartnsoft.droid4me.app.SmartPreferenceActivity;
 
 /**
@@ -13,7 +15,7 @@ import com.smartnsoft.droid4me.app.SmartPreferenceActivity;
  */
 public final class SettingsActivity
     extends SmartPreferenceActivity<Bar.BarAggregate>
-    implements Bar.BarShowHomeFeature
+    implements BarShowHomeFeature
 {
 
   public void onRetrieveDisplayObjects()

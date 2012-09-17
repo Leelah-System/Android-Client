@@ -8,6 +8,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.MenuItem;
 
+import com.leelah.android.bar.Bar.BarRefreshFeature;
+import com.leelah.android.bar.Bar.BarShowBackFeature;
 import com.leelah.android.fragments.AddCategoryDialogFragment;
 import com.leelah.android.fragments.AddProductDialogFragment;
 import com.leelah.android.fragments.AddUserDialogFragment;
@@ -26,7 +28,7 @@ import com.smartnsoft.droid4me.support.v4.menu.ActionMenuCommand;
  */
 public final class MainActivity
     extends LeelahFragmentActivity
-    implements Bar.BarRefreshFeature
+    implements BarRefreshFeature, BarShowBackFeature
 {
 
   public static final String IS_ADMIN = "isAdmin";
@@ -44,6 +46,8 @@ public final class MainActivity
   {
     setContentView(R.layout.main);
     super.onRetrieveDisplayObjects();
+
+    getActionBar().setTitle("Menu");
   }
 
   @Override
@@ -62,7 +66,6 @@ public final class MainActivity
   @Override
   public void onFulfillDisplayObjects()
   {
-    getAggregate().getAttributes().setTitle(getString(R.string.applicationName));
   }
 
   @Override
@@ -183,12 +186,12 @@ public final class MainActivity
     return commands;
   }
 
-  public void onTitleBarRefresh()
+  public void onBarRefresh()
   {
-    categoriesFragment.onTitleBarRefresh();
+    categoriesFragment.onBarRefresh();
     if (LeelahSystemApplication.isTabletMode == true)
     {
-      productsFragment.onTitleBarRefresh();
+      productsFragment.onBarRefresh();
     }
   }
 

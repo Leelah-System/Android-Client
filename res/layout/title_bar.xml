@@ -22,7 +22,7 @@
   <FrameLayout
     android:id="@+id/titleBarTitleBlock"
     android:layout_width="0dip"
-    android:layout_height="fill_parent"
+    android:layout_height="@dimen/titleBarHeight"
     android:layout_weight="1"
     android:focusable="true"
     android:clickable="true"

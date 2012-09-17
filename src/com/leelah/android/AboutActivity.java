@@ -7,6 +7,7 @@ import org.apache.http.protocol.HTTP;
 
 import android.webkit.WebView;
 
+import com.leelah.android.bar.Bar;
 import com.smartnsoft.droid4me.LifeCycle;
 import com.smartnsoft.droid4me.app.SmartActivity;
 import com.smartnsoft.droid4me.ws.WebServiceCaller;

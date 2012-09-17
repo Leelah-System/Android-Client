@@ -3,10 +3,10 @@ package com.leelah.android.phone;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
-import com.leelah.android.Bar.BarRefreshFeature;
-import com.leelah.android.Bar.BarShowHomeFeature;
 import com.leelah.android.LeelahFragmentActivity;
 import com.leelah.android.R;
+import com.leelah.android.bar.Bar.BarRefreshFeature;
+import com.leelah.android.bar.Bar.BarShowHomeFeature;
 import com.leelah.android.fragments.ProductsListFragment;
 
 public final class ProductsActivity
@@ -46,9 +46,10 @@ public final class ProductsActivity
 
   }
 
-  public void onTitleBarRefresh()
+  public void onBarRefresh()
   {
-    productsFragment.onTitleBarRefresh();
+    productsFragment.onBarRefresh();
+
   }
 
 }

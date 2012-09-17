@@ -47,17 +47,6 @@
     <item name="android:textSize">@dimen/bodyText</item>
     <item name="android:textColor">@color/android:black</item>
   </style>
- 
-  <style
-    name="Widget.Holo.Light.ActionBar.Leelah"
-    parent="android:Widget.Holo.Light.ActionBar"
-  >
-    <!-- item name="android:displayOptions">showHome</item -->
-    <item name="android:background">@color/leelah_primary_color</item>
-    <item name="android:customNavigationLayout">@layout/action_bar</item>
-    <!--<item name="android:selectableItemBackground">@drawable/title_bar_button_background</item-->
-    <!--item name="android:windowActionBarOverlay">true</item-->
-  </style>
   
   <!-- From here, we overload the Android default theme -->
 

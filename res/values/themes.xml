@@ -2,13 +2,6 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
   <style
-    name="Theme.LeelahSystem"
-    parent="android:Theme.Holo.Light"
-  >
-    <item name="android:actionBarStyle">@style/Widget.Holo.Light.ActionBar.Leelah</item>
-  </style>
-
-  <style
     name="Theme.LeelahSystem.NoTitle"
     parent="Theme.LeelahSystem"
   >

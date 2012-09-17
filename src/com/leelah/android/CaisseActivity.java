@@ -1,10 +1,11 @@
 package com.leelah.android;
 
+import com.leelah.android.bar.Bar.BarRefreshFeature;
 import com.leelah.android.fragments.ProductsListFragment;
 
 public final class CaisseActivity
     extends LeelahFragmentActivity
-    implements Bar.BarRefreshFeature
+    implements BarRefreshFeature
 {
 
   private ProductsListFragment productsFragment;
@@ -37,9 +38,9 @@ public final class CaisseActivity
 
   }
 
-  public void onTitleBarRefresh()
+  public void onBarRefresh()
   {
-    productsFragment.onTitleBarRefresh();
+    productsFragment.onBarRefresh();
   }
 
 }

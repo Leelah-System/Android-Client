@@ -13,11 +13,11 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.leelah.android.Bar;
 import com.leelah.android.CaisseActivity;
 import com.leelah.android.LeelahSystemApplication;
 import com.leelah.android.LeelahSystemApplication.ImageType;
 import com.leelah.android.R;
+import com.leelah.android.bar.Bar;
 import com.leelah.android.bo.Product.ProductDetails;
 import com.leelah.android.fragments.CartListFragment.CartProduct;
 import com.leelah.android.fragments.ProductDetailsDialogFragment.ActionType;
@@ -185,7 +185,7 @@ public class ProductsListFragment
     getWrappedListView().getListView().setStretchMode(GridView.STRETCH_COLUMN_WIDTH);
   }
 
-  public void onTitleBarRefresh()
+  public void onBarRefresh()
   {
     fromCache = false;
     refreshBusinessObjectsAndDisplay(true);

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:background="@drawable/feuille_papier"
+  android:orientation="vertical" >
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:isScrollContainer="true"
+    android:orientation="vertical"
+    android:padding="@dimen/defaultPadding" >
+    <TextView
+      android:id="@+id/orderTitle"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="@string/Order_orderTitle"
+      android:textColor="@android:color/black"
+      android:textSize="24dip"
+      android:textStyle="bold" />
+    <View
+      android:layout_width="match_parent"
+      android:layout_height="1dip"
+      android:layout_marginBottom="@dimen/defaultPadding"
+      android:layout_marginTop="@dimen/defaultPadding"
+      android:background="@android:color/black" />
+    <TextView
+      android:id="@+id/orderEntreprise"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="@string/leelah_infos"
+      android:textColor="@android:color/black"
+      android:textSize="18dip" />
+    <View
+      android:layout_width="match_parent"
+      android:layout_height="1dip"
+      android:layout_marginBottom="@dimen/defaultPadding"
+      android:layout_marginTop="@dimen/defaultPadding"
+      android:background="@android:color/black" />
+    <TextView
+      android:id="@+id/orderInfos"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:textColor="@android:color/black"
+      android:textSize="18dip" />
+    <View
+      android:layout_width="match_parent"
+      android:layout_height="1dip"
+      android:layout_marginBottom="@dimen/defaultPadding"
+      android:layout_marginTop="@dimen/defaultPadding"
+      android:background="@android:color/black" />
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:orientation="horizontal" 
+      android:layout_marginTop="@dimen/defaultPadding">
+      <TextView
+        android:layout_width="0dip"
+        android:layout_height="wrap_content"
+        android:layout_weight="3"
+        android:text="Produits"
+        android:textColor="@android:color/black"
+        android:textSize="18dip"
+        android:textStyle="bold" />
+      <TextView
+        android:layout_width="0dip"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="Prix Unitaire"
+        android:textColor="@android:color/black"
+        android:textSize="18dip"
+        android:textStyle="bold" />
+      <TextView
+        android:layout_width="0dip"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="Quantité"
+        android:textColor="@android:color/black"
+        android:textSize="18dip"
+        android:textStyle="bold" />
+      <TextView
+        android:layout_width="0dip"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="Total"
+        android:textColor="@android:color/black"
+        android:textSize="18dip"
+        android:textStyle="bold" />
+    </LinearLayout>
+    <LinearLayout
+      android:id="@+id/productsLayout"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:orientation="vertical" 
+      android:layout_marginTop="@dimen/defaultPadding">
+    </LinearLayout>
+  </LinearLayout>
+</LinearLayout>

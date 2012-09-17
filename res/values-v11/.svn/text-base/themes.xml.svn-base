@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <style
+    name="Theme.RichMorningShow"
+    parent="android:Theme.Holo.Light"
+  >
+    <!-- The ActionBar -->
+    <item name="android:actionBarStyle">@style/Widget.Holo.Light.ActionBar.RichMorningShow</item>
+    <item name="android:selectableItemBackground">@drawable/title_bar_button_background</item>
+    <item name="android:windowActionBarOverlay">true</item>
+    <item name="android:windowAnimationStyle">@null</item>
+    <item name="android:imageButtonStyle">@style/Widget.ImageButton.RichMorningShow</item>
+  </style>
+
+  <style
+    name="Theme.RichMorningShow.Black"
+    parent="android:Theme.Holo"
+  >
+    <!-- The ActionBar -->
+    <item name="android:actionBarStyle">@style/Widget.Holo.Light.ActionBar.RichMorningShow</item>
+    <item name="android:selectableItemBackground">@drawable/title_bar_button_background</item>
+    <item name="android:windowAnimationStyle">@null</item>
+    <item name="android:imageButtonStyle">@style/Widget.ImageButton.RichMorningShow</item>
+  </style>
+
+</resources>

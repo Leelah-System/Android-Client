@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <!-- The ActionBar -->
+
+  <style
+    name="Widget.Holo.Light.ActionBar.RichMorningShow"
+    parent="android:Widget.Holo.Light.ActionBar"
+  >
+    <item name="android:displayOptions">showHome|useLogo|showCustom</item>
+    <item name="android:background">@drawable/bar_background</item>
+    <item name="android:customNavigationLayout">@layout/action_bar</item>
+  </style>
+
+  <style
+    name="Widget.Holo.ActionBar.RichMorningShow"
+    parent="android:Widget.Holo.ActionBar"
+  >
+    <item name="android:displayOptions">showHome|useLogo|showCustom</item>
+    <item name="android:background">@drawable/bar_background</item>
+    <item name="android:customNavigationLayout">@layout/action_bar</item>
+  </style>
+
+  <style name="titleBarButton">
+    <item name="android:background">@drawable/title_bar_button_background</item>
+    <item name="android:layout_height">@dimen/barHeight</item>
+    <item name="android:layout_width">@dimen/barHeight</item>
+  </style>
+  
+</resources>

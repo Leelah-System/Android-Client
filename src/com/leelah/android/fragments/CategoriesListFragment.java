@@ -9,9 +9,9 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.leelah.android.Bar;
 import com.leelah.android.LeelahSystemApplication;
 import com.leelah.android.R;
+import com.leelah.android.bar.Bar;
 import com.leelah.android.bo.Category.CategoryDetails;
 import com.leelah.android.phone.ProductsActivity;
 import com.leelah.android.ws.LeelahSystemServices;
@@ -149,7 +149,7 @@ public class CategoriesListFragment
     super.onFulfillDisplayObjects();
   }
 
-  public void onTitleBarRefresh()
+  public void onBarRefresh()
   {
     fromCache = false;
     refreshBusinessObjectsAndDisplay(true);

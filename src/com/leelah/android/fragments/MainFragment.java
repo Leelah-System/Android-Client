@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.leelah.android.AboutActivity;
-import com.leelah.android.Bar;
+import com.leelah.android.bar.Bar;
 import com.leelah.android.R;
 import com.leelah.android.SettingsActivity;
 import com.smartnsoft.droid4me.framework.Commands;

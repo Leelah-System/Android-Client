@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.view.View;
@@ -207,22 +208,21 @@ public final class LeelahSystemApplication
   protected ActivityController.Interceptor getInterceptor()
   {
     final Intent homeActivityIntent = new Intent(getApplicationContext(), MainActivity.class);
-
-    final Bar titleBar;
-    if (AndroidUtils.isHoneycomb() == true)
+    final com.leelah.android.bar.Bar bar;
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
     {
-      titleBar = new ActionBar(homeActivityIntent, R.style.Theme_LeelahSystem);
+      bar = new com.leelah.android.bar.ActionBar(homeActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP), R.drawable.icon, R.style.Theme_LeelahSystem);
     }
     else
     {
-      titleBar = new TitleBar(homeActivityIntent, R.drawable.title_bar_home, R.style.Theme_LeelahSystem);
+      bar = new com.leelah.android.bar.TitleBar(homeActivityIntent, R.drawable.title_bar_home, R.style.Theme_LeelahSystem);
     }
 
     return new ActivityController.Interceptor()
     {
       public void onLifeCycleEvent(Activity activity, Object component, ActivityController.Interceptor.InterceptorEvent event)
       {
-        titleBar.onLifeCycleEvent(activity, component, event);
+        bar.onLifeCycleEvent(activity, component, event);
       }
     };
   }

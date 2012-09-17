@@ -10,10 +10,11 @@ import com.jjoe64.graphview.GraphView.GraphViewData;
 import com.jjoe64.graphview.GraphView.GraphViewSeries;
 import com.jjoe64.graphview.LineGraphView;
 import com.leelah.android.R;
+import com.leelah.android.bar.Bar;
 import com.smartnsoft.droid4me.support.v4.app.SmartFragment;
 
 public class StatisticsFragment
-    extends SmartFragment<Void>
+    extends SmartFragment<Bar.BarAggregate>
 {
 
   private final float[][] data1 = { { 0.0f, 1.0f, 2.0f, 3.0f, 4.0f, 5.0f }, { 10.0f, 8.0f, 12.0f, 12.0f, 6.0f, 5.0f } };

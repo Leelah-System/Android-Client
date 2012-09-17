@@ -1,4 +1,4 @@
-package com.leelah.android;
+package com.leelah.android.bar;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -12,13 +12,18 @@ import com.smartnsoft.droid4me.log.Logger;
 import com.smartnsoft.droid4me.log.LoggerFactory;
 
 /**
- * Gathers in one place the handling of the "Android 2.0" title bar
+ * Gathers in one place the handling of the "Android 2.0" title bar and the Android v3+ "ActionBar".
  * 
  * @author Édouard Mercier
- * @since 2011.06.22
+ * @since 2012.04.03
  */
 public abstract class Bar
 {
+
+  public static enum BarControl
+  {
+    Home, Title, Refresh, Action1, Action2, Action3, Action4
+  }
 
   public static interface BarDiscardedFeature
   {
@@ -26,7 +31,7 @@ public abstract class Bar
 
   public static interface BarSetupFeature
   {
-    void onTitleBarSetup(BarAttributes titleBarAttributes);
+    void onBarSetup(BarAttributes barAttributes);
   }
 
   public static interface BarTheme
@@ -36,12 +41,8 @@ public abstract class Bar
 
   public static interface BarRefreshFeature
   {
-    void onTitleBarRefresh();
+    void onBarRefresh();
   }
-
-  // public static interface BarShowLogoffFeature
-  // {
-  // }
 
   public static interface BarShowBackFeature
   {
@@ -51,9 +52,49 @@ public abstract class Bar
   {
   }
 
+  public static interface BarHideFeature
+  {
+  }
+
+  public static interface BarTitleFeature
+  {
+    String getBarTitle();
+  }
+
+  public static class BarHideTitleFeature
+      implements Bar.BarTitleFeature
+  {
+
+    public String getBarTitle()
+    {
+      return null;
+    }
+
+  }
+
   public static abstract class BarAttributes
       extends ProgressHandler
   {
+
+    protected static class ActionDetail
+    {
+
+      protected final View block;
+
+      protected final int resourceId;
+
+      protected final View.OnClickListener onClickListener;
+
+      protected ActionDetail(View block, int resourceId, View.OnClickListener onClickListener)
+      {
+        this.block = block;
+        this.resourceId = resourceId;
+        this.onClickListener = onClickListener;
+      }
+
+    }
+
+    public abstract void setTitle(int drawableResourceId);
 
     public abstract void setTitle(CharSequence title);
 
@@ -61,13 +102,15 @@ public abstract class Bar
 
     public abstract void setShowHome(int iconResourceId, View.OnClickListener onClickListener);
 
-    protected abstract void setShowRefresh(View.OnClickListener onClickListener);
+    public abstract void setShowRefresh(View.OnClickListener onClickListener);
 
-    protected abstract void toggleRefresh(Activity activity, boolean isLoading);
+    public abstract void toggleVisibility();
+
+    public abstract void toggleRefresh(Activity activity, boolean isLoading);
 
     // protected abstract void setShowSearch(View.OnClickListener onClickListener);
 
-    protected abstract void setEnabled(boolean enabled);
+    public abstract void setEnabled(boolean enabled);
 
     protected abstract void apply();
 
@@ -86,6 +129,8 @@ public abstract class Bar
     // public abstract void setShowAction3(int iconResourceId, CharSequence text, View.OnClickListener onClickListener);
 
     // public abstract void setShowAction4(int iconResourceId, CharSequence text, View.OnClickListener onClickListener);
+
+    public abstract Object getControl(Bar.BarControl barControl);
 
     public abstract boolean isHome(View view);
 
@@ -116,7 +161,7 @@ public abstract class Bar
 
     protected BarRefreshFeature onRefresh;
 
-    protected boolean titleBarFeaturesSet;
+    protected boolean barFeaturesSet;
 
     public BarAggregate(Activity activity, boolean customTitleSupported, Intent homeActivityIntent)
     {
@@ -125,45 +170,54 @@ public abstract class Bar
       this.homeActivityIntent = homeActivityIntent;
     }
 
-    BarAttributes getAttributes()
+    public BarAttributes getAttributes()
     {
       return attributes;
     }
 
-    void setAttributes(BarAttributes titleBarAttributes)
+    void setAttributes(BarAttributes barAttributes)
     {
-      attributes = titleBarAttributes;
+      attributes = barAttributes;
     }
 
     public void updateBarAttributes(Activity activity, int defaultHomeResourceId)
     {
-      final BarAttributes titleBarAttributes = getAttributes();
+      final BarAttributes barAttributes = getAttributes();
 
-      titleBarAttributes.apply();
+      barAttributes.apply();
 
-      if (titleBarFeaturesSet == false)
+      if (barFeaturesSet == false)
       {
+        if (activity instanceof Bar.BarTitleFeature)
+        {
+          final Bar.BarTitleFeature barTitleFeature = (Bar.BarTitleFeature) activity;
+          barAttributes.setTitle(barTitleFeature.getBarTitle());
+        }
+        else
+        {
+          barAttributes.setTitle(activity.getTitle());
+        }
         if (activity instanceof Bar.BarSetupFeature)
         {
-          final Bar.BarSetupFeature titleBarSetupFeature = (Bar.BarSetupFeature) activity;
-          titleBarSetupFeature.onTitleBarSetup(titleBarAttributes);
+          final Bar.BarSetupFeature barSetupFeature = (Bar.BarSetupFeature) activity;
+          barSetupFeature.onBarSetup(barAttributes);
         }
         if (activity instanceof Bar.BarShowHomeFeature)
         {
-          titleBarAttributes.setShowHome(defaultHomeResourceId, this);
+          barAttributes.setShowHome(defaultHomeResourceId, this);
         }
         if (activity instanceof Bar.BarRefreshFeature)
         {
           setOnRefresh((Bar.BarRefreshFeature) activity);
         }
-        titleBarFeaturesSet = true;
+        barFeaturesSet = true;
       }
     }
 
-    public void setOnRefresh(BarRefreshFeature titleBarRefreshFeature)
+    public void setOnRefresh(BarRefreshFeature barRefreshFeature)
     {
-      this.onRefresh = titleBarRefreshFeature;
-      attributes.setShowRefresh(titleBarRefreshFeature != null ? this : null);
+      this.onRefresh = barRefreshFeature;
+      attributes.setShowRefresh(barRefreshFeature != null ? this : null);
     }
 
     @Override
@@ -183,7 +237,7 @@ public abstract class Bar
       }
       else if (attributes.isRefresh(view) == true && onRefresh != null)
       {
-        onRefresh.onTitleBarRefresh();
+        onRefresh.onBarRefresh();
       }
     }
 
@@ -197,7 +251,7 @@ public abstract class Bar
 
   protected static final Logger log = LoggerFactory.getInstance(Bar.class);
 
-  public final static String DO_NOT_APPLY_TITLE_BAR = "doNotApplyTitleBar";
+  public final static String DO_NOT_APPLY_BAR = "doNotApplyBar";
 
   protected final Intent homeActivityIntent;
 
@@ -212,6 +266,11 @@ public abstract class Bar
     this.defaultThemeResourceId = defaultThemeResourceId;
   }
 
+  protected BarAggregate newBarAggregate(Activity activity, Intent homeActivityIntent, boolean requestWindowFeature)
+  {
+    return new BarAggregate(activity, requestWindowFeature, homeActivityIntent);
+  }
+
   public abstract boolean onLifeCycleEvent(Activity activity, Object component, ActivityController.Interceptor.InterceptorEvent event);
 
   public void onLifeCycleEventApplyTheme(Activity activity, Object component, ActivityController.Interceptor.InterceptorEvent event)
@@ -221,7 +280,7 @@ public abstract class Bar
       // We do not handle the Fragment instances
       return;
     }
-    if (event == ActivityController.Interceptor.InterceptorEvent.onSuperCreateBefore && activity instanceof TitleBar.BarDiscardedFeature == false)
+    if (event == ActivityController.Interceptor.InterceptorEvent.onSuperCreateBefore && activity instanceof Bar.BarDiscardedFeature == false)
     {
       if (activity instanceof BarTheme)
       {
@@ -244,11 +303,6 @@ public abstract class Bar
         activity.setTheme(activityTheme > 0 ? activityTheme : defaultThemeResourceId);
       }
     }
-  }
-
-  protected BarAggregate newTitleBarAggregate(Activity activity, Intent homeActivityIntent, boolean requestWindowFeature)
-  {
-    return new BarAggregate(activity, requestWindowFeature, homeActivityIntent);
   }
 
 }

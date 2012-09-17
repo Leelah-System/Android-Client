@@ -32,6 +32,8 @@ import com.leelah.android.bo.Category.CategoryDetails;
 import com.leelah.android.bo.GoogleImage;
 import com.leelah.android.bo.GoogleImage.GoogleImageItem;
 import com.leelah.android.bo.Order;
+import com.leelah.android.bo.Order.OrderDetails;
+import com.leelah.android.bo.OrdersResult;
 import com.leelah.android.bo.Product;
 import com.leelah.android.bo.Product.ProductDetails;
 import com.leelah.android.bo.ProductResult;
@@ -552,5 +554,30 @@ public final class LeelahSystemServices
     final WebServiceResult wsResult = (WebServiceResult) deserializeJson(inputStream, WebServiceResult.class);
     checkApiStatus(wsResult);
     return wsResult.success;
+  }
+
+  private final WSUriStreamParser<List<OrderDetails>, String, JSONException> getOrdersStreamParser = new WSUriStreamParser<List<OrderDetails>, String, JSONException>(this)
+  {
+
+    public KeysAggregator<String> computeUri(String parameter)
+    {
+      return SimpleIOStreamerSourceKey.fromUriStreamerSourceKey(
+          new HttpCallTypeAndBody(computeUri("http://" + leelahCredentialsInformations.getServerURL(), "api/" + token + "/orders", null)), null);
+    }
+
+    public List<OrderDetails> parse(String parameter, InputStream inputStream)
+        throws JSONException
+    {
+      final OrdersResult ordersResult = (OrdersResult) deserializeJson(inputStream, OrdersResult.class);
+      checkApiStatus(ordersResult);
+      return ordersResult.result.orders;
+    }
+
+  };
+
+  public List<OrderDetails> getOrders()
+      throws CacheException, CallException
+  {
+    return getOrdersStreamParser.getValue(null);
   }
 }

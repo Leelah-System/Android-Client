@@ -10,6 +10,7 @@ import android.content.DialogInterface.OnClickListener;
 import android.view.LayoutInflater;
 import android.view.Window;
 
+import com.leelah.android.bar.Bar;
 import com.leelah.android.bo.Category.CategoryDetails;
 import com.leelah.android.bo.User;
 import com.leelah.android.ws.LeelahSystemServices;

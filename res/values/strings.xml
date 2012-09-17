@@ -68,4 +68,8 @@
   <string name="add_product_error_message">Erreur de création du produit</string>
   <string name="add_product_title">Ajout d\'un produit</string>
   <string name="add_category_title">Ajout d\'une categorie</string>
+  <string name="Order_orderTitle">Commande #%1$s</string>
+  <string name="Order_orderItemTitle">#%1$s</string>
+  <string name="Order_orderItemDetails">%1$s (%2$s)</string>
+  <string name="leelah_infos">Leelah-system\n6 Rue Pasteur\nRDC, Porte A46\n91260 - Juvisy sur Orge\ncontact@leelah-system.com\nTél. 06.11.60.58.60</string>
 </resources>
