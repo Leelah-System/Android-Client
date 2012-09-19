@@ -10,6 +10,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.leelah.android.LeelahSystemApplication;
+import com.leelah.android.MainActivity;
 import com.leelah.android.R;
 import com.leelah.android.bar.Bar;
 import com.leelah.android.bo.Category.CategoryDetails;
@@ -99,14 +100,16 @@ public class CategoriesListFragment
 
   private boolean fromCache = true;
 
+  private boolean isAdmin;
+
   @Override
   public void onRetrieveDisplayObjects()
   {
     super.onRetrieveDisplayObjects();
-
+    isAdmin = getCheckedActivity().getIntent().getBooleanExtra(MainActivity.IS_ADMIN, false);
     if (LeelahSystemApplication.isTabletMode == true)
     {
-      getWrappedListView().getListView().setBackgroundResource(R.drawable.left_mini_book);
+      getWrappedListView().getListView().setBackgroundResource(isAdmin == false ? R.drawable.left_mini_book : R.drawable.right_book);
       getWrappedListView().getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
       getWrappedListView().getListView().setTextFilterEnabled(true);
     }

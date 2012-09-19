@@ -158,6 +158,7 @@ public class ActionBar
         {
           if (title != null)
           {
+            actionBar.setDisplayShowTitleEnabled(true);
             actionBar.setTitle(title);
             // actionBar.setDisplayShowTitleEnabled(false);
           }

@@ -15,6 +15,7 @@ import com.leelah.android.MainActivity;
 import com.leelah.android.OrdersActivity;
 import com.leelah.android.R;
 import com.leelah.android.StatisticsActivity;
+import com.leelah.android.UsersActivity;
 import com.smartnsoft.SmartSlidingFragmentActivity;
 import com.smartnsoft.droid4me.framework.SmartAdapters.BusinessViewWrapper;
 import com.smartnsoft.droid4me.framework.SmartAdapters.ObjectEvent;
@@ -92,6 +93,7 @@ public final class MenuFragment
         if (activity instanceof SmartSlidingFragmentActivity)
         {
           final SmartSlidingFragmentActivity<?> smartActivity = (SmartSlidingFragmentActivity<?>) activity;
+          smartActivity.showAbove();
         }
         return businessObject.intent;
       }
@@ -106,7 +108,7 @@ public final class MenuFragment
     final List<BusinessViewWrapper<?>> wrappers = new ArrayList<BusinessViewWrapper<?>>();
 
     wrappers.add(new MenuWrapper(new MenuItem(R.drawable.book, "Menu", new Intent(getCheckedActivity(), MainActivity.class))));
-    wrappers.add(new MenuWrapper(new MenuItem(R.drawable.users, "Utilisateurs", null)));
+    wrappers.add(new MenuWrapper(new MenuItem(R.drawable.users, "Utilisateurs", new Intent(getCheckedActivity(), UsersActivity.class))));
     wrappers.add(new MenuWrapper(new MenuItem(R.drawable.tag, "Produits & Catégories", new Intent(getCheckedActivity(), MainActivity.class).putExtra(
         MainActivity.IS_ADMIN, true))));
     wrappers.add(new MenuWrapper(new MenuItem(R.drawable.calculator, "Caisse", new Intent(getCheckedActivity(), CaisseActivity.class))));

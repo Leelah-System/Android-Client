@@ -233,7 +233,7 @@ public class ProductsListFragment
 
     if (LeelahSystemApplication.isTabletMode == true)
     {
-      getWrappedListView().getListView().setBackgroundResource(R.drawable.right_book);
+      getWrappedListView().getListView().setBackgroundResource(isAdmin == false ? R.drawable.right_book : R.drawable.clipboard);
     }
     getWrappedListView().getListView().setTextFilterEnabled(true);
     categoryId = getCheckedActivity().getIntent().getIntExtra(CategoriesListFragment.SELECTED_CATEGORY, -1);
@@ -300,7 +300,7 @@ public class ProductsListFragment
 
   protected int getProductLayout()
   {
-    return R.layout.product_list_item;
+    return isAdmin == true ? R.layout.caisse_product_list_item : R.layout.product_list_item;
   }
 
 }

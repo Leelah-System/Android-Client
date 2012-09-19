@@ -10,6 +10,7 @@ import android.view.MenuItem;
 
 import com.leelah.android.bar.Bar.BarRefreshFeature;
 import com.leelah.android.bar.Bar.BarShowBackFeature;
+import com.leelah.android.bar.Bar.BarTitleFeature;
 import com.leelah.android.fragments.AddCategoryDialogFragment;
 import com.leelah.android.fragments.AddProductDialogFragment;
 import com.leelah.android.fragments.AddUserDialogFragment;
@@ -28,7 +29,7 @@ import com.smartnsoft.droid4me.support.v4.menu.ActionMenuCommand;
  */
 public final class MainActivity
     extends LeelahFragmentActivity
-    implements BarRefreshFeature, BarShowBackFeature
+    implements BarRefreshFeature, BarShowBackFeature, BarTitleFeature
 {
 
   public static final String IS_ADMIN = "isAdmin";
@@ -193,6 +194,11 @@ public final class MainActivity
     {
       productsFragment.onBarRefresh();
     }
+  }
+
+  public String getBarTitle()
+  {
+    return "Menu";
   }
 
 }
