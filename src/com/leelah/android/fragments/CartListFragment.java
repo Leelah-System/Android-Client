@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Handler;
@@ -16,7 +18,11 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
+import com.leelah.android.LeelahActivity;
 import com.leelah.android.LeelahSystemApplication;
 import com.leelah.android.LeelahSystemApplication.ImageType;
 import com.leelah.android.R;
@@ -108,6 +114,10 @@ public class CartListFragment
       productName = (TextView) view.findViewById(R.id.productName);
       productPrice = (TextView) view.findViewById(R.id.productPrice);
       productQuantity = (TextView) view.findViewById(R.id.productQuantity);
+
+      productName.setTypeface(LeelahSystemApplication.typeWriterFont);
+      productPrice.setTypeface(LeelahSystemApplication.typeWriterFont);
+      productQuantity.setTypeface(LeelahSystemApplication.typeWriterFont);
     }
 
     public void update(Handler handler, CartProduct businessObject)
@@ -176,6 +186,8 @@ public class CartListFragment
 
   private final DecimalFormat decimalFormat = new DecimalFormat("0.00");
 
+  private Button scannerButton;
+
   public BroadcastListener getBroadcastListener()
   {
     return new BroadcastListener()
@@ -185,6 +197,7 @@ public class CartListFragment
         final IntentFilter intentFilter = new IntentFilter();
 
         intentFilter.addAction(CartListFragment.ADD_TO_CART);
+        intentFilter.addAction(LeelahActivity.BARCODE_SCANNER_ACTION);
 
         return intentFilter;
       }
@@ -216,8 +229,54 @@ public class CartListFragment
           }
           refreshBusinessObjectsAndDisplay();
         }
+        else if (intent.getAction().equals(LeelahActivity.BARCODE_SCANNER_ACTION))
+        {
+          final IntentResult intentResult = (IntentResult) intent.getSerializableExtra(LeelahActivity.BARCODE_SCANNER_RESULT);
+          if (intentResult != null)
+          {
+            final String reference = intentResult.getContents();
+            getProductByReference(reference);
+          }
+        }
       }
     };
+  }
+
+  protected void getProductByReference(final String reference)
+  {
+    final ProgressDialog progressDialog = new ProgressDialog(getCheckedActivity());
+    progressDialog.setIndeterminate(true);
+    progressDialog.setMessage(getString(R.string.loading));
+    progressDialog.setCancelable(true);
+    progressDialog.show();
+    SmartCommands.execute(new SmartCommands.DialogGuardedCommand(getCheckedActivity(), "Error while update the status of Order !", R.string.progressDialogMessage_unhandledProblem, progressDialog)
+    {
+      @Override
+      protected void runGuardedDialog()
+          throws Exception
+      {
+        final List<ProductDetails> products = LeelahSystemServices.getInstance().getProducts(true);
+
+        for (ProductDetails productDetails : products)
+        {
+          if (productDetails.reference.equals(reference))
+          {
+            final Intent intent = new Intent(CartListFragment.ADD_TO_CART).putExtra(CartListFragment.PRODUCT, productDetails).putExtra(
+                CartListFragment.QUANTITY, 1);
+            getCheckedActivity().sendBroadcast(intent);
+            refreshBusinessObjectsAndDisplay();
+            return;
+          }
+        }
+        getCheckedActivity().runOnUiThread(new Runnable()
+        {
+          public void run()
+          {
+            Toast.makeText(getCheckedActivity(), "Pas de produit pour la référence '" + reference + "' !", Toast.LENGTH_SHORT).show();
+          }
+        });
+      }
+    });
   }
 
   @Override
@@ -227,9 +286,10 @@ public class CartListFragment
 
     submitLayout = LayoutInflater.from(getCheckedActivity()).inflate(R.layout.cart_submit_command, null);
     submitButton = (Button) submitLayout.findViewById(R.id.submitButton);
+    scannerButton = (Button) submitLayout.findViewById(R.id.scanButton);
     totalPrice = (TextView) submitLayout.findViewById(R.id.totalPrice);
 
-    getWrappedListView().getListView().setBackgroundResource(R.drawable.shadow_right);
+    getWrappedListView().getListView().setBackgroundResource(R.drawable.ticket_de_caisse_mini);
   }
 
   public List<? extends BusinessViewWrapper<?>> retrieveBusinessObjectsList()
@@ -253,7 +313,9 @@ public class CartListFragment
   {
     super.onFulfillDisplayObjects();
     getWrappedListView().addHeaderFooterView(false, true, submitLayout);
+    totalPrice.setTypeface(LeelahSystemApplication.typeWriterFont);
     submitButton.setOnClickListener(this);
+    scannerButton.setOnClickListener(this);
   }
 
   @Override
@@ -268,30 +330,55 @@ public class CartListFragment
   {
     if (view == submitButton)
     {
-      final ProgressDialog progress = new ProgressDialog(getActivity());
-      progress.setMessage(getString(R.string.loading));
-      progress.setIndeterminate(true);
-      progress.show();
-      SmartCommands.execute(new DialogGuardedCommand(getActivity(), CartListFragment.this, "An error occured when add Order", R.string.add_user_error_message, progress)
+      final Order order = new Order();
+      int quantity = 0;
+      order.order.status = 0;
+      order.order.reference = String.valueOf(cartProducts.hashCode() + LeelahSystemServices.getInstance().token.hashCode());
+      for (CartProduct product : cartProducts)
       {
-        @Override
-        protected void runGuardedDialog()
-            throws Exception
+        final OrderItem orderItem = new OrderItem();
+        orderItem.product_id = Integer.parseInt(product.id);
+        orderItem.quantity = product.quantityOrder;
+        quantity += product.quantityOrder;
+        order.order.order_lines_attributes.add(orderItem);
+      }
+      final AlertDialog.Builder builder = new AlertDialog.Builder(getCheckedActivity());
+      builder.setTitle("Confirmer la commande ?");
+      builder.setMessage("Acheter " + quantity + " article(s) pour " + totalPrice.getText() + " ?");
+      builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener()
+      {
+        public void onClick(DialogInterface dialog, int which)
         {
-          final Order order = new Order();
-          order.order.status = 0;
-          order.order.reference = String.valueOf(cartProducts.hashCode() + LeelahSystemServices.getInstance().token.hashCode());
-          for (CartProduct product : cartProducts)
+          final ProgressDialog progress = new ProgressDialog(getActivity());
+          progress.setMessage(getString(R.string.loading));
+          progress.setIndeterminate(true);
+          progress.show();
+          SmartCommands.execute(new DialogGuardedCommand(getActivity(), CartListFragment.this, "An error occured when add Order", R.string.add_user_error_message, progress)
           {
-            final OrderItem orderItem = new OrderItem();
-            orderItem.product_id = Integer.parseInt(product.id);
-            orderItem.quantity = product.quantityOrder;
-            order.order.order_lines_attributes.add(orderItem);
-          }
-          LeelahSystemServices.getInstance().addOrder(order);
-          emptyCart();
+            @Override
+            protected void runGuardedDialog()
+                throws Exception
+            {
+
+              LeelahSystemServices.getInstance().addOrder(order);
+              emptyCart();
+            }
+          });
         }
       });
+      builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener()
+      {
+        public void onClick(DialogInterface dialog, int which)
+        {
+
+        }
+      });
+      builder.show();
+    }
+    else if (view == scannerButton)
+    {
+      final IntentIntegrator integrator = new IntentIntegrator(getActivity());
+      integrator.initiateScan();
     }
   }
 

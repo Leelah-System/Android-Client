@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Handler;
@@ -16,6 +19,7 @@ import android.widget.TextView;
 import com.leelah.android.CaisseActivity;
 import com.leelah.android.LeelahSystemApplication;
 import com.leelah.android.LeelahSystemApplication.ImageType;
+import com.leelah.android.MainActivity;
 import com.leelah.android.R;
 import com.leelah.android.bar.Bar;
 import com.leelah.android.bo.Product.ProductDetails;
@@ -26,9 +30,12 @@ import com.smartnsoft.droid4me.LifeCycle.BusinessObjectsRetrievalAsynchronousPol
 import com.smartnsoft.droid4me.app.AppPublics.BroadcastListener;
 import com.smartnsoft.droid4me.app.AppPublics.BroadcastListenerProvider;
 import com.smartnsoft.droid4me.app.AppPublics.SendLoadingIntent;
+import com.smartnsoft.droid4me.app.SmartCommands;
+import com.smartnsoft.droid4me.framework.Commands;
 import com.smartnsoft.droid4me.framework.SmartAdapters.BusinessViewWrapper;
 import com.smartnsoft.droid4me.framework.SmartAdapters.ObjectEvent;
 import com.smartnsoft.droid4me.framework.SmartAdapters.SimpleBusinessViewWrapper;
+import com.smartnsoft.droid4me.menu.MenuCommand;
 
 public class ProductsListFragment
     extends SmartGridViewFragment<Bar.BarAggregate, GridView>
@@ -104,11 +111,95 @@ public class ProductsListFragment
       return super.onObjectEvent(activity, viewAttributes, view, businessObject, objectEvent, position);
     }
 
+    @Override
+    public boolean containsText(ProductDetails businessObject, String lowerText)
+    {
+      return businessObject.name.contains(lowerText);
+    }
+
+    @Override
+    public List<MenuCommand<ProductDetails>> getMenuCommands(final Activity activity, ProductDetails businessObject)
+    {
+      final List<MenuCommand<ProductDetails>> menus = new ArrayList<MenuCommand<ProductDetails>>();
+
+      menus.add(new MenuCommand<ProductDetails>("Editer", '1', 'e', new Commands.Executable<ProductDetails>()
+      {
+
+        public boolean isEnabled(final ProductDetails businessObject)
+        {
+          return isAdmin;
+        }
+
+        public boolean isVisible(final ProductDetails businessObject)
+        {
+          return isAdmin;
+        }
+
+        public void run(final ProductDetails businessObject)
+        {
+
+        }
+      }));
+
+      menus.add(new MenuCommand<ProductDetails>("Supprimer", '2', 's', new Commands.Executable<ProductDetails>()
+      {
+
+        public boolean isEnabled(final ProductDetails businessObject)
+        {
+          return isAdmin;
+        }
+
+        public boolean isVisible(final ProductDetails businessObject)
+        {
+          return isAdmin;
+        }
+
+        public void run(final ProductDetails businessObject)
+        {
+          final AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+          builder.setTitle(businessObject.name);
+          builder.setMessage("Supprimer le produit ?");
+          builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener()
+          {
+            public void onClick(DialogInterface dialog, int which)
+            {
+              final ProgressDialog progressDialog = new ProgressDialog(activity);
+              progressDialog.setIndeterminate(true);
+              progressDialog.setMessage(getString(R.string.loading));
+              progressDialog.setCancelable(true);
+              progressDialog.show();
+              SmartCommands.execute(new SmartCommands.DialogGuardedCommand(activity, "Error while update the status of Order !", R.string.progressDialogMessage_unhandledProblem, progressDialog)
+              {
+                @Override
+                protected void runGuardedDialog()
+                    throws Exception
+                {
+                  LeelahSystemServices.getInstance().deleteProduct(businessObject.id);
+                  refreshBusinessObjectsAndDisplay();
+                }
+              });
+            }
+          });
+          builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener()
+          {
+            public void onClick(DialogInterface dialog, int which)
+            {
+
+            }
+          });
+          builder.show();
+        }
+      }));
+
+      return menus;
+    }
   }
 
   private int categoryId = -1;
 
   private boolean fromCache = true;
+
+  private boolean isAdmin;
 
   public BroadcastListener getBroadcastListener()
   {
@@ -138,8 +229,15 @@ public class ProductsListFragment
   {
     super.onRetrieveDisplayObjects();
 
-    getWrappedListView().getListView().setBackgroundResource(R.drawable.background_red_light);
+    isAdmin = getCheckedActivity().getIntent().getBooleanExtra(MainActivity.IS_ADMIN, false);
+
+    if (LeelahSystemApplication.isTabletMode == true)
+    {
+      getWrappedListView().getListView().setBackgroundResource(R.drawable.right_book);
+    }
+    getWrappedListView().getListView().setTextFilterEnabled(true);
     categoryId = getCheckedActivity().getIntent().getIntExtra(CategoriesListFragment.SELECTED_CATEGORY, -1);
+
   }
 
   public List<? extends BusinessViewWrapper<?>> retrieveBusinessObjectsList()
@@ -179,9 +277,12 @@ public class ProductsListFragment
     final int paddingSize = getResources().getDimensionPixelSize(R.dimen.defaultPadding);
     getWrappedListView().getListView().setNumColumns(GridView.AUTO_FIT);
     getWrappedListView().getListView().setColumnWidth(getResources().getDimensionPixelSize(R.dimen.gridColumnWidth));
-    getWrappedListView().getListView().setPadding(paddingSize, paddingSize, paddingSize, paddingSize);
-    getWrappedListView().getListView().setVerticalSpacing(paddingSize);
-    getWrappedListView().getListView().setHorizontalSpacing(paddingSize);
+    // getWrappedListView().getListView().setPadding(paddingSize, paddingSize, paddingSize, paddingSize);
+    if (LeelahSystemApplication.isTabletMode == true)
+    {
+      getWrappedListView().getListView().setVerticalSpacing(paddingSize);
+      getWrappedListView().getListView().setHorizontalSpacing(paddingSize);
+    }
     getWrappedListView().getListView().setStretchMode(GridView.STRETCH_COLUMN_WIDTH);
   }
 

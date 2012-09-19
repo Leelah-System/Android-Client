@@ -8,6 +8,7 @@ import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build.VERSION;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
@@ -157,7 +158,8 @@ public class ActionBar
         {
           if (title != null)
           {
-            actionBar.setDisplayShowTitleEnabled(false);
+            actionBar.setTitle(title);
+            // actionBar.setDisplayShowTitleEnabled(false);
           }
           else
           {
@@ -193,20 +195,20 @@ public class ActionBar
     {
       if (actionBar != null)
       {
-        // if (VERSION.SDK_INT >= 14)
-        // {
-        // // This sets the ActionBar "logo" button enable/disabled state
-        // actionBar.setHomeButtonEnabled(onClickListener != null);
-        // }
-        // if (iconResourceId > 0 && VERSION.SDK_INT >= 14)
-        // {
-        // actionBar.setIcon(iconResourceId);
-        // }
-        // if (onClickListener != null)
-        // {
-        // actionBar.setDisplayShowHomeEnabled(iconResourceId > 0);
-        // }
-        // actionBar.setDisplayShowHomeEnabled(onClickListener != null);
+        if (VERSION.SDK_INT >= 14)
+        {
+          // This sets the ActionBar "logo" button enable/disabled state
+          actionBar.setHomeButtonEnabled(onClickListener != null);
+        }
+        if (iconResourceId > 0 && VERSION.SDK_INT >= 14)
+        {
+          actionBar.setIcon(iconResourceId);
+        }
+        if (onClickListener != null)
+        {
+          actionBar.setDisplayShowHomeEnabled(iconResourceId > 0);
+        }
+        actionBar.setDisplayShowHomeEnabled(onClickListener != null);
       }
     }
 

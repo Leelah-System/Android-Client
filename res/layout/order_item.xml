@@ -9,7 +9,7 @@
     android:id="@+id/text1"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:textSize="18dip"
+    android:textSize="24dip"
     android:text="@string/Order_orderItemTitle"
     android:textStyle="bold"
   />
@@ -19,6 +19,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_below="@id/text1"
+    android:textSize="18dip"
     android:text="@string/Order_orderItemDetails"
     android:textColor="@color/leelah_primary_color"
   />

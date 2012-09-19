@@ -87,6 +87,12 @@ public class CategoriesListFragment
       return super.onObjectEvent(activity, viewAttributes, view, businessObject, objectEvent, position);
     }
 
+    @Override
+    public boolean containsText(CategoryDetails businessObject, String lowerText)
+    {
+      return businessObject.name.contains(lowerText);
+    }
+
   }
 
   private boolean firstLaunch = true;
@@ -100,8 +106,9 @@ public class CategoriesListFragment
 
     if (LeelahSystemApplication.isTabletMode == true)
     {
-      getWrappedListView().getListView().setBackgroundResource(R.drawable.shadow_left);
+      getWrappedListView().getListView().setBackgroundResource(R.drawable.left_mini_book);
       getWrappedListView().getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+      getWrappedListView().getListView().setTextFilterEnabled(true);
     }
   }
 

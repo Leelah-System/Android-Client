@@ -93,12 +93,13 @@ public final class LeelahSystemSplashScreenActivity
       {
         LeelahSystemServices.getInstance().setLeelahCredentialsInformations(this);
         LeelahSystemServices.getInstance().authenticate(user);
-        LeelahSystemServices.getInstance().getUsers();
-        final List<CategoryDetails> categories = LeelahSystemServices.getInstance().getCategories(false);
-        LeelahSystemServices.getInstance().getProducts(false);
+        LeelahSystemServices.getInstance().getUsers(true);
+        final List<CategoryDetails> categories = LeelahSystemServices.getInstance().getCategories(true);
+        LeelahSystemServices.getInstance().getProducts(true);
+        LeelahSystemServices.getInstance().getOrders(true);
         for (CategoryDetails category : categories)
         {
-          LeelahSystemServices.getInstance().getProductsByCateogry(false, category.id);
+          LeelahSystemServices.getInstance().getProductsByCateogry(true, category.id);
         }
       }
       catch (Exception exception)

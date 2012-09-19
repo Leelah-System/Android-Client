@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -121,6 +122,8 @@ public final class LeelahSystemApplication
 
   public static boolean isTabletMode;
 
+  public static Typeface typeWriterFont;
+
   @Override
   protected int getLogLevel()
   {
@@ -146,6 +149,8 @@ public final class LeelahSystemApplication
 
     final int screenLayout = getResources().getConfiguration().screenLayout;
     isTabletMode = (screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_LARGE || (screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_XLARGE;
+
+    LeelahSystemApplication.typeWriterFont = Typeface.createFromAsset(getAssets(), "typewcond_regular.otf");
 
     // We initialize the persistence
     final String directoryName = getPackageManager().getApplicationLabel(getApplicationInfo()).toString();
@@ -207,21 +212,20 @@ public final class LeelahSystemApplication
   @Override
   protected ActivityController.Interceptor getInterceptor()
   {
-    final Intent homeActivityIntent = new Intent(getApplicationContext(), MainActivity.class);
-    final com.leelah.android.bar.Bar bar;
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
-    {
-      bar = new com.leelah.android.bar.ActionBar(homeActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP), R.drawable.icon, R.style.Theme_LeelahSystem);
-    }
-    else
-    {
-      bar = new com.leelah.android.bar.TitleBar(homeActivityIntent, R.drawable.title_bar_home, R.style.Theme_LeelahSystem);
-    }
-
     return new ActivityController.Interceptor()
     {
       public void onLifeCycleEvent(Activity activity, Object component, ActivityController.Interceptor.InterceptorEvent event)
       {
+        final Intent homeActivityIntent = new Intent(getApplicationContext(), MainActivity.class);
+        final com.leelah.android.bar.Bar bar;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+        {
+          bar = new com.leelah.android.bar.ActionBar(activity instanceof MainActivity ? null : homeActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP), R.drawable.icon, R.style.Theme_LeelahSystem);
+        }
+        else
+        {
+          bar = new com.leelah.android.bar.TitleBar(homeActivityIntent, R.drawable.title_bar_home, R.style.Theme_LeelahSystem);
+        }
         bar.onLifeCycleEvent(activity, component, event);
       }
     };

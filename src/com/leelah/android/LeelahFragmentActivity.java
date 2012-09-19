@@ -52,7 +52,14 @@ public abstract class LeelahFragmentActivity
     // customize the SlidingMenu
     getSlidingMenu().setShadowWidthRes(R.dimen.shadow_width);
     getSlidingMenu().setShadowDrawable(R.drawable.shadow);
-    getSlidingMenu().setBehindOffset((int) (getWindowManager().getDefaultDisplay().getWidth() / 1.3));
+    if (LeelahSystemApplication.isTabletMode == true)
+    {
+      getSlidingMenu().setBehindOffset((int) (getWindowManager().getDefaultDisplay().getWidth() / 1.3));
+    }
+    else
+    {
+      getSlidingMenu().setBehindOffset((int) getResources().getDimension(R.dimen.menuSize));
+    }
     // customize the ActionBar
     if (Build.VERSION.SDK_INT >= 11)
     {

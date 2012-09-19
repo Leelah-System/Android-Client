@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.leelah.android.LeelahSystemApplication;
 import com.leelah.android.R;
 import com.leelah.android.bar.Bar;
 import com.leelah.android.bar.Bar.BarRefreshFeature;
@@ -22,6 +23,7 @@ import com.leelah.android.ws.LeelahSystemServices;
 import com.smartnsoft.droid4me.LifeCycle.BusinessObjectsRetrievalAsynchronousPolicy;
 import com.smartnsoft.droid4me.app.AppPublics.BroadcastListener;
 import com.smartnsoft.droid4me.app.AppPublics.BroadcastListenerProvider;
+import com.smartnsoft.droid4me.app.AppPublics.SendLoadingIntent;
 import com.smartnsoft.droid4me.framework.SmartAdapters.BusinessViewWrapper;
 import com.smartnsoft.droid4me.framework.SmartAdapters.ObjectEvent;
 import com.smartnsoft.droid4me.framework.SmartAdapters.SimpleBusinessViewWrapper;
@@ -29,7 +31,7 @@ import com.smartnsoft.droid4me.support.v4.app.SmartListViewFragment;
 
 public final class OrdersTypeListFragment
     extends SmartListViewFragment<Bar.BarAggregate, ListView>
-    implements BusinessObjectsRetrievalAsynchronousPolicy, BarRefreshFeature, BroadcastListenerProvider
+    implements BusinessObjectsRetrievalAsynchronousPolicy, BarRefreshFeature, BroadcastListenerProvider, SendLoadingIntent
 {
 
   private final static class OrderAttributes
@@ -46,6 +48,9 @@ public final class OrdersTypeListFragment
       text = (TextView) view.findViewById(R.id.text1);
       description = (TextView) view.findViewById(R.id.description);
       icon = (ImageView) view.findViewById(R.id.icon);
+
+      text.setTypeface(LeelahSystemApplication.typeWriterFont);
+      description.setTypeface(LeelahSystemApplication.typeWriterFont);
     }
 
     public void update(OrderDetails businessObject)
@@ -109,6 +114,8 @@ public final class OrdersTypeListFragment
 
   protected static final String REFRESH = "refresh";
 
+  private boolean fromCache = true;
+
   public BroadcastListener getBroadcastListener()
   {
     return new BroadcastListener()
@@ -123,6 +130,7 @@ public final class OrdersTypeListFragment
       {
         if (intent.getAction().equals(OrdersTypeListFragment.REFRESH))
         {
+          fromCache = false;
           refreshBusinessObjectsAndDisplay();
         }
       }
@@ -144,7 +152,7 @@ public final class OrdersTypeListFragment
     final List<OrderDetails> orders;
     try
     {
-      orders = LeelahSystemServices.getInstance().getOrders();
+      orders = LeelahSystemServices.getInstance().getOrders(fromCache);
     }
     catch (Exception exception)
     {
@@ -190,6 +198,7 @@ public final class OrdersTypeListFragment
 
   public void onBarRefresh()
   {
+    fromCache = false;
     refreshBusinessObjectsAndDisplay();
   }
 }

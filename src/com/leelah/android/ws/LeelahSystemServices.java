@@ -436,7 +436,7 @@ public final class LeelahSystemServices
     return getProductsStreamParser.backed.getRetentionValue(fromCache, Constants.RETENTION_PERIOD_IN_MILLISECONDS, null, null);
   }
 
-  private final WSUriStreamParser<List<User>, String, JSONException> getUsersStreamParser = new WSUriStreamParser<List<User>, String, JSONException>(this)
+  private final BackedWSUriStreamParser.BackedUriStreamedValue<List<User>, String, JSONException, PersistenceException> getUsersStreamParser = new BackedWSUriStreamParser.BackedUriStreamedValue<List<User>, String, JSONException, PersistenceException>(Persistence.getInstance(), this)
   {
 
     public KeysAggregator<String> computeUri(String parameter)
@@ -455,10 +455,10 @@ public final class LeelahSystemServices
 
   };
 
-  public List<User> getUsers()
+  public List<User> getUsers(boolean fromCache)
       throws CacheException, CallException
   {
-    return getUsersStreamParser.getValue(null);
+    return getUsersStreamParser.backed.getRetentionValue(fromCache, Constants.RETENTION_PERIOD_IN_MILLISECONDS, null, "users");
   }
 
   private final WSUriStreamParser<Boolean, String, JSONException> deleteProductStreamParser = new WSUriStreamParser<Boolean, String, JSONException>(this)
@@ -556,7 +556,7 @@ public final class LeelahSystemServices
     return wsResult.success;
   }
 
-  private final WSUriStreamParser<List<OrderDetails>, String, JSONException> getOrdersStreamParser = new WSUriStreamParser<List<OrderDetails>, String, JSONException>(this)
+  private final BackedWSUriStreamParser.BackedUriStreamedValue<List<OrderDetails>, String, JSONException, PersistenceException> getOrdersStreamParser = new BackedWSUriStreamParser.BackedUriStreamedValue<List<OrderDetails>, String, JSONException, PersistenceException>(Persistence.getInstance(), this)
   {
 
     public KeysAggregator<String> computeUri(String parameter)
@@ -575,10 +575,10 @@ public final class LeelahSystemServices
 
   };
 
-  public List<OrderDetails> getOrders()
+  public List<OrderDetails> getOrders(boolean fromCache)
       throws CacheException, CallException
   {
-    return getOrdersStreamParser.getValue(null);
+    return getOrdersStreamParser.backed.getRetentionValue(fromCache, Constants.RETENTION_PERIOD_IN_MILLISECONDS, null, "orders");
   }
 
   public boolean updateOrder(OrderDetails order)

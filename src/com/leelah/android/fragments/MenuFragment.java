@@ -92,7 +92,6 @@ public final class MenuFragment
         if (activity instanceof SmartSlidingFragmentActivity)
         {
           final SmartSlidingFragmentActivity<?> smartActivity = (SmartSlidingFragmentActivity<?>) activity;
-          smartActivity.showAbove();
         }
         return businessObject.intent;
       }

@@ -10,20 +10,20 @@
     android:id="@+id/categoriesFragment"
     android:layout_width="0dip"
     android:layout_height="match_parent"
-    android:layout_weight="1"
+    android:layout_weight="10"
   />
   <fragment
     android:name="com.leelah.android.fragments.ProductsListFragment"
     android:id="@+id/productsFragment"
     android:layout_width="0dip"
     android:layout_height="match_parent"
-    android:layout_weight="3"
+    android:layout_weight="30"
   />
   <fragment
     android:name="com.leelah.android.fragments.CartListFragment"
     android:id="@+id/cartFragment"
     android:layout_width="0dip"
     android:layout_height="match_parent"
-    android:layout_weight="1"
+    android:layout_weight="13"
   />
 </LinearLayout>

@@ -6,8 +6,8 @@
 
     <ImageView
         android:id="@+id/productImage"
-        android:layout_width="64dip"
-        android:layout_height="64dip"
+        android:layout_width="48dip"
+        android:layout_height="48dip"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         android:layout_marginRight="@dimen/defaultPadding"
@@ -29,7 +29,7 @@
         android:id="@+id/productPrice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/productImage"
+        android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
         android:textColor="@android:color/black"
         android:textSize="26dip"
@@ -39,7 +39,7 @@
         android:id="@+id/productQuantity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
+        android:layout_toRightOf="@+id/productImage"
         android:layout_alignParentBottom="true"
         android:textSize="26dip"
         android:textColor="#459A2A"

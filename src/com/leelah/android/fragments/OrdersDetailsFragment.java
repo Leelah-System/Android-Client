@@ -22,12 +22,13 @@ import com.leelah.android.ws.LeelahSystemServices;
 import com.smartnsoft.droid4me.LifeCycle.BusinessObjectsRetrievalAsynchronousPolicy;
 import com.smartnsoft.droid4me.app.AppPublics.BroadcastListener;
 import com.smartnsoft.droid4me.app.AppPublics.BroadcastListenerProvider;
+import com.smartnsoft.droid4me.app.AppPublics.SendLoadingIntent;
 import com.smartnsoft.droid4me.app.SmartCommands;
 import com.smartnsoft.droid4me.support.v4.app.SmartFragment;
 
 public final class OrdersDetailsFragment
     extends SmartFragment<Bar.BarAggregate>
-    implements BusinessObjectsRetrievalAsynchronousPolicy, BroadcastListenerProvider, View.OnClickListener
+    implements BusinessObjectsRetrievalAsynchronousPolicy, BroadcastListenerProvider, View.OnClickListener, SendLoadingIntent
 {
 
   public static final String UPDATE_ORDER = "updateOrder";

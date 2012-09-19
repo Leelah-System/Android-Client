@@ -1,8 +1,5 @@
 package com.leelah.android.phone;
 
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-
 import com.leelah.android.LeelahFragmentActivity;
 import com.leelah.android.R;
 import com.leelah.android.bar.Bar.BarRefreshFeature;
@@ -19,10 +16,8 @@ public final class ProductsActivity
   @Override
   public void onRetrieveDisplayObjects()
   {
-    final FragmentManager fragmentManager = getSupportFragmentManager();
-    final FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-    fragmentTransaction.add(android.R.id.content, new ProductsListFragment());
-    fragmentTransaction.commit();
+    setContentView(R.layout.products_phone);
+    super.onRetrieveDisplayObjects();
   }
 
   @Override
