@@ -51,17 +51,22 @@ public class ProductsListFragment
 
     private final TextView productDescription;
 
+    private final TextView productPrice;
+
     public ProductAttributes(View view)
     {
       image = (ImageView) view.findViewById(R.id.image);
       productName = (TextView) view.findViewById(R.id.productName);
       productDescription = (TextView) view.findViewById(R.id.description);
+      productPrice = (TextView) view.findViewById(R.id.productPrice);
+      productPrice.setTypeface(LeelahSystemApplication.typeWriterFont);
     }
 
     public void update(final Handler handler, final ProductDetails businessObject)
     {
       productName.setText(businessObject.name);
       productDescription.setText(businessObject.description);
+      productPrice.setText(productPrice.getResources().getString(R.string.Price_euro, Float.toString(businessObject.price)));
       LeelahSystemApplication.requestImageAndDisplay(handler, businessObject.name, image, ImageType.Thumbnail);
     }
 
