@@ -1,7 +1,9 @@
 package com.leelah.android.fragments;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -9,6 +11,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.os.Handler;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
@@ -57,7 +60,7 @@ public class ProductsListFragment
 
   }
 
-  private static final class ProductAttributes
+  private final class ProductAttributes
   {
 
     private final ImageView image;
@@ -68,8 +71,11 @@ public class ProductsListFragment
 
     private final TextView productPrice;
 
+    private final View view;
+
     public ProductAttributes(View view)
     {
+      this.view = view;
       image = (ImageView) view.findViewById(R.id.image);
       productName = (TextView) view.findViewById(R.id.productName);
       productDescription = (TextView) view.findViewById(R.id.description);
@@ -77,8 +83,12 @@ public class ProductsListFragment
       productPrice.setTypeface(LeelahSystemApplication.typeWriterFont);
     }
 
-    public void update(final Handler handler, final ProductDetails businessObject)
+    public void update(final Activity activity, final Handler handler, final ProductDetails businessObject)
     {
+      if (activity instanceof CaisseActivity)
+      {
+        view.setBackgroundColor(Color.parseColor(categoriesColor.get(businessObject.category_id)));
+      }
       productName.setText(businessObject.name);
       productDescription.setText(businessObject.description);
       productPrice.setText(productPrice.getResources().getString(R.string.Price_euro, Float.toString(businessObject.price)));
@@ -105,7 +115,7 @@ public class ProductsListFragment
     @Override
     protected void updateView(Activity activity, Object viewAttributes, View view, ProductDetails businessObject, int position)
     {
-      ((ProductAttributes) viewAttributes).update(getHandler(), businessObject);
+      ((ProductAttributes) viewAttributes).update(activity, getHandler(), businessObject);
     }
 
     @Override
@@ -223,6 +233,8 @@ public class ProductsListFragment
 
   private List<CategoryDetails> categories;
 
+  private Map<Integer, String> categoriesColor;
+
   public BroadcastListener getBroadcastListener()
   {
     return new BroadcastListener()
@@ -267,6 +279,7 @@ public class ProductsListFragment
   {
     final List<BusinessViewWrapper<?>> wrappers = new ArrayList<BusinessViewWrapper<?>>();
 
+    categoriesColor = new HashMap<Integer, String>();
     final List<ProductDetails> products;
     try
     {
@@ -277,6 +290,11 @@ public class ProductsListFragment
     catch (Exception exception)
     {
       throw new BusinessObjectUnavailableException(exception);
+    }
+
+    for (CategoryDetails category : categories)
+    {
+      categoriesColor.put(category.id, "#" + category.color);
     }
 
     if (products != null)

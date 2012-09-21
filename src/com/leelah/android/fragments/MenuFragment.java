@@ -11,6 +11,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.leelah.android.CaisseActivity;
+import com.leelah.android.LeelahSystemApplication;
 import com.leelah.android.MainActivity;
 import com.leelah.android.OrdersActivity;
 import com.leelah.android.R;
@@ -108,13 +109,19 @@ public final class MenuFragment
     final List<BusinessViewWrapper<?>> wrappers = new ArrayList<BusinessViewWrapper<?>>();
 
     wrappers.add(new MenuWrapper(new MenuItem(R.drawable.book, "Menu", new Intent(getCheckedActivity(), MainActivity.class))));
-    wrappers.add(new MenuWrapper(new MenuItem(R.drawable.users, "Utilisateurs", new Intent(getCheckedActivity(), UsersActivity.class))));
-    wrappers.add(new MenuWrapper(new MenuItem(R.drawable.tag, "Produits & Catégories", new Intent(getCheckedActivity(), MainActivity.class).putExtra(
-        MainActivity.IS_ADMIN, true))));
-    wrappers.add(new MenuWrapper(new MenuItem(R.drawable.calculator, "Caisse", new Intent(getCheckedActivity(), CaisseActivity.class))));
-    wrappers.add(new MenuWrapper(new MenuItem(R.drawable.shopping_cart, "Commandes", new Intent(getCheckedActivity(), OrdersActivity.class))));
-    wrappers.add(new MenuWrapper(new MenuItem(R.drawable.chart, "Statistiques", new Intent(getCheckedActivity(), StatisticsActivity.class))));
-
+    if (LeelahSystemApplication.isTabletMode == true)
+    {
+      wrappers.add(new MenuWrapper(new MenuItem(R.drawable.users, "Utilisateurs", new Intent(getCheckedActivity(), UsersActivity.class))));
+      wrappers.add(new MenuWrapper(new MenuItem(R.drawable.tag, "Produits & Catégories", new Intent(getCheckedActivity(), MainActivity.class).putExtra(
+          MainActivity.IS_ADMIN, true))));
+      wrappers.add(new MenuWrapper(new MenuItem(R.drawable.calculator, "Caisse", new Intent(getCheckedActivity(), CaisseActivity.class))));
+      wrappers.add(new MenuWrapper(new MenuItem(R.drawable.shopping_cart, "Commandes", new Intent(getCheckedActivity(), OrdersActivity.class))));
+      wrappers.add(new MenuWrapper(new MenuItem(R.drawable.chart, "Statistiques", new Intent(getCheckedActivity(), StatisticsActivity.class))));
+    }
+    else
+    {
+      wrappers.add(new MenuWrapper(new MenuItem(R.drawable.book, "Scan'lib", new Intent(getCheckedActivity(), MainActivity.class))));
+    }
     return wrappers;
   }
 

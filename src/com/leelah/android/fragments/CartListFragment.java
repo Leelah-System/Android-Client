@@ -306,6 +306,14 @@ public class CartListFragment
       wrappers.add(new CartWrapper(cartProduct));
     }
 
+    getCheckedActivity().runOnUiThread(new Runnable()
+    {
+      public void run()
+      {
+        submitButton.setEnabled(cartProducts.size() > 0);
+      }
+    });
+
     return wrappers;
   }
 

@@ -33,6 +33,7 @@ public class Category
     public String data_picture;
 
     public String path;
+
   }
 
   @JsonIgnoreProperties(ignoreUnknown = true)
@@ -52,6 +53,8 @@ public class Category
     public PictureAttributes picture_attributes;
 
     public List<ProductDetails> products;
+
+    public String color;
 
     public CategoryDetails()
     {

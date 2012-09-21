@@ -1,56 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:background="@drawable/product_background_selector"
+  android:padding="@dimen/defaultPadding" >
+  <View
+    android:id="@+id/background"
     android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/leelah_green" />
+  <ImageView
+    android:id="@+id/image"
+    android:layout_width="50dip"
+    android:layout_height="50dip"
+    android:layout_alignParentLeft="true"
+    android:layout_centerVertical="true"
+    android:layout_marginRight="@dimen/defaultPadding"
+    android:scaleType="centerCrop"
+    android:src="@drawable/pack" />
+  <TextView
+    android:id="@+id/productName"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@drawable/product_background_selector"
-    android:padding="@dimen/defaultPadding" >
-
-    <ImageView
-        android:id="@+id/image"
-        android:layout_width="50dip"
-        android:layout_height="50dip"
-        android:layout_alignParentLeft="true"
-        android:layout_centerVertical="true"
-        android:layout_marginRight="@dimen/defaultPadding"
-        android:scaleType="centerCrop"
-        android:src="@drawable/pack"
-    />
-
-    <TextView
-        android:id="@+id/productName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/image"
-        android:text="Nom du produit"
-        android:textSize="16dip"
-        android:textColor="@android:color/black"
-        android:textStyle="bold"
-        android:singleLine="true"
-        android:ellipsize="marquee"
-        android:marqueeRepeatLimit="marquee_forever"
-    />
-
-    <TextView
-        android:id="@+id/description"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/productName"
-        android:layout_toRightOf="@id/image"
-        android:textColor="@android:color/black"
-        android:singleLine="true"
-        android:ellipsize="end"
-        android:text="TextView" 
-    />
-    
-    <TextView
-        android:id="@+id/productPrice"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
-        android:textColor="@android:color/black"
-        android:textSize="26dip"
-        android:text="TextView"
-        android:visibility="gone" />
-    
+    android:layout_toRightOf="@id/image"
+    android:ellipsize="marquee"
+    android:marqueeRepeatLimit="marquee_forever"
+    android:singleLine="true"
+    android:text="Nom du produit"
+    android:textColor="@android:color/black"
+    android:textSize="16dip"
+    android:textStyle="bold" />
+  <TextView
+    android:id="@+id/description"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_below="@id/productName"
+    android:layout_toRightOf="@id/image"
+    android:ellipsize="end"
+    android:singleLine="true"
+    android:text="TextView"
+    android:textColor="@android:color/black" />
+  <TextView
+    android:id="@+id/productPrice"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignParentBottom="true"
+    android:layout_alignParentRight="true"
+    android:text="TextView"
+    android:textColor="@android:color/black"
+    android:textSize="26dip"
+    android:visibility="gone" />
 </RelativeLayout>

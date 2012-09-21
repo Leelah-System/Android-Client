@@ -13,6 +13,7 @@ import com.leelah.android.R;
 import com.leelah.android.bar.Bar;
 import com.leelah.android.bo.User;
 import com.leelah.android.ws.LeelahSystemServices;
+import com.smartnsoft.droid4me.app.AppPublics.SendLoadingIntent;
 import com.smartnsoft.droid4me.framework.SmartAdapters.BusinessViewWrapper;
 import com.smartnsoft.droid4me.framework.SmartAdapters.ObjectEvent;
 import com.smartnsoft.droid4me.framework.SmartAdapters.SimpleBusinessViewWrapper;
@@ -20,6 +21,7 @@ import com.smartnsoft.droid4me.support.v4.app.SmartListViewFragment;
 
 public final class UserListFragment
     extends SmartListViewFragment<Bar.BarAggregate, ListView>
+    implements Bar.BarRefreshFeature, SendLoadingIntent
 {
 
   private final static class UserAttributes
@@ -77,7 +79,7 @@ public final class UserListFragment
 
   }
 
-  private final boolean fromCache = true;
+  private boolean fromCache = true;
 
   @Override
   public void onRetrieveDisplayObjects()
@@ -108,6 +110,12 @@ public final class UserListFragment
     }
 
     return wrappers;
+  }
+
+  public void onBarRefresh()
+  {
+    fromCache = false;
+    refreshBusinessObjectsAndDisplay();
   }
 
 }
