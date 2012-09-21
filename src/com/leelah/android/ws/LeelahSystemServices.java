@@ -33,6 +33,7 @@ import com.leelah.android.bo.GoogleImage;
 import com.leelah.android.bo.GoogleImage.GoogleImageItem;
 import com.leelah.android.bo.Order;
 import com.leelah.android.bo.Order.OrderDetails;
+import com.leelah.android.bo.OrderResult;
 import com.leelah.android.bo.OrdersResult;
 import com.leelah.android.bo.Product;
 import com.leelah.android.bo.Product.ProductDetails;
@@ -546,14 +547,14 @@ public final class LeelahSystemServices
     return wsResult.success;
   }
 
-  public boolean addOrder(Order order)
+  public OrderDetails addOrder(Order order)
       throws CallException
   {
     final InputStream inputStream = getInputStream(computeUri("http://" + leelahCredentialsInformations.getServerURL(), "api/" + token + "/orders", null),
         CallType.Post, createPostBody(order));
-    final WebServiceResult wsResult = (WebServiceResult) deserializeJson(inputStream, WebServiceResult.class);
+    final OrderResult wsResult = (OrderResult) deserializeJson(inputStream, OrderResult.class);
     checkApiStatus(wsResult);
-    return wsResult.success;
+    return wsResult.result;
   }
 
   private final BackedWSUriStreamParser.BackedUriStreamedValue<List<OrderDetails>, String, JSONException, PersistenceException> getOrdersStreamParser = new BackedWSUriStreamParser.BackedUriStreamedValue<List<OrderDetails>, String, JSONException, PersistenceException>(Persistence.getInstance(), this)

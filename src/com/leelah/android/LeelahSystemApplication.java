@@ -163,7 +163,7 @@ public final class LeelahSystemApplication
 
     // We set the BitmapDownloader instances
     BitmapDownloader.INSTANCES_COUNT = 1;
-    BitmapDownloader.HIGH_LEVEL_MEMORY_WATER_MARK_IN_BYTES = new long[] { 10 * 1024 * 1024 };
+    BitmapDownloader.HIGH_LEVEL_MEMORY_WATER_MARK_IN_BYTES = new long[] { 20 * 1024 * 1024 };
     BitmapDownloader.LOW_LEVEL_MEMORY_WATER_MARK_IN_BYTES = new long[] { 10 * 1024 * 1024 };
   }
 

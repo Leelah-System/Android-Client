@@ -164,11 +164,13 @@ public final class AddProductDialogFragment
               businessObject.product.stock = Integer.parseInt(stockValue);
               businessObject.product.price = Float.parseFloat(priceValue);
               businessObject.product.description = descriptionValue;
-              businessObject.product.picture_attributes.path = "";
-              businessObject.product.picture_attributes.data_picture = "";
-              businessObject.product.picture_attributes.description = "";
-              businessObject.product.picture_attributes.label = "";
-              businessObject.product.picture_attributes.name = "";
+              businessObject.product.reference = referenceValue;
+              businessObject.product.picture_attributes = null;
+              // businessObject.product.picture_attributes.path = "";
+              // businessObject.product.picture_attributes.data_picture = "";
+              // businessObject.product.picture_attributes.description = "";
+              // businessObject.product.picture_attributes.label = "";
+              // businessObject.product.picture_attributes.name = "";
               LeelahSystemServices.getInstance().addProduct(businessObject);
               dialog.dismiss();
             }

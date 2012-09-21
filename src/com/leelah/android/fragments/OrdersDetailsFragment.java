@@ -124,7 +124,7 @@ public final class OrdersDetailsFragment
   {
     if (order != null)
     {
-      orderTitle.setText(getString(R.string.Order_orderTitle, order.reference.replaceAll("-", "")));
+      orderTitle.setText(getString(R.string.Order_orderTitle, order.reference));
       if (order.status == 0)
       {
         icon.setImageResource(R.drawable.asterisk_orange);

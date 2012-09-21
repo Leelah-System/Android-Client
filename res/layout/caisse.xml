@@ -29,7 +29,9 @@
       android:layout_height="0dip"
       android:layout_weight="1"
     />
-    <View
+    <fragment
+      android:name="com.leelah.android.fragments.CalculatorFragment"
+      android:id="@+id/calcFragment"
       android:layout_width="match_parent"
       android:layout_height="0dip"
       android:layout_weight="1"

@@ -11,9 +11,11 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Handler;
 import android.support.v4.app.FragmentManager;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.leelah.android.CaisseActivity;
@@ -22,8 +24,10 @@ import com.leelah.android.LeelahSystemApplication.ImageType;
 import com.leelah.android.MainActivity;
 import com.leelah.android.R;
 import com.leelah.android.bar.Bar;
+import com.leelah.android.bo.Category.CategoryDetails;
 import com.leelah.android.bo.Product.ProductDetails;
 import com.leelah.android.fragments.CartListFragment.CartProduct;
+import com.leelah.android.fragments.CategoriesListFragment.CategoryWrapper;
 import com.leelah.android.fragments.ProductDetailsDialogFragment.ActionType;
 import com.leelah.android.ws.LeelahSystemServices;
 import com.smartnsoft.droid4me.LifeCycle.BusinessObjectsRetrievalAsynchronousPolicy;
@@ -41,6 +45,17 @@ public class ProductsListFragment
     extends SmartGridViewFragment<Bar.BarAggregate, GridView>
     implements BusinessObjectsRetrievalAsynchronousPolicy, SendLoadingIntent, BroadcastListenerProvider
 {
+
+  private static final class ProductCategoriesWrapper
+      extends CategoryWrapper
+  {
+
+    public ProductCategoriesWrapper(CategoryDetails businessObject)
+    {
+      super(businessObject, 0, R.layout.category_list_item_horizontal);
+    }
+
+  }
 
   private static final class ProductAttributes
   {
@@ -206,6 +221,8 @@ public class ProductsListFragment
 
   private boolean isAdmin;
 
+  private List<CategoryDetails> categories;
+
   public BroadcastListener getBroadcastListener()
   {
     return new BroadcastListener()
@@ -253,6 +270,7 @@ public class ProductsListFragment
     final List<ProductDetails> products;
     try
     {
+      categories = LeelahSystemServices.getInstance().getCategories(fromCache);
       products = categoryId > -1 ? LeelahSystemServices.getInstance().getProductsByCateogry(fromCache, categoryId)
           : LeelahSystemServices.getInstance().getProducts(fromCache);
     }
@@ -289,6 +307,20 @@ public class ProductsListFragment
       getWrappedListView().getListView().setHorizontalSpacing(paddingSize);
     }
     getWrappedListView().getListView().setStretchMode(GridView.STRETCH_COLUMN_WIDTH);
+
+    if (getCheckedActivity() instanceof CaisseActivity)
+    {
+      final View view = LayoutInflater.from(getCheckedActivity()).inflate(R.layout.categories_horizontal, null);
+      final LinearLayout categoriesView = (LinearLayout) view.findViewById(R.id.categories);
+      // for (CategoryDetails category : categories)
+      // {
+      // final BusinessViewHolder<CategoryDetails> viewHolder = new BusinessViewHolder<CategoryDetails>(new ProductCategoriesWrapper(category));
+      // categoriesView.addView(viewHolder.getView(getCheckedActivity()));
+      // viewHolder.updateView(getCheckedActivity());
+      // }
+      getWrappedListView().addHeaderFooterView(true, true, view);
+    }
+
   }
 
   public void onBarRefresh()

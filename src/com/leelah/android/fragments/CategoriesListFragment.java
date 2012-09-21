@@ -49,13 +49,18 @@ public class CategoriesListFragment
 
   public static final String SELECTED_CATEGORY = CategoriesListFragment.CHANGE_CATEGORY + ".selectedCategory";
 
-  private final static class CategoryWrapper
+  public static class CategoryWrapper
       extends SimpleBusinessViewWrapper<CategoryDetails>
   {
 
     public CategoryWrapper(CategoryDetails businessObject)
     {
       super(businessObject, 0, R.layout.category_list_item);
+    }
+
+    public CategoryWrapper(CategoryDetails arg0, int arg1, int arg2)
+    {
+      super(arg0, arg1, arg2);
     }
 
     @Override

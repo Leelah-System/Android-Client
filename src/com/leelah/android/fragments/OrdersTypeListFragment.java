@@ -56,7 +56,7 @@ public final class OrdersTypeListFragment
     public void update(OrderDetails businessObject)
     {
       final DecimalFormat decimalFormat = new DecimalFormat("#.## \u20AC");
-      text.setText(text.getResources().getString(R.string.Order_orderItemTitle, businessObject.reference.replaceAll("-", "")));
+      text.setText(text.getResources().getString(R.string.Order_orderItemTitle, businessObject.reference));
       description.setText(description.getResources().getString(R.string.Order_orderItemDetails, decimalFormat.format(businessObject.amount),
           businessObject.created_at.toLocaleString()));
       if (businessObject.status == 0)

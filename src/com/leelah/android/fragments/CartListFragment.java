@@ -28,6 +28,7 @@ import com.leelah.android.LeelahSystemApplication.ImageType;
 import com.leelah.android.R;
 import com.leelah.android.bar.Bar;
 import com.leelah.android.bo.Order;
+import com.leelah.android.bo.Order.OrderDetails;
 import com.leelah.android.bo.Order.OrderItem;
 import com.leelah.android.bo.Product.ProductDetails;
 import com.leelah.android.ws.LeelahSystemServices;
@@ -359,9 +360,18 @@ public class CartListFragment
             protected void runGuardedDialog()
                 throws Exception
             {
+              final OrderDetails orderDetails = LeelahSystemServices.getInstance().addOrder(order);
+              getActivity().runOnUiThread(new Runnable()
+              {
 
-              LeelahSystemServices.getInstance().addOrder(order);
+                public void run()
+                {
+                  Toast.makeText(getContext(), "Commande confirmée !", Toast.LENGTH_SHORT).show();
+                }
+              });
               emptyCart();
+              final OrderConfirmDialogFragment orderDialogFragment = new OrderConfirmDialogFragment(orderDetails);
+              orderDialogFragment.show(getFragmentManager(), "newOrder");
             }
           });
         }
