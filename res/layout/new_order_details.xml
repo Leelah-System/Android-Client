@@ -229,6 +229,7 @@
     </ScrollView>
 
     <LinearLayout
+        android:id="@+id/paymentLayout"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:orientation="vertical" >
@@ -251,12 +252,13 @@
             android:text="Carte de credit" />
 
         <Button
-            android:id="@+id/cancel"
+            android:id="@+id/paymentPaypal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawableTop="@drawable/paypal_curved"
             android:drawablePadding="@dimen/defaultPadding"
-            android:text="Paypal" />
+            android:text="Paypal"
+            android:visibility="gone" />
     </LinearLayout>
 
 </LinearLayout>

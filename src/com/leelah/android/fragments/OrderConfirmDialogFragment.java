@@ -4,21 +4,31 @@ import java.text.DecimalFormat;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.leelah.android.LeelahSystemApplication;
 import com.leelah.android.R;
 import com.leelah.android.bo.Order.OrderDetails;
 import com.leelah.android.bo.Order.OrderItemExtented;
+import com.leelah.android.ws.Paypal;
+import com.paypal.android.MEP.CheckoutButton;
+import com.paypal.android.MEP.PayPalPayment;
 
 public final class OrderConfirmDialogFragment
     extends LeelahDialogFragment<OrderDetails>
+    implements View.OnClickListener
 {
 
   private TextView orderTitle;
@@ -35,17 +45,87 @@ public final class OrderConfirmDialogFragment
 
   private TextView totalTotal;
 
-  private Button validButton;
+  private Button paymentEspece;
 
-  private Button cancelButton;
+  private Button paymentCards;
 
-  private Button prepareButton;
+  private Button paymentPaypal;
 
   private ImageView icon;
+
+  private LinearLayout paymentLayout;
+
+  public class LoadPayPalButtonTask
+      extends AsyncTask<String, String, CheckoutButton>
+  {
+
+    /**
+     * The context.
+     */
+    private final Context context;
+
+    /**
+     * Default constructor.
+     * 
+     * @param context
+     *          the context
+     */
+    public LoadPayPalButtonTask(Context context)
+    {
+      this.context = context;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected CheckoutButton doInBackground(String... params)
+    {
+      log.debug("PayPal: Create button !");
+      return Paypal.getCheckoutButton(this.context);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void onPostExecute(CheckoutButton result)
+    {
+      log.debug("PayPal: display button !");
+      super.onPostExecute(result);
+      showPayPalButtonDialog(result);
+    }
+  }
 
   public OrderConfirmDialogFragment(OrderDetails orderDetails)
   {
     super(orderDetails);
+  }
+
+  @Override
+  public void onCreate(Bundle savedInstanceState)
+  {
+    super.onCreate(savedInstanceState);
+
+    new LoadPayPalButtonTask(getCheckedActivity()).execute();
+  }
+
+  private void showPayPalButtonDialog(final CheckoutButton button)
+  {
+    button.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+    paymentLayout.addView(button);
+    button.setOnClickListener(new View.OnClickListener()
+    {
+      public void onClick(View view)
+      {
+        final float amount = businessObject.amount;
+        final String devName = "Leelah-System"; // TODO when multiple devs
+        final String devEmail = "leelah_1347965058_biz@smartnsoft.com";// TODO when multiple devs
+        final PayPalPayment payPalPayment = Paypal.getNewPayPalPayment(getCheckedActivity(), devName, devEmail, amount);
+        final Intent paypalIntent = Paypal.getInstance(getCheckedActivity()).checkout(payPalPayment, getCheckedActivity());
+        getCheckedActivity().startActivityForResult(paypalIntent, Paypal.paypalRequestCode);
+      }
+    });
   }
 
   @Override
@@ -64,10 +144,15 @@ public final class OrderConfirmDialogFragment
     tva.setTypeface(LeelahSystemApplication.typeWriterFont);
     totalTotal = (TextView) view.findViewById(R.id.totalTotal);
     totalTotal.setTypeface(LeelahSystemApplication.typeWriterFont);
-    validButton = (Button) view.findViewById(R.id.valid);
-    cancelButton = (Button) view.findViewById(R.id.cancel);
-    prepareButton = (Button) view.findViewById(R.id.prepare);
+    paymentEspece = (Button) view.findViewById(R.id.paymentEspece);
+    paymentCards = (Button) view.findViewById(R.id.paymentCards);
+    paymentPaypal = (Button) view.findViewById(R.id.paymentPaypal);
     icon = (ImageView) view.findViewById(R.id.icon);
+    paymentLayout = (LinearLayout) view.findViewById(R.id.paymentLayout);
+
+    paymentCards.setOnClickListener(this);
+    paymentEspece.setOnClickListener(this);
+    paymentPaypal.setOnClickListener(this);
 
     final OrderDetails order = businessObject;
 
@@ -124,5 +209,17 @@ public final class OrderConfirmDialogFragment
     builder.setView(view);
     builder.setTitle("Paiement de la commande");
     return builder.create();
+  }
+
+  public void onClick(View view)
+  {
+    if (view == paymentPaypal)
+    {
+
+    }
+    else if (view == paymentEspece || view == paymentCards)
+    {
+      Toast.makeText(getCheckedActivity(), "Terminal de paiement non connecté !", Toast.LENGTH_LONG).show();
+    }
   }
 }

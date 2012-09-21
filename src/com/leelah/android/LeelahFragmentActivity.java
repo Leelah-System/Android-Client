@@ -14,6 +14,7 @@ import com.leelah.android.ws.LeelahSystemServices;
 import com.leelah.android.ws.LeelahSystemServices.LeelahApiStatusViewer;
 import com.leelah.android.ws.LeelahSystemServices.LeelahCredentials;
 import com.leelah.android.ws.LeelahSystemServices.LeelahCredentialsInformations;
+import com.leelah.android.ws.Paypal;
 import com.smartnsoft.SmartSlidingFragmentActivity;
 
 public abstract class LeelahFragmentActivity
@@ -30,6 +31,10 @@ public abstract class LeelahFragmentActivity
     if (scanResult != null)
     {
       sendBroadcast(new Intent(LeelahActivity.BARCODE_SCANNER_ACTION).putExtra(LeelahActivity.BARCODE_SCANNER_RESULT, scanResult));
+    }
+    else if (requestCode == Paypal.paypalRequestCode)
+    {
+      sendBroadcast(new Intent(LeelahActivity.PAYPAL_ACTION).putExtra(LeelahActivity.PAYPAL_RESULT, resultCode));
     }
     else
     {

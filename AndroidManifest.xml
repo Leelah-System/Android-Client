@@ -28,6 +28,8 @@
   <uses-permission android:name="android.permission.INTERNET"/>
   <!-- We need this permission, because we write on the SD card -->
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+  <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+  <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
   <!-- We need this permission, when geolocalizing -->
   <!--uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
   <uses-permission  android:name="android.permission.ACCESS_FINE_LOCATION"/-->
@@ -105,6 +107,13 @@
     
     <activity
       android:name=".StatisticsActivity"
+      android:configChanges="keyboardHidden|orientation"
+    />
+    
+    <!-- PAYPAL API -->
+    <activity 
+      android:name="com.paypal.android.MEP.PayPalActivity"
+      android:theme="@android:style/Theme.Translucent.NoTitleBar"
       android:configChanges="keyboardHidden|orientation"
     />
     

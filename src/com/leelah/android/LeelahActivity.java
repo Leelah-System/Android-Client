@@ -20,6 +20,10 @@ public abstract class LeelahActivity
 
   public static final String BARCODE_SCANNER_RESULT = "barCodeScannerResult";
 
+  public static final String PAYPAL_ACTION = "paypalAction";
+
+  public static final String PAYPAL_RESULT = "paypalResult";
+
   public abstract void onFulfillDisplayObjects();
 
   public void onRetrieveBusinessObjects()
